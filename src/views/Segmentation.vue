@@ -2,19 +2,19 @@
   <Layout header-class="header-transparent" :show-newsletter="true" :show-cta="false">
     <!-- Start Service Area -->
     <div class="rn-service-area rn-section-gap">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-12">
-            <SectionTitle
-                text-align="center"
-                subtitle="我们能为你做什么？"
-                title="精准的3D医学影像分割"
-                description="There are many variations of passages of Lorem Ipsum available, <br /> but the majority have suffered alteration."
-                data-aos="fade-up"
-            />
-          </div>
-        </div>
-      </div>
+      <!--      <div class="container">-->
+      <!--        <div class="row">-->
+      <!--          <div class="col-lg-12">-->
+      <!--            <SectionTitle-->
+      <!--                text-align="center"-->
+      <!--                subtitle="我们能为你做什么？"-->
+      <!--                title="精准的3D医学影像分割"-->
+      <!--                description="There are many variations of passages of Lorem Ipsum available, <br /> but the majority have suffered alteration."-->
+      <!--                data-aos="fade-up"-->
+      <!--            />-->
+      <!--          </div>-->
+      <!--        </div>-->
+      <!--      </div>-->
       <div class="dicom-main">
         <div class="l-bottom">
           <div class="m-left">
@@ -50,7 +50,7 @@
               <!--                ></el-input-number>-->
               <!--              </div>-->
               <!-- 其他工具 -->
-              <!--              上传文件-->
+              <!--上传文件-->
               <el-upload
                   action="/api/upload"
                   :show-file-list="false"
@@ -59,6 +59,18 @@
                 <i class="t-active iconfont el-icon-folder-opened"
                    style="font-size:28px;margin-top: 5px;margin-right: 10px"></i>
               </el-upload>
+
+              <!--移动-->
+              <div
+                  v-for="(item, index) in moveList"
+                  :key="item.iconfont"
+                  :class="['s-other', item.status ? 's-select' : '']"
+                  :title="item.title"
+                  @click="clickMoves(item, index)"
+              >
+                <i :class="'t-active iconfont ' + item.iconfont" style="font-size:28px;margin-top: 15px"></i>
+              </div>
+
               <div
                   v-for="(item, index) in toolList"
                   :key="item.iconfont"
@@ -68,15 +80,7 @@
               >
                 <i :class="'t-active iconfont ' + item.iconfont"></i>
               </div>
-              <div
-                  v-for="(item, index) in toolList"
-                  :key="item.iconfont"
-                  :class="['s-other', item.status ? 's-select' : '']"
-                  :title="item.title"
-                  @click="clickTools(item, index)"
-              >
-                <i class="t-active iconfont el-icon-folder-opened" style="font-size:30px;margin-top: 15px"></i>
-              </div>
+
               <!-- 度量 -->
               <div
                   :class="['s-other t-dialog1', measureStatus ? 's-select' : '']"
@@ -114,6 +118,28 @@
                   </div>
                 </div>
               </div>
+              <!-- 编辑操作 -->
+              <div
+                  v-for="(item, index) in editList"
+                  :key="item.iconfont"
+                  :class="['s-other', item.status ? 's-select' : '']"
+                  :title="item.title"
+                  @click="clickEdits(item, index)"
+              >
+                <i :class="'t-active iconfont ' + item.iconfont" style="font-size:25px;margin-top: 15px"></i>
+              </div>
+
+              <!-- 调色盘 -->
+              <div
+                  v-for="(item, index) in paletteList"
+                  :key="item.iconfont"
+                  :class="['s-other', item.status ? 's-select' : '']"
+                  :title="item.title"
+                  @click="clickPalette(item, index)"
+              >
+                <i :class="'t-active iconfont ' + item.iconfont" style="font-size:25px;margin-top: 15px"></i>
+              </div>
+
               <!-- 视图 -->
               <div
                   :class="['s-other t-dialog3', viewStatus ? 's-select' : '']"
@@ -415,11 +441,6 @@ export default {
       ],
       selectValue: '',
       selectViewValue: '',
-      volumeList: [
-        {
-          url: "/api/image/202302/0b2be9e0-886b-4144-99f0-8bb4c6eaa848.nii.gz",
-        }
-      ],
       testUrl: '',
       md5Par: null,
       checked: false,
@@ -477,49 +498,57 @@ export default {
         },
       ],
       /* 工具类 */
+      moveList: [
+        {
+          title: '左移',
+          iconfont: 'el-icon-back',
+          status: '',
+          value: 'left',
+        },
+        {
+          title: '右移',
+          iconfont: 'el-icon-right',
+          status: '',
+          value: 'right',
+        },
+        {
+          title: '前移',
+          iconfont: 'el-icon-bottom-left',
+          status: '',
+          value: 'anterior',
+        },
+        {
+          title: '后移',
+          iconfont: 'el-icon-bottom-right',
+          status: '',
+          value: 'posterior',
+        },
+        {
+          title: '上移',
+          iconfont: 'el-icon-top',
+          status: '',
+          value: 'superior',
+        },
+        {
+          title: '下移',
+          iconfont: 'el-icon-bottom',
+          status: '',
+          value: 'inferior',
+        }
+      ],
+      /* 工具类 */
       toolList: [
         {
-          title: '播放图层',
-          iconfont: 'iconvolume-play',
-          status: '',
-          value: 'play',
-        },
-        {
-          title: '缩放',
+          title: '放大/缩放',
           iconfont: 'iconimage-zoom',
-          status: '',
-          value: 'Zoom',
+          status: false,
+          value: 'pan',
         },
-        {title: '移动', iconfont: 'iconimage-move', status: '', value: 'Pan'},
         {
-          title: '左右翻转',
+          title: '放射学方向',
           iconfont: 'iconflip-leftright',
           status: '',
-          value: 'hflip',
-        },
-        {
-          title: '上下翻转',
-          iconfont: 'iconflip-updown',
-          status: '',
-          value: 'vflip',
-        },
-        {
-          title: '复原',
-          iconfont: 'iconimage-recover',
-          status: '',
-          value: 'reset',
-        },
-        {
-          title: '标注',
-          iconfont: 'iconimage-remark',
-          status: '',
-          value: 'ArrowAnnotate',
-        },
-        {
-          title: '层级',
-          iconfont: 'iconimage-level',
-          status: '',
-          value: 'Wwwc',
+          value: 'radiological',
         },
         {
           title: '十字线',
@@ -528,23 +557,51 @@ export default {
           value: 'cross',
         },
         {
+          title: '快照',
+          iconfont: 'el-icon-camera',
+          status: '',
+          value: 'camera',
+        },
+      ],
+      editList: [
+        {
+          title: '画笔',
+          iconfont: 'el-icon-edit',
+          status: '',
+          value: 'pen',
+        },
+        {
           title: '橡皮擦',
           iconfont: 'iconremark-erase',
           status: '',
-          value: 'Eraser',
+          value: 'eraser',
         },
         {
-          title: '切片',
-          iconfont: 'iconremark-section',
+          title: '撤回',
+          iconfont: 'iconimage-recover',
           status: '',
-          value: 'slice',
+          value: 'back',
         },
         {
-          title: 'TimeSeries',
-          iconfont: 'iconimage-curve',
-          status: false,
-          value: 'echarts',
+          title: '删除标签',
+          iconfont: 'el-icon-delete',
+          status: '',
+          value: 'delete',
         },
+        {
+          title: '保存标签',
+          iconfont: 'el-icon-download',
+          status: '',
+          value: 'delete',
+        }
+      ],
+      paletteList: [
+        {
+          title: '标签颜色更改',
+          iconfont: 'icon-zhuti_tiaosepan_o',
+          status: '',
+          value: 'palette',
+        }
       ],
       imageList: {}, // 存取所有图片集合
       percentage: 0, // 进度
@@ -626,15 +683,54 @@ export default {
     }
   },
   methods: {
+    clickEdits(item, index) {
+
+    },
+    clickTools(item, index) {
+      if (item.value === 'pan') {
+        if (!item.status) {
+          nv.opts.dragMode = nv.dragModes.pan;
+        } else {
+          nv.opts.dragMode = nv.dragModes.contrast
+        }
+        this.toolList[index].status = !item.status;
+      }
+      console.log(this.toolList)
+    },
+    clickMoves(item, index) {
+      if (item.value === "left") {
+        nv.moveCrosshairInVox(-1, 0, 0);
+      }
+      if (item.value === "right") {
+        nv.moveCrosshairInVox(1, 0, 0);
+      }
+      if (item.value === "posterior") {
+        nv.moveCrosshairInVox(0, -1, 0);
+      }
+      if (item.value === "anterior") {
+        nv.moveCrosshairInVox(0, 1, 0);
+      }
+      if (item.value === "inferior") {
+        nv.moveCrosshairInVox(0, 0, -1);
+      }
+      if (item.value === "superior") {
+        nv.moveCrosshairInVox(0, 0, 1);
+      }
+    },
     doSegmentation() {
       axios.post('/seg', {
         uploadFileUrl: this.currentRawImageUrl
       }).then(response => {
-        if(response.data.code === 200){
+        if (response.data.code === 200) {
           console.log(response)
-          nv.loadDrawingFromUrl(response.data.result.PredictFileUrl)
+          nv.loadVolumes([{url: response.data.result.OriginFileUrl}]).then(() => {
+            nv.loadDrawingFromUrl(response.data.result.PredictFileUrl);
+          })
+              .catch(err => {
+                console.error(err);
+              });
         }
-      }).catch(failResponse=>{
+      }).catch(failResponse => {
         console.log(failResponse)
       })
     },
@@ -689,8 +785,6 @@ export default {
       }
     },
     clickInstros(meas, index) {
-    },
-    clickTools(index, item) {
     },
     locationChangeHandler(data) {
       console.log(data);
@@ -778,14 +872,11 @@ export default {
     nv.setRadiologicalConvention(false)
     nv.opts.multiplanarForceRender = true
     nv.attachTo('gl')
-    nv.loadVolumes(this.volumeList)
     nv.setSliceType(nv.sliceTypeMultiplanar)
     nv.setClipPlane([0.3, 270, 0]);
     nv.setRenderAzimuthElevation(120, 10);
     nv.setSliceMM(true);
     nv.graph.autoSizeMultiplanar = true
-    // nv.loadDrawingFromUrl(this.testUrl)
-    // nv.loadDrawingFromUrl("/api/image/202302/0b2be9e0-886b-4144-99f0-8bb4c6eaa848-label.nii.gz")
     nv.drawMeasurementTool()
     // nv.overlayRGBA()
     // console.log(nv.drawBitmap)
@@ -795,7 +886,7 @@ export default {
 <style lang="scss">
 /* flex 居中3 */
 @import "../assets/icon/iconfont.css";
-
+@import "../assets/icon-expand/iconfont.css";
 @mixin fcc {
   display: flex;
   justify-content: center;
@@ -1849,7 +1940,6 @@ export default {
             color: #0070f5;
             font-size: 22px;
           }
-
         }
 
         .t-dialog1:hover {

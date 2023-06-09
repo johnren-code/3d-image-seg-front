@@ -1,0 +1,22 @@
+@font-face {
+  font-family: "iconfont"; /* Project id 4114593 */
+  src: url('iconfont.eot?t=1686326162028'); /* IE9 */
+  src: url('iconfont.eot?t=1686326162028#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('iconfont.woff2?t=1686326162028') format('woff2'),
+       url('iconfont.woff?t=1686326162028') format('woff'),
+       url('iconfont.ttf?t=1686326162028') format('truetype'),
+       url('iconfont.svg?t=1686326162028#iconfont') format('svg');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-zhuti_tiaosepan_o:before {
+  content: "\e601";
+}
+
