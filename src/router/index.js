@@ -58,6 +58,7 @@ import Home from "../views/Home";
 import Segmentation from "../views/Segmentation";
 import Test from "../views/Test";
 import Login from "../views/Login";
+import History from "../views/History";
 
 Vue.use(VueRouter)
 
@@ -538,6 +539,14 @@ const routes = [
         path: '/web-agency',
         name: 'Web Agency',
         component: WebAgency,
+        meta: {
+            title: 'Web Agency || Doob Business and Consulting Bootstrap5 Template',
+        },
+    },
+    {
+        path: '/History',
+        name: 'History',
+        component: History,
         meta: {
             title: 'Web Agency || Doob Business and Consulting Bootstrap5 Template',
         },
