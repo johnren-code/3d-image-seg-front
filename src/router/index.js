@@ -57,6 +57,7 @@ import WebAgency from '../views/home-pages/WebAgency'
 import Home from "../views/Home";
 import Segmentation from "../views/Segmentation";
 import Test from "../views/Test";
+import Login from "../views/Login";
 
 Vue.use(VueRouter)
 
@@ -81,6 +82,14 @@ const routes = [
         path: '/segmentation',
         name: 'Segmentation',
         component: Segmentation,
+        meta: {
+            title: 'Doob || Doob Business and Consulting Bootstrap5 Template',
+        },
+    },
+    {
+        path: '/login',
+        name: 'Login',
+        component: Login,
         meta: {
             title: 'Doob || Doob Business and Consulting Bootstrap5 Template',
         },

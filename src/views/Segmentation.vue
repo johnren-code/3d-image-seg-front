@@ -229,6 +229,7 @@
               <el-button type="primary" @click="getBitMap">getBitMap</el-button>
               <el-button type="primary" @click="labelEditor">label editor</el-button>
               <el-button type="primary" @click="undo">undo</el-button>
+              <el-button type="primary" @click="doSegmentation">3D分割</el-button>
               <el-dialog title="label Editor" :visible.sync="dialogTableVisible" center :append-to-body='true'
                          :lock-scroll="false" width="30%">
                 <Table @update-parent-var="onUpdateParentVar"></Table>
@@ -621,19 +622,31 @@ export default {
       splicePrecent: 0, // 处理全部切片进度
       imageMark: [],
       imageMarkCopy: [],
-      currentRawImageUrl:''
+      currentRawImageUrl: ''
     }
   },
   methods: {
+    doSegmentation() {
+      axios.post('/seg', {
+        uploadFileUrl: this.currentRawImageUrl
+      }).then(response => {
+        if(response.data.code === 200){
+          console.log(response)
+          nv.loadDrawingFromUrl(response.data.result.PredictFileUrl)
+        }
+      }).catch(failResponse=>{
+        console.log(failResponse)
+      })
+    },
     handleAvatarSuccess(res, file) {
       console.log(res)
-      this.currentRawImageUrl=res.url;
-      nv.loadVolumes([{url:res.url.replace("./image", "/api/image")}])
+      this.currentRawImageUrl = res.result;
+      nv.loadVolumes([{url: res.result}])
 
     },
-    getUploadFile(file){
+    getUploadFile(file) {
       console.log(file.name)
-      nv.loadVolumes([{url:file.name}])
+      nv.loadVolumes([{url: file.name}])
     },
     changeView(meas, index) {
       if (meas.titleEng === 'Axial') {
@@ -772,7 +785,7 @@ export default {
     nv.setSliceMM(true);
     nv.graph.autoSizeMultiplanar = true
     // nv.loadDrawingFromUrl(this.testUrl)
-    nv.loadDrawingFromUrl("/api/image/202302/0b2be9e0-886b-4144-99f0-8bb4c6eaa848-label.nii.gz")
+    // nv.loadDrawingFromUrl("/api/image/202302/0b2be9e0-886b-4144-99f0-8bb4c6eaa848-label.nii.gz")
     nv.drawMeasurementTool()
     // nv.overlayRGBA()
     // console.log(nv.drawBitmap)

@@ -13,15 +13,18 @@ import VueScrollActive from 'vue-scrollactive'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 import VueTypedJs from 'vue-typed-js'
-
+import axios from 'axios'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import 'element-ui/lib/theme-chalk/icon.css';
+axios.defaults.withCredentials =true
 Vue.config.productionTip = false
 Vue.use(CoolLightBox)
 Vue.use(VueScrollActive)
 Vue.use(VueTypedJs)
 Vue.use(ElementUI)
+axios.defaults.withCredentials =true
+axios.defaults.baseURL='/api'
 new Vue({
   router,
   created () {

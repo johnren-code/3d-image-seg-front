@@ -79,8 +79,8 @@
                                 <!-- Start Header Btn -->
                                 <div class="header-btn">
                                     <a :class="data.buyButtonClass"
-                                       href="#">
-                                        BUY NOW
+                                       href="login">
+                                        注册/登录
                                     </a>
                                 </div>
                                 <!-- End Header Btn  -->
