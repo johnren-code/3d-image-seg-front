@@ -15,164 +15,257 @@
       <!--          </div>-->
       <!--        </div>-->
       <!--      </div>-->
-      <div class="dicom-main">
-        <div class="l-bottom">
-          <div class="m-left">
-            <div
-                class="t-tools-dis"
-                v-show="percentage < 100 && percentage != 0"
-            ></div>
-            <!-- 工具集 -->
-            <div :class="['t-tools']">
-              <div class="s-title">
-                <div slot="trigger" class="e-upload">
-                  <i class="iconfont iconMRIjiancha"></i>
-                  <span>3D影像在线查看</span>
-                </div>
-              </div>
-              <div class="s-box">
-                <i class="iconfont iconmenu-list" @click="recordTab"></i>
-              </div>
-              <div class="s-percent" v-show="percentage < 100 && percentage != 0">
-                <span>正在加载：{{ percentage + '%' }}</span>
-              </div>
-              <!-- volume -->
-              <!--              <div class="s-volume">-->
-              <!--                <span class="e-span">volume：</span>-->
-              <!--                <el-input-number-->
-              <!--                    v-model="num"-->
-              <!--                    controls-position="right"-->
-              <!--                    @change="changeVolume"-->
-              <!--                    :min="1"-->
-              <!--                    :max="timeSlices"-->
-              <!--                    size="small"-->
-              <!--                    :disabled="timeSlices == 1"-->
-              <!--                ></el-input-number>-->
-              <!--              </div>-->
-              <!-- 其他工具 -->
-              <!--上传文件-->
-              <el-upload
-                  action="/api/upload"
-                  :show-file-list="false"
-                  :on-success="handleAvatarSuccess"
-                  :before-upload="getUploadFile">
-                <i class="t-active iconfont el-icon-folder-opened"
-                   style="font-size:28px;margin-top: 5px;margin-right: 10px"></i>
-              </el-upload>
+      <!-- 侧边栏 -->
+      <el-container>
+        <el-aside class="side-menu" :width="isCollapse ? '65px' : '350px'">
 
-              <!--移动-->
-              <div
-                  v-for="(item, index) in moveList"
-                  :key="item.iconfont"
-                  :class="['s-other', item.status ? 's-select' : '']"
-                  :title="item.title"
-                  @click="clickMoves(item, index)"
-              >
-                <i :class="'t-active iconfont ' + item.iconfont" style="font-size:28px;margin-top: 15px"></i>
-              </div>
+          <i v-show="!isCollapse" class="el-icon-s-fold" style="font-size: 30px;margin-left: 320px;cursor: pointer"
+             @click="isCollapse=true"></i>
+          <i v-show="isCollapse" class="el-icon-s-unfold" style="font-size: 30px;margin-left: 20px;cursor: pointer"
+             @click="isCollapse=false"></i>
+          <el-menu
+              default-active="1"
+              class="el-menu-vertical-demo"
+              background-color="transparent"
+              text-color="#fff"
+              active-text-color="#0072FF"
+              style="border: none"
+              :collapse="isCollapse"
+          >
+            <el-menu-item index="1">
+              <i class="el-icon-user-solid"></i>
+              <span style="margin-left: 20px">病人编号123456</span>
+            </el-menu-item>
+            <el-menu-item index="2">
+              <i class="el-icon-user-solid"></i>
+              <span style="margin-left: 20px">病人编号123456</span>
+            </el-menu-item>
+            <el-menu-item index="3">
+              <i class="el-icon-user-solid"></i>
+              <span style="margin-left: 20px">病人编号123456</span>
+            </el-menu-item>
+            <el-menu-item index="4">
+              <i class="el-icon-user-solid"></i>
+              <span style="margin-left: 20px">病人编号123456</span>
+            </el-menu-item>
+            <el-menu-item index="5">
+              <i class="el-icon-user-solid"></i>
+              <span style="margin-left: 20px">病人编号123456</span>
+            </el-menu-item>
+            <el-menu-item index="6">
+              <i class="el-icon-user-solid"></i>
+              <span style="margin-left: 20px">病人编号123456</span>
+            </el-menu-item>
+            <el-menu-item index="7">
+              <i class="el-icon-user-solid"></i>
+              <span style="margin-left: 20px">病人编号123456</span>
+            </el-menu-item>
+            <el-menu-item index="8">
+              <i class="el-icon-user-solid"></i>
+              <span style="margin-left: 20px">病人编号123456</span>
+            </el-menu-item>
+            <el-menu-item index="9">
+              <i class="el-icon-user-solid"></i>
+              <span style="margin-left: 20px">病人编号123456</span>
+            </el-menu-item>
+            <el-menu-item index="10">
+              <i class="el-icon-user-solid"></i>
+              <span style="margin-left: 20px">病人编号123456</span>
+            </el-menu-item>
+          </el-menu>
+        </el-aside>
+        <el-main>
+          <div class="dicom-main">
+            <div class="l-bottom">
+              <div class="m-left">
 
-              <div
-                  v-for="(item, index) in toolList"
-                  :key="item.iconfont"
-                  :class="['s-other', item.status ? 's-select' : '']"
-                  :title="item.title"
-                  @click="clickTools(item, index)"
-              >
-                <i :class="'t-active iconfont ' + item.iconfont"></i>
-              </div>
+                <div
+                    class="t-tools-dis"
+                    v-show="percentage < 100 && percentage != 0"
+                ></div>
 
-              <!-- 度量 -->
-              <div
-                  :class="['s-other t-dialog1', measureStatus ? 's-select' : '']"
-                  title="工具"
-              >
-                <i class="t-active iconfont iconremark-measure"></i>
-                <div class="r-tools">
+
+                <!-- 工具集 -->
+                <div :class="['t-tools']">
+                  <div class="s-title">
+                    <div slot="trigger" class="e-upload">
+                      <i class="iconfont iconMRIjiancha"></i>
+                      <span>3D影像在线查看</span>
+                    </div>
+                  </div>
+
+                  <div class="s-box">
+                    <i class="iconfont iconmenu-list" @click="recordTab"></i>
+                  </div>
+
+                  <div class="s-percent" v-show="percentage < 100 && percentage != 0">
+                    <span>正在加载：{{ percentage + '%' }}</span>
+                  </div>
+                  <!-- volume -->
+                  <!--              <div class="s-volume">-->
+                  <!--                <span class="e-span">volume：</span>-->
+                  <!--                <el-input-number-->
+                  <!--                    v-model="num"-->
+                  <!--                    controls-position="right"-->
+                  <!--                    @change="changeVolume"-->
+                  <!--                    :min="1"-->
+                  <!--                    :max="timeSlices"-->
+                  <!--                    size="small"-->
+                  <!--                    :disabled="timeSlices == 1"-->
+                  <!--                ></el-input-number>-->
+                  <!--              </div>-->
+                  <!-- 其他工具 -->
+                  <!--上传文件-->
+                  <el-upload
+                      action="/api/upload"
+                      :show-file-list="false"
+                      :on-success="handleAvatarSuccess"
+                      :before-upload="getUploadFile">
+                    <i class="t-active iconfont el-icon-folder-opened"
+                       style="font-size:28px;margin-top: 5px;margin-right: 10px"></i>
+                  </el-upload>
+
+                  <!--移动-->
                   <div
-                      v-for="(meas, index) in measureList"
-                      :key="meas.iconfont"
-                      @click="clickInstros(meas, index)"
-                      :class="[meas.status ? 's-select' : '']"
+                      v-for="(item, index) in moveList"
+                      :key="item.iconfont"
+                      :class="['s-other', item.status ? 's-select' : '']"
+                      :title="item.title"
+                      @click="clickMoves(item, index)"
                   >
-                    <i :class="'iconfont ' + meas.iconfont"></i
-                    ><span>{{ meas.title }}</span>
+                    <i :class="'t-active iconfont ' + item.iconfont" style="font-size:28px;margin-top: 15px"></i>
+                  </div>
+
+                  <div
+                      v-for="(item, index) in toolList"
+                      :key="item.iconfont"
+                      :class="['s-other', item.status ? 's-select' : '']"
+                      :title="item.title"
+                      @click="clickTools(item, index)"
+                  >
+                    <i :class="'t-active iconfont ' + item.iconfont"></i>
+                  </div>
+                  <el-popover
+                      placement="bottom"
+                      width="200"
+                      trigger="click"
+                      :popper-options="{ boundariesElement: 'window', removeOnDestroy: true }">
+                    <el-slider v-model="crosshairSlider" :format-tooltip="formatTooltip"></el-slider>
+                    <div
+                        slot="reference"
+                        v-for="(item, index) in crosshairList"
+                        :key="item.iconfont"
+                        :class="['s-other', item.status ? 's-select' : '']"
+                        :title="item.title"
+                        @click="clickCrossHair(item, index)"
+                    >
+                      <i :class="'t-active iconfont ' + item.iconfont"></i>
+                    </div>
+                  </el-popover>
+
+                  <div
+                      v-for="(item, index) in cameraList"
+                      :key="item.iconfont"
+                      :class="['s-other', item.status ? 's-select' : '']"
+                      :title="item.title"
+                      @click="clickCamera(item, index)"
+                  >
+                    <i :class="'t-active iconfont ' + item.iconfont" style="font-size:22px;margin-top: 19px"></i>
+                  </div>
+
+                  <!-- 度量 -->
+                  <div
+                      :class="['s-other t-dialog1', measureStatus ? 's-select' : '']"
+                      title="工具"
+                  >
+                    <i class="t-active iconfont iconremark-measure"></i>
+                    <div class="r-tools">
+                      <div
+                          v-for="(meas, index) in measureList"
+                          :key="meas.iconfont"
+                          @click="clickInstros(meas, index)"
+                          :class="[meas.status ? 's-select' : '']"
+                      >
+                        <i :class="'iconfont ' + meas.iconfont"></i
+                        ><span>{{ meas.title }}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- 颜色 -->
+                  <div
+                      :class="['s-other t-dialog2', colorStatus ? 's-select' : '']"
+                      :title="'colorMap'"
+                  >
+                    <i class="t-active iconfont iconiamge-colormap"></i>
+                    <div class="r-tools">
+                      <div
+                          v-for="(color, index) in colorlist"
+                          :key="color.id"
+                          :class="['s-color', color.status ? 's-select' : '']"
+                          @click="colorMap(color.id, index)"
+                          :title="color.id"
+                      >
+                        <i :class="['color-bar' + color.id]"></i
+                        ><span> {{ color.name }}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- 编辑操作 -->
+                  <div
+                      v-for="(item, index) in editList"
+                      :key="item.iconfont"
+                      :class="['s-other', item.status ? 's-select' : '']"
+                      :title="item.title"
+                      @click="clickEdits(item, index)"
+                  >
+                    <i :class="'t-active iconfont ' + item.iconfont" style="font-size:25px;margin-top: 15px"></i>
+                  </div>
+
+                  <!-- 调色盘 -->
+
+                  <div
+                      v-for="(item, index) in paletteList"
+                      :key="item.iconfont"
+                      :class="['s-other', item.status ? 's-select' : '']"
+                      :title="item.title"
+                      @click="clickPalette(item, index)"
+                  >
+                    <i :class="'t-active iconfont ' + item.iconfont" style="font-size:25px;margin-top: 15px"></i>
+                  </div>
+
+                  <!-- 视图 -->
+                  <div
+                      :class="['s-other t-dialog3', viewStatus ? 's-select' : '']"
+                      title="视图"
+                  >
+                    <i class="t-active iconfont iconimage-view"></i>
+                    <div class="r-tools">
+                      <div
+                          v-for="(meas, index) in viewList"
+                          :key="meas.iconfont"
+                          :class="['s-color', meas.status ? 's-select' : '']"
+                          @click="changeView(meas, index)"
+                          :title="meas.title"
+                      >
+                        <span>{{ meas.title }}</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <!-- 颜色 -->
-              <div
-                  :class="['s-other t-dialog2', colorStatus ? 's-select' : '']"
-                  :title="'colorMap'"
-              >
-                <i class="t-active iconfont iconiamge-colormap"></i>
-                <div class="r-tools">
-                  <div
-                      v-for="(color, index) in colorlist"
-                      :key="color.id"
-                      :class="['s-color', color.status ? 's-select' : '']"
-                      @click="colorMap(color.id, index)"
-                      :title="color.id"
-                  >
-                    <i :class="['color-bar' + color.id]"></i
-                    ><span> {{ color.name }}</span>
-                  </div>
-                </div>
-              </div>
-              <!-- 编辑操作 -->
-              <div
-                  v-for="(item, index) in editList"
-                  :key="item.iconfont"
-                  :class="['s-other', item.status ? 's-select' : '']"
-                  :title="item.title"
-                  @click="clickEdits(item, index)"
-              >
-                <i :class="'t-active iconfont ' + item.iconfont" style="font-size:25px;margin-top: 15px"></i>
-              </div>
-
-              <!-- 调色盘 -->
-              <div
-                  v-for="(item, index) in paletteList"
-                  :key="item.iconfont"
-                  :class="['s-other', item.status ? 's-select' : '']"
-                  :title="item.title"
-                  @click="clickPalette(item, index)"
-              >
-                <i :class="'t-active iconfont ' + item.iconfont" style="font-size:25px;margin-top: 15px"></i>
-              </div>
-
-              <!-- 视图 -->
-              <div
-                  :class="['s-other t-dialog3', viewStatus ? 's-select' : '']"
-                  title="视图"
-              >
-                <i class="t-active iconfont iconimage-view"></i>
-                <div class="r-tools">
-                  <div
-                      v-for="(meas, index) in viewList"
-                      :key="meas.iconfont"
-                      :class="['s-color', meas.status ? 's-select' : '']"
-                      @click="changeView(meas, index)"
-                      :title="meas.title"
-                  >
-                    <span>{{ meas.title }}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!-- dicom 图 -->
-            <div class="t-main">
-              <div class="n-list" v-show="tabStatus">
-                <!-- 图像评估 -->
-                <div class="t-image">
-                  <div
-                      class="e-card"
-                      v-for="(item, index) in imageMark"
-                      :key="item.id"
-                      @mouseenter="enterOrLeaveTool(item, true)"
-                      @mouseleave="enterOrLeaveTool(item, false)"
-                      v-show="imageMark.length != 0"
-                  >
-                    <div class="e-title">
+                <!-- dicom 图 -->
+                <div class="t-main">
+                  <div class="n-list" v-show="tabStatus">
+                    <!-- 图像评估 -->
+                    <div class="t-image">
+                      <div
+                          class="e-card"
+                          v-for="(item, index) in imageMark"
+                          :key="item.id"
+                          @mouseenter="enterOrLeaveTool(item, true)"
+                          @mouseleave="enterOrLeaveTool(item, false)"
+                          v-show="imageMark.length != 0"
+                      >
+                        <div class="e-title">
                         <span class="e-e">
                           <el-input
                               size="mini"
@@ -183,174 +276,133 @@
                           >
                           </el-input>
                         </span>
-                      <span class="e-icon">
+                          <span class="e-icon">
                           <i
                               class="el-icon-close"
                               @click.stop="deleteTool(item, index)"
                               title="删除图像评估"
                           ></i>
                         </span>
-                    </div>
-                    <div class="e-result">
-                      {{ item.value }}
+                        </div>
+                        <div class="e-result">
+                          {{ item.value }}
+                        </div>
+                      </div>
+                      <div v-show="imageMark.length == 0" class="e-none">
+                        暂无数据
+                      </div>
                     </div>
                   </div>
-                  <div v-show="imageMark.length == 0" class="e-none">
-                    暂无数据
+                  <!-- 图像 -->
+                  <!--                  <div-->
+                  <!--                      class="n-image"-->
+                  <!--                      :style="{-->
+                  <!--                    height: echartStatus ? 'calc(100% - 199px)' : 'calc(100% - 42px)',-->
+                  <!--                  }"-->
+                  <!--                      v-if="niftiStatus"-->
+                  <!--                  >-->
+                  <!--                    <div-->
+                  <!--                        id="nifti-imagex"-->
+                  <!--                        v-show="niftiNum == 1 || niftiNum == 4"-->
+                  <!--                        :class="['e-x', selectView == 'nifti-imagex' ? 'n-active' : '']"-->
+                  <!--                        @click="clickView('nifti-imagex')"-->
+                  <!--                    ></div>-->
+                  <!--                    <div-->
+                  <!--                        id="nifti-imagey"-->
+                  <!--                        v-show="niftiNum == 2 || niftiNum == 4"-->
+                  <!--                        :class="['e-y', selectView == 'nifti-imagey' ? 'n-active' : '']"-->
+                  <!--                        @click="clickView('nifti-imagey')"-->
+                  <!--                    ></div>-->
+                  <!--                    <div-->
+                  <!--                        id="nifti-imagez"-->
+                  <!--                        v-show="niftiNum == 3 || niftiNum == 4"-->
+                  <!--                        :class="['e-z', selectView == 'nifti-imagez' ? 'n-active' : '']"-->
+                  <!--                        @click="clickView('nifti-imagez')"-->
+                  <!--                    ></div>-->
+                  <!--                  </div>-->
+                  <div class="n-echarts" v-if="echartStatus">
+                    <div id="echarts"></div>
+                  </div>
+                  <!--                  <el-select v-model="selectValue" placeholder="请选择" v-on:change="drawPen">-->
+                  <!--                    <el-option-->
+                  <!--                        v-for="item in options"-->
+                  <!--                        :key="item.value"-->
+                  <!--                        :label="item.label"-->
+                  <!--                        :value="item.value">-->
+                  <!--                    </el-option>-->
+                  <!--                  </el-select>-->
+                  <!--                  <el-select v-model="selectViewValue" placeholder="请选择" v-on:change="showView">-->
+                  <!--                    <el-option-->
+                  <!--                        v-for="item in viewOptions"-->
+                  <!--                        :key="item.value"-->
+                  <!--                        :label="item.label"-->
+                  <!--                        :value="item.value">-->
+                  <!--                    </el-option>-->
+                  <!--                  </el-select>-->
+                  <!--                  <el-button type="primary" @click="doLeft">left</el-button>-->
+                  <!--                  <el-button type="primary" @click="doRight">right</el-button>-->
+                  <!--                  <el-button type="primary" @click="doPosterior">posterior</el-button>-->
+                  <!--                  <el-button type="primary" @click="doAnterior">anterior</el-button>-->
+                  <!--                  <el-button type="primary" @click="doInferior">inferior</el-button>-->
+                  <!--                  <el-button type="primary" @click="saveLabel">saveLabel</el-button>-->
+                  <!--                  <el-button type="primary" @click="getBitMap">getBitMap</el-button>-->
+                  <!--                  <el-button type="primary" @click="labelEditor">label editor</el-button>-->
+                  <!--                  <el-button type="primary" @click="undo">undo</el-button>-->
+                  <!--                  <el-button type="primary" @click="doSegmentation">3D分割</el-button>-->
+                  <!--                  <el-dialog title="label Editor" :visible.sync="dialogTableVisible" center :append-to-body='true'-->
+                  <!--                             :lock-scroll="false" width="30%">-->
+                  <!--                    <Table @update-parent-var="onUpdateParentVar"></Table>-->
+                  <!--                  </el-dialog>-->
+                  <!--                  <div class="block">-->
+                  <!--                    <span class="demonstration">Draw Opacity</span>-->
+                  <!--                    <el-slider v-on:change="doDrawOpacity" v-model="sliderValue"></el-slider>-->
+                  <!--                  </div>-->
+                  <!--                  <el-color-picker-->
+                  <!--                      v-model="fontColor"-->
+                  <!--                      color-format="rgb"-->
+                  <!--                  ></el-color-picker>-->
+                  <br>
+                  <div style="margin: 50px;">
+                    <canvas id="gl" height="480" width="640"></canvas>
+                  </div>
+                  <!-- 底部坐标 -->
+                  <div class="n-xyz">
+                    <span>X：{{ imagX }}</span>
+                    <span>Y：{{ imagY }}</span>
+                    <span>Z：{{ imagZ }}</span>
+                    <span class="w90">Val：{{ imgVal }}</span>
+                    <span>Img：{{ currentThanLayers }}</span>
                   </div>
                 </div>
               </div>
-              <!-- 图像 -->
-              <div
-                  class="n-image"
-                  :style="{
-                    height: echartStatus ? 'calc(100% - 199px)' : 'calc(100% - 42px)',
-                  }"
-                  v-if="niftiStatus"
+              <!--          </div>-->
+              <!--  -->
+              <el-dialog
+                  :title="'Slices，共' + spliceList.length + '个（' + splicePrecent + '%）'"
+                  :visible="visable"
+                  width="1060px"
+                  :before-close="handleClose"
+                  class="dialog"
+                  top="7vh"
+                  :close-on-press-escape="false"
+                  :close-on-click-modal="false"
+                  v-dialogDrag
               >
                 <div
-                    id="nifti-imagex"
-                    v-show="niftiNum == 1 || niftiNum == 4"
-                    :class="['e-x', selectView == 'nifti-imagex' ? 'n-active' : '']"
-                    @click="clickView('nifti-imagex')"
+                    :style="{ height: Math.round(spliceList.length / 7) * 150 + 'px' }"
+                    class="g-dis s-scrollbar"
                 ></div>
-                <div
-                    id="nifti-imagey"
-                    v-show="niftiNum == 2 || niftiNum == 4"
-                    :class="['e-y', selectView == 'nifti-imagey' ? 'n-active' : '']"
-                    @click="clickView('nifti-imagey')"
-                ></div>
-                <div
-                    id="nifti-imagez"
-                    v-show="niftiNum == 3 || niftiNum == 4"
-                    :class="['e-z', selectView == 'nifti-imagez' ? 'n-active' : '']"
-                    @click="clickView('nifti-imagez')"
-                ></div>
-              </div>
-              <div class="n-echarts" v-if="echartStatus">
-                <div id="echarts"></div>
-              </div>
-              <el-select v-model="selectValue" placeholder="请选择" v-on:change="drawPen">
-                <el-option
-                    v-for="item in options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                </el-option>
-              </el-select>
-              <el-select v-model="selectViewValue" placeholder="请选择" v-on:change="showView">
-                <el-option
-                    v-for="item in viewOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                </el-option>
-              </el-select>
-              <el-button type="primary" @click="doLeft">left</el-button>
-              <el-button type="primary" @click="doRight">right</el-button>
-              <el-button type="primary" @click="doPosterior">posterior</el-button>
-              <el-button type="primary" @click="doAnterior">anterior</el-button>
-              <el-button type="primary" @click="doInferior">inferior</el-button>
-              <el-button type="primary" @click="saveLabel">saveLabel</el-button>
-              <el-button type="primary" @click="getBitMap">getBitMap</el-button>
-              <el-button type="primary" @click="labelEditor">label editor</el-button>
-              <el-button type="primary" @click="undo">undo</el-button>
-              <el-button type="primary" @click="doSegmentation">3D分割</el-button>
-              <el-dialog title="label Editor" :visible.sync="dialogTableVisible" center :append-to-body='true'
-                         :lock-scroll="false" width="30%">
-                <Table @update-parent-var="onUpdateParentVar"></Table>
+                <div class="g-main">
+                  <div class="d-dicom" v-for="(item, i) in spliceList" :key="i">
+                    <div :id="'d-dicom' + i" class="m-image"></div>
+                  </div>
+                </div>
               </el-dialog>
-              <div class="block">
-                <span class="demonstration">Draw Opacity</span>
-                <el-slider v-on:change="doDrawOpacity" v-model="sliderValue"></el-slider>
-              </div>
-              <el-color-picker
-                  v-model="fontColor"
-                  color-format="rgb"
-              ></el-color-picker>
-              <br>
-              <div>
-                <canvas id="gl" height="480" width="640"></canvas>
-              </div>
-              <!-- 底部坐标 -->
-              <div class="n-xyz">
-                <span>X：{{ imagX }}</span>
-                <span>Y：{{ imagY }}</span>
-                <span>Z：{{ imagZ }}</span>
-                <span class="w90">Val：{{ imgVal }}</span>
-                <span>Img：{{ currentThanLayers }}</span>
-              </div>
             </div>
           </div>
-          <!--          </div>-->
-          <!--  -->
-          <el-dialog
-              :title="'Slices，共' + spliceList.length + '个（' + splicePrecent + '%）'"
-              :visible="visable"
-              width="1060px"
-              :before-close="handleClose"
-              class="dialog"
-              top="7vh"
-              :close-on-press-escape="false"
-              :close-on-click-modal="false"
-              v-dialogDrag
-          >
-            <div
-                :style="{ height: Math.round(spliceList.length / 7) * 150 + 'px' }"
-                class="g-dis s-scrollbar"
-            ></div>
-            <div class="g-main">
-              <div class="d-dicom" v-for="(item, i) in spliceList" :key="i">
-                <div :id="'d-dicom' + i" class="m-image"></div>
-              </div>
-            </div>
-          </el-dialog>
-        </div>
-      </div>
+        </el-main>
+      </el-container>
     </div>
-
-    <!--    <Separator/>-->
-
-    <AboutFour :image="require(`@/assets/images/about/contact-image.jpg`)"/>
-
-    <!-- Start Elements Area -->
-    <div class="rwt-counterup-area pb--100">
-      <div class="container mt_dec--30">
-        <Counter
-            :counter-style="5"
-            text-align="center"
-            :counter-data="counterData"
-            column="col-lg-3 col-md-6 col-sm-6 col-12"
-        />
-      </div>
-    </div>
-    <!-- End Elements Area -->
-
-    <Separator/>
-
-    <!-- Start Elements Area -->
-    <div class="rwt-team-area rn-section-gap">
-      <div class="container">
-        <div class="row mb--20">
-          <div class="col-lg-12">
-            <SectionTitle
-                text-align="center"
-                subtitle="Our Corporate Team."
-                title="Corporate Team Member."
-                data-aos="fade-up"
-            />
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-lg-6 col-xl-3 col-md-6 col-12 mt--30"
-               v-for="(teamMember, index) in teamData"
-               :key="index">
-            <Team :team-member="teamMember" :team-style="4"/>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- End Elements Area -->
   </Layout>
 </template>
 
@@ -384,6 +436,48 @@ export default {
       components: {
         Table
       },
+      menuList: [
+        {
+          id: 0,
+          authName: "通讯录",
+          icon: "el-icon-s-custom",
+          children: [
+            {
+              authName: "用户与部门管理",
+              id: 1,
+              path: "department",
+              parentid: 0
+            },
+            {authName: "通讯录设置", id: 2, path: "adrbook", parentid: 0}
+          ]
+        },
+        {
+          id: 1,
+          authName: "数据报表",
+          icon: "el-icon-s-claim",
+          children: [
+            {authName: "数据概览", id: 1, path: "overview", parentid: 1},
+            {authName: "员工活跃数据", id: 2, path: "employees", parentid: 1}
+          ]
+        },
+        {
+          id: 2,
+          authName: "企业设置",
+          icon: "el-icon-office-building",
+          children: [
+            {
+              authName: "企业信息管理",
+              id: 1,
+              path: "information",
+              parentid: 2
+            },
+            {authName: "权限管理", id: 2, path: "authority", parentid: 2},
+            {authName: "团队邀请设置", id: 3, path: "team", parentid: 2},
+            {authName: "安全策略", id: 4, path: "safety", parentid: 2},
+            {authName: "管理员日志", id: 5, path: "journal", parentid: 2}
+          ]
+        }
+      ],
       dialogTableVisible: false,
       fontColor: "",
       sliderValue: 80,
@@ -464,10 +558,17 @@ export default {
           titleEng: 'Render'
         },
         {
-          title: '所有视图',
-          status: true,
+          title: '三视图',
+          status: '',
+          value: 'nifti-imagex,nifti-imagey,nifti-imagez',
           num: 5,
           titleEng: 'MultiPlanar'
+        },
+        {
+          title: '所有视图',
+          status: true,
+          num: 6,
+          titleEng: 'MultiPlanarRender'
         }
       ],
       /* 度量 */
@@ -550,12 +651,16 @@ export default {
           status: '',
           value: 'radiological',
         },
+      ],
+      crosshairList: [
         {
           title: '十字线',
           iconfont: 'iconremark-crossline',
           status: '',
-          value: 'cross',
-        },
+          value: 'crosshair',
+        }
+      ],
+      cameraList: [
         {
           title: '快照',
           iconfont: 'el-icon-camera',
@@ -679,12 +784,55 @@ export default {
       splicePrecent: 0, // 处理全部切片进度
       imageMark: [],
       imageMarkCopy: [],
-      currentRawImageUrl: ''
+      currentRawImageUrl: '',
+      volumeList: [
+        {url: "/api/image/202302/0b2be9e0-886b-4144-99f0-8bb4c6eaa848.nii.gz",colormap:"gray",opacity:1,visible:true},
+      ],
+      isCollapse: true,
+      crosshairSlider:10
+    }
+  },
+  watch:{
+    crosshairSlider(newVal,oldVal){
+      nv.setCrosshairWidth(newVal/10)
     }
   },
   methods: {
+    formatTooltip(val) {
+      return val / 10;
+    },
+    clickPalette(index, value) {
+      let cmap=nv.colorMaps()
+      nv.volumes[0].colormap=cmap[2];
+      console.log(cmap[2]);
+      nv.updateGLVolume();
+    },
+    recordTab() {
+      this.tabStatus = !this.tabStatus;
+      this.closeTools();
+    },
+    closeTools() {
+      this.measureList.forEach((item) => {
+        item.status = false;
+      });
+      this.measureStatus = false;
+      // cornerstoneToolsCore.setToolEnabled(this.selectTool);
+      this.toolList.forEach((element) => {
+        element.status = false;
+      });
+      this.selectTool = null;
+    },
+    handleOpen(key, keyPath) {
+      console.log(key, keyPath);
+    },
+    handleClose(key, keyPath) {
+      console.log(key, keyPath);
+    },
     clickEdits(item, index) {
 
+    },
+    clickCamera(item,index){
+      nv.saveScene("ScreenShot.png")
     },
     clickTools(item, index) {
       if (item.value === 'pan') {
@@ -694,6 +842,13 @@ export default {
           nv.opts.dragMode = nv.dragModes.contrast
         }
         this.toolList[index].status = !item.status;
+      }
+      if (item.value === 'radiological') {
+        nv.opts.isRadiologicalConvention = !nv.opts.isRadiologicalConvention;
+        nv.drawScene();
+      }
+      if (item.value === 'crosshair') {
+        nv.setCrosshairWidth(1)
       }
       console.log(this.toolList)
     },
@@ -777,6 +932,14 @@ export default {
       }
       if (meas.titleEng === 'MultiPlanar') {
         nv.opts.multiplanarForceRender = false
+        nv.setSliceType(nv.sliceTypeMultiplanar)
+        this.viewList.forEach((item) => {
+          item.status = false;
+        });
+        this.viewList[index].status = true;
+      }
+      if (meas.titleEng === 'MultiPlanarRender') {
+        nv.opts.multiplanarForceRender = true
         nv.setSliceType(nv.sliceTypeMultiplanar)
         this.viewList.forEach((item) => {
           item.status = false;
@@ -868,10 +1031,17 @@ export default {
     }
   },
   mounted() {
+    let cmap=nv.colorMaps()
     nv.setInterpolation(false)
     nv.setRadiologicalConvention(false)
     nv.opts.multiplanarForceRender = true
     nv.attachTo('gl')
+    nv.loadVolumes(this.volumeList).then(() => {
+      nv.loadDrawingFromUrl("/api/image/202302/0b2be9e0-886b-4144-99f0-8bb4c6eaa848-label.nii.gz");
+    })
+        .catch(err => {
+          console.error(err);
+        });
     nv.setSliceType(nv.sliceTypeMultiplanar)
     nv.setClipPlane([0.3, 270, 0]);
     nv.setRenderAzimuthElevation(120, 10);
@@ -884,6 +1054,19 @@ export default {
 }
 </script>
 <style lang="scss">
+.el-main {
+  padding: 0px !important;
+}
+
+.side-menu {
+  left: 0;
+  top: 85px;
+  width: 200px;
+  overflow: auto;
+  z-index: 2000;
+  border: none;
+}
+
 /* flex 居中3 */
 @import "../assets/icon/iconfont.css";
 @import "../assets/icon-expand/iconfont.css";

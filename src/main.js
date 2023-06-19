@@ -17,12 +17,17 @@ import axios from 'axios'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import 'element-ui/lib/theme-chalk/icon.css';
+import VModal from 'vue-js-modal/dist/index.nocss.js'
+import 'vue-js-modal/dist/styles.css'
+import IdentifyCode from './components/login/IdentifyCode'
+Vue.component('s-identify', IdentifyCode)
 axios.defaults.withCredentials =true
 Vue.config.productionTip = false
 Vue.use(CoolLightBox)
 Vue.use(VueScrollActive)
 Vue.use(VueTypedJs)
 Vue.use(ElementUI)
+Vue.use(VModal)
 axios.defaults.withCredentials =true
 axios.defaults.baseURL='/api'
 new Vue({
