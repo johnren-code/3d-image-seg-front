@@ -59,6 +59,9 @@ import Segmentation from "../views/Segmentation";
 import Test from "../views/Test";
 import Login from "../views/Login";
 import History from "../views/History";
+import UserProj from "../views/UserProj"
+import Projcreate from "../views/Projcreate"
+import Newproj from "../views/Newproj"
 
 Vue.use(VueRouter)
 
@@ -546,11 +549,22 @@ const routes = [
     {
         path: '/History',
         name: 'History',
+        // redict: '/History/:id',
         component: History,
         meta: {
             title: 'Web Agency || Doob Business and Consulting Bootstrap5 Template',
         },
-    }
+        children: [{
+            path: ':id(\\d+)',
+            component: UserProj
+        }, {
+            path: '/',
+            component: Projcreate
+        }, {
+            path: 'new',
+            component: Newproj
+        }]
+    },
 ]
 
 const router = new VueRouter({
