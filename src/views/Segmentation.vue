@@ -123,9 +123,10 @@
                       :before-upload="addData"
                       :data="additionalData"
                   >
-                    <i class="t-active iconfont el-icon-folder-opened"
+                    <i class="t-active iconfont el-icon-folder-opened" title="上传原文件"
                        style="font-size:28px;margin-top: 5px;margin-right: 10px"></i>
                   </el-upload>
+
                   <!--上传标签文件-->
                   <el-upload
                       action="/api/uploadlabel"
@@ -134,9 +135,10 @@
                       :before-upload="addData"
                       :data="additionalData"
                   >
-                    <i class="t-active iconfont el-icon-upload2"
+                    <i class="t-active iconfont el-icon-upload2" title="上传分割文件"
                        style="font-size:28px;margin-top: 5px;margin-right: 10px;margin-left: 10px"></i>
                   </el-upload>
+
                   <!-- 移动 -->
                   <div
                       :class="['s-other t-dialog3', viewStatus ? '' : '']"
@@ -429,38 +431,20 @@
                       </div>
                     </div>
                   </div>
-                  <!--                   图像 -->
-                  <!--                  <div-->
-                  <!--                      class="n-image"-->
-                  <!--                      :style="{-->
-                  <!--                                      height: echartStatus ? 'calc(100% - 199px)' : 'calc(100% - 42px)',-->
-                  <!--                                    }"-->
-                  <!--                      v-if="niftiStatus"-->
-                  <!--                  >-->
-                  <!--                    <div-->
-                  <!--                        id="nifti-imagex"-->
-                  <!--                        v-show="niftiNum == 1 || niftiNum == 4"-->
-                  <!--                        :class="['e-x', selectView == 'nifti-imagex' ? 'n-active' : '']"-->
-                  <!--                        @click="clickView('nifti-imagex')"-->
-                  <!--                    ></div>-->
-                  <!--                    <div-->
-                  <!--                        id="nifti-imagey"-->
-                  <!--                        v-show="niftiNum == 2 || niftiNum == 4"-->
-                  <!--                        :class="['e-y', selectView == 'nifti-imagey' ? 'n-active' : '']"-->
-                  <!--                        @click="clickView('nifti-imagey')"-->
-                  <!--                    ></div>-->
-                  <!--                    <div-->
-                  <!--                        id="nifti-imagez"-->
-                  <!--                        v-show="niftiNum == 3 || niftiNum == 4"-->
-                  <!--                        :class="['e-z', selectView == 'nifti-imagez' ? 'n-active' : '']"-->
-                  <!--                        @click="clickView('nifti-imagez')"-->
-                  <!--                    ></div>-->
-                  <!--                  </div>-->
                   <div class="n-echarts" v-if="echartStatus">
                     <div id="echarts"></div>
                   </div>
-                  <!--                  <el-button type="primary" @click="doSegmentation">3D分割</el-button>-->
-                  <el-button type="primary" @click="clickVisible">测试数据可视化</el-button>
+                  <el-select v-model="modelValue" placeholder="请选择模型" style="width: 150px;">
+                    <el-option
+                        v-for="item in modelType"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                    </el-option>
+                  </el-select>
+                  <el-button type="primary" @click="doSegmentation" round style="margin-left:10px">点击进行分割</el-button>
+                  <el-button type="primary" @click="saveCurrentState" round style="position: absolute;right:100px">保存</el-button>
+<!--                  <el-button type="primary" @click="clickVisible">测试数据可视化</el-button>-->
                   <el-dialog title="label Editor" :visible.sync="dialogTableVisible" center :append-to-body='true'
                              :lock-scroll="false" width="30%">
                     <Table @update-parent-var="onUpdateParentVar" :drawTableDataFromParent="drawTableData"></Table>
@@ -609,6 +593,14 @@ export default {
           value: '3',
           label: '整块擦除'
         }],
+      modelType: [{
+        value: '1',
+        label: 'vnet'
+      }, {
+        value: '2',
+        label: 'nnUnet'
+      }],
+      modelValue:'',
       penValue: '',
       eraserValue: '',
       selectValue: '',
@@ -1315,6 +1307,12 @@ export default {
 }
 </script>
 <style lang="scss">
+
+.el-button--primary {
+  color: #f7f4f4!important;
+  background-color: #067df5!important;
+  border-color: #1E90FF!important;
+}
 .el-main {
   padding: 0px !important;
 }
