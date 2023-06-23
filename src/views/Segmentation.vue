@@ -397,19 +397,17 @@
                     <div class="t-image">
                       <div
                           class="e-card"
-                          v-for="(item, index) in imageMark"
+                          v-for="(item, index) in dataAnalysisList"
                           :key="item.id"
-                          @mouseenter="enterOrLeaveTool(item, true)"
-                          @mouseleave="enterOrLeaveTool(item, false)"
-                          v-show="imageMark.length != 0"
+                          v-show="dataAnalysisList.length !== 0"
                       >
                         <div class="e-title">
                         <span class="e-e">
                           <el-input
                               size="mini"
-                              v-model="item.title"
+                              v-model="item.name"
                               maxlength="20"
-                              :placeholder="'' + index + '-器官计数'"
+                              :placeholder="'' + item.name "
                               @blur="blurTitle(item, index)"
                           >
                           </el-input>
@@ -417,7 +415,7 @@
                           <span class="e-icon">
                           <i
                               class="el-icon-more"
-                              @click.stop="deleteTool(item, index)"
+                              @click.stop="showDetails(item, index)"
                               title="查看详细信息"
                           ></i>
                         </span>
@@ -426,17 +424,17 @@
                           {{ item.value }}
                         </div>
                       </div>
-                      <div v-show="imageMark.length == 0" class="e-none">
+                      <div v-show="dataAnalysisList.length === 0" class="e-none">
                         暂无数据
                       </div>
                     </div>
                   </div>
-                  <!-- 图像 -->
+                  <!--                   图像 -->
                   <!--                  <div-->
                   <!--                      class="n-image"-->
                   <!--                      :style="{-->
-                  <!--                    height: echartStatus ? 'calc(100% - 199px)' : 'calc(100% - 42px)',-->
-                  <!--                  }"-->
+                  <!--                                      height: echartStatus ? 'calc(100% - 199px)' : 'calc(100% - 42px)',-->
+                  <!--                                    }"-->
                   <!--                      v-if="niftiStatus"-->
                   <!--                  >-->
                   <!--                    <div-->
@@ -461,44 +459,12 @@
                   <div class="n-echarts" v-if="echartStatus">
                     <div id="echarts"></div>
                   </div>
-                  <!--                  <el-select v-model="selectValue" placeholder="请选择" v-on:change="drawPen">-->
-                  <!--                    <el-option-->
-                  <!--                        v-for="item in options"-->
-                  <!--                        :key="item.value"-->
-                  <!--                        :label="item.label"-->
-                  <!--                        :value="item.value">-->
-                  <!--                    </el-option>-->
-                  <!--                  </el-select>-->
-                  <!--                  <el-select v-model="selectViewValue" placeholder="请选择" v-on:change="showView">-->
-                  <!--                    <el-option-->
-                  <!--                        v-for="item in viewOptions"-->
-                  <!--                        :key="item.value"-->
-                  <!--                        :label="item.label"-->
-                  <!--                        :value="item.value">-->
-                  <!--                    </el-option>-->
-                  <!--                  </el-select>-->
-                  <!--                  <el-button type="primary" @click="doLeft">left</el-button>-->
-                  <!--                  <el-button type="primary" @click="doRight">right</el-button>-->
-                  <!--                  <el-button type="primary" @click="doPosterior">posterior</el-button>-->
-                  <!--                  <el-button type="primary" @click="doAnterior">anterior</el-button>-->
-                  <!--                  <el-button type="primary" @click="doInferior">inferior</el-button>-->
-                  <!--                  <el-button type="primary" @click="saveLabel">saveLabel</el-button>-->
-                  <!--                  <el-button type="primary" @click="getBitMap">getBitMap</el-button>-->
-                  <!--                                    <el-button type="primary" @click="labelEditor">label editor</el-button>-->
-                  <!--                  <el-button type="primary" @click="undo">undo</el-button>-->
-                  <el-button type="primary" @click="doSegmentation">3D分割</el-button>
+                  <!--                  <el-button type="primary" @click="doSegmentation">3D分割</el-button>-->
+                  <el-button type="primary" @click="clickVisible">测试数据可视化</el-button>
                   <el-dialog title="label Editor" :visible.sync="dialogTableVisible" center :append-to-body='true'
                              :lock-scroll="false" width="30%">
                     <Table @update-parent-var="onUpdateParentVar" :drawTableDataFromParent="drawTableData"></Table>
                   </el-dialog>
-                  <!--                  <div class="block">-->
-                  <!--                    <span class="demonstration">Draw Opacity</span>-->
-                  <!--                    <el-slider v-on:change="doDrawOpacity" v-model="sliderValue"></el-slider>-->
-                  <!--                  </div>-->
-                  <!--                  <el-color-picker-->
-                  <!--                      v-model="fontColor"-->
-                  <!--                      color-format="rgb"-->
-                  <!--                  ></el-color-picker>-->
                   <br>
                   <div style="margin: 50px;">
                     <canvas id="gl" height="480" width="640"></canvas>
@@ -515,6 +481,29 @@
               </div>
               <!--          </div>-->
               <!--  -->
+              <!--  -->
+              <el-dialog
+                  :title="'器官测量'"
+                  :visible="organMeasurementVisible"
+                  width="500px"
+                  :before-close="handleOrganClose"
+                  class="dialog"
+                  top="23vh"
+                  :close-on-press-escape="false"
+                  :close-on-click-modal="false"
+                  v-dialogDrag
+              >
+                <!--                <div-->
+                <!--                    :style="{ height: Math.round(spliceList.length / 7) * 150 + 'px' }"-->
+                <!--                    class="g-dis s-scrollbar"-->
+                <!--                ></div>-->
+
+                <div v-for="(item,index) in organDataList" :key="index">
+                  <span style="color: #9ccef9;font-size: 14px;font-weight: bold;">{{ item.name }}:{{item.data}}</span>
+                </div>
+              </el-dialog>
+
+
               <el-dialog
                   :title="'Slices，共' + spliceList.length + '个（' + splicePrecent + '%）'"
                   :visible="visable"
@@ -827,6 +816,16 @@ export default {
           value: 'back',
         },
       ],
+      organDataList: [
+        {
+          name:'心脏',
+          data:1111
+        },
+        {
+          name:'肠道',
+          data:222
+        }
+      ],
       imageList: {}, // 存取所有图片集合
       percentage: 0, // 进度
       selectView: null,
@@ -901,7 +900,17 @@ export default {
       parXYZ: {}, // 鼠标移动图层转换后的坐标
       spliceList: [], // 切片数组
       splicePrecent: 0, // 处理全部切片进度
-      imageMark: [1, 2, 3],
+      dataAnalysisList: [
+        {
+          name: '器官测量'
+        },
+        {
+          name: '病灶计数'
+        },
+        {
+          name: '上传后处理脚本'
+        }
+      ],
       imageMarkCopy: [],
       currentRawImageUrl: '',
       volumeList: [
@@ -925,7 +934,8 @@ export default {
       },
       currentDrawIndex: 11,
       drawTableData: '',
-      additionalData:{}
+      additionalData: {},
+      organMeasurementVisible: ''
     }
   },
   watch: {
@@ -986,8 +996,19 @@ export default {
     }
   },
   methods: {
-    addData(){
-      this.additionalData.historyid='2'
+    handleOrganClose() {
+      this.organMeasurementVisible = false
+    },
+    showDetails(item, index) {
+      if (item.name === '器官测量') {
+        this.organMeasurementVisible = true
+      }
+    },
+    clickVisible() {
+      this.visable = true
+    },
+    addData() {
+      this.additionalData.historyid = '2'
       return true
     },
     updateDrawTableData() {
@@ -1065,6 +1086,7 @@ export default {
     },
     handleClose(key, keyPath) {
       console.log(key, keyPath);
+      this.visable = false
     },
     clickEdits(item, index) {
       if (item.value === 'pen') {
