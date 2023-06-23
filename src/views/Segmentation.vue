@@ -20,18 +20,11 @@
         <el-aside class="side-menu" :width="isCollapse ? '65px' : '350px'">
 
           <i v-show="!isCollapse" class="el-icon-s-fold" style="font-size: 30px;margin-left: 320px;cursor: pointer"
-             @click="isCollapse=true"></i>
+            @click="isCollapse = true"></i>
           <i v-show="isCollapse" class="el-icon-s-unfold" style="font-size: 30px;margin-left: 20px;cursor: pointer"
-             @click="isCollapse=false"></i>
-          <el-menu
-              default-active="1"
-              class="el-menu-vertical-demo"
-              background-color="transparent"
-              text-color="#fff"
-              active-text-color="#0072FF"
-              style="border: none"
-              :collapse="isCollapse"
-          >
+            @click="isCollapse = false"></i>
+          <el-menu default-active="1" class="el-menu-vertical-demo" background-color="transparent" text-color="#fff"
+            active-text-color="#0072FF" style="border: none" :collapse="isCollapse" :collapse-transition="false">
             <el-menu-item index="1">
               <i class="el-icon-user-solid"></i>
               <span style="margin-left: 20px">病人编号123456</span>
@@ -79,10 +72,7 @@
             <div class="l-bottom">
               <div class="m-left">
 
-                <div
-                    class="t-tools-dis"
-                    v-show="percentage < 100 && percentage != 0"
-                ></div>
+                <div class="t-tools-dis" v-show="percentage < 100 && percentage != 0"></div>
 
 
                 <!-- 工具集 -->
@@ -116,41 +106,23 @@
                   <!--              </div>-->
                   <!-- 其他工具 -->
                   <!--上传文件-->
-                  <el-upload
-                      action="/api/upload"
-                      :show-file-list="false"
-                      :on-success="handleAvatarSuccess"
-                      :before-upload="addData"
-                      :data="additionalData"
-                  >
+                  <el-upload action="/api/upload" :show-file-list="false" :on-success="handleAvatarSuccess"
+                    :before-upload="addData" :data="additionalData">
                     <i class="t-active iconfont el-icon-folder-opened"
-                       style="font-size:28px;margin-top: 5px;margin-right: 10px"></i>
+                      style="font-size:28px;margin-top: 5px;margin-right: 10px"></i>
                   </el-upload>
                   <!--上传标签文件-->
-                  <el-upload
-                      action="/api/uploadlabel"
-                      :show-file-list="false"
-                      :on-success="handleAvatarSuccess"
-                      :before-upload="addData"
-                      :data="additionalData"
-                  >
+                  <el-upload action="/api/uploadlabel" :show-file-list="false" :on-success="handleAvatarSuccess"
+                    :before-upload="addData" :data="additionalData">
                     <i class="t-active iconfont el-icon-upload2"
-                       style="font-size:28px;margin-top: 5px;margin-right: 10px;margin-left: 10px"></i>
+                      style="font-size:28px;margin-top: 5px;margin-right: 10px;margin-left: 10px"></i>
                   </el-upload>
                   <!-- 移动 -->
-                  <div
-                      :class="['s-other t-dialog3', viewStatus ? '' : '']"
-                      title="移动"
-                  >
+                  <div :class="['s-other t-dialog3', viewStatus ? '' : '']" title="移动">
                     <i class="t-active iconfont iconimage-move"></i>
                     <div class="r-tools">
-                      <div
-                          v-for="(meas, index) in moveList"
-                          :key="meas.iconfont"
-                          :class="['s-color', meas.status ? '' : '']"
-                          @click="clickMoves(meas, index)"
-                          :title="meas.title"
-                      >
+                      <div v-for="(meas, index) in moveList" :key="meas.iconfont"
+                        :class="['s-color', meas.status ? '' : '']" @click="clickMoves(meas, index)" :title="meas.title">
                         <span>{{ meas.title }}</span>
                       </div>
                     </div>
@@ -167,224 +139,134 @@
                   <!--                    <i :class="'t-active iconfont ' + item.iconfont" style="font-size:28px;margin-top: 15px"></i>-->
                   <!--                  </div>-->
 
-                  <div
-                      v-for="(item, index) in toolList"
-                      :key="item.iconfont"
-                      :class="['s-other', item.status ? 's-select' : '']"
-                      :title="item.title"
-                      @click="clickTools(item, index)"
-                  >
+                  <div v-for="(item, index) in toolList" :key="item.iconfont"
+                    :class="['s-other', item.status ? 's-select' : '']" :title="item.title"
+                    @click="clickTools(item, index)">
                     <i :class="'t-active iconfont ' + item.iconfont"></i>
                   </div>
 
-                  <el-popover
-                      placement="bottom"
-                      width="200"
-                      trigger="click"
-                      :popper-options="{ boundariesElement: 'window', removeOnDestroy: true }">
+                  <el-popover placement="bottom" width="200" trigger="click"
+                    :popper-options="{ boundariesElement: 'window', removeOnDestroy: true }">
                     <el-slider v-model="crosshairSlider" :format-tooltip="formatTooltip"></el-slider>
-                    <div
-                        slot="reference"
-                        v-for="(item, index) in crosshairList"
-                        :key="item.iconfont"
-                        :class="['s-other', item.status ? 's-select' : '']"
-                        :title="item.title"
-                        @click="clickCrossHair(item, index)"
-                    >
+                    <div slot="reference" v-for="(item, index) in crosshairList" :key="item.iconfont"
+                      :class="['s-other', item.status ? 's-select' : '']" :title="item.title"
+                      @click="clickCrossHair(item, index)">
                       <i :class="'t-active iconfont ' + item.iconfont"></i>
                     </div>
                   </el-popover>
 
-                  <div
-                      v-for="(item, index) in planeList"
-                      :key="item.iconfont"
-                      :class="['s-other', item.status ? 's-select' : '']"
-                      :title="item.title"
-                      @click="clickPlane(item, index)"
-                  >
+                  <div v-for="(item, index) in planeList" :key="item.iconfont"
+                    :class="['s-other', item.status ? 's-select' : '']" :title="item.title"
+                    @click="clickPlane(item, index)">
                     <i :class="'t-active iconfont ' + item.iconfont" style="font-size:28px;margin-top: 20px"></i>
                   </div>
 
-                  <div
-                      v-for="(item, index) in cameraList"
-                      :key="item.iconfont"
-                      :class="['s-other', item.status ? 's-select' : '']"
-                      :title="item.title"
-                      @click="clickCamera(item, index)"
-                  >
+                  <div v-for="(item, index) in cameraList" :key="item.iconfont"
+                    :class="['s-other', item.status ? 's-select' : '']" :title="item.title"
+                    @click="clickCamera(item, index)">
                     <i :class="'t-active iconfont ' + item.iconfont" style="font-size:22px;margin-top: 19px"></i>
                   </div>
 
                   <!-- 度量 -->
-                  <div
-                      :class="['s-other t-dialog1', measureStatus ? 's-select' : '']"
-                      title="工具"
-                  >
+                  <div :class="['s-other t-dialog1', measureStatus ? 's-select' : '']" title="工具">
                     <i class="t-active iconfont iconremark-measure"></i>
                     <div class="r-tools">
-                      <div
-                          v-for="(meas, index) in measureList"
-                          :key="meas.iconfont"
-                          @click="clickInstros(meas, index)"
-                          :class="[meas.status ? 's-select' : '']"
-                      >
-                        <i :class="'iconfont ' + meas.iconfont"></i
-                        ><span>{{ meas.title }}</span>
+                      <div v-for="(meas, index) in measureList" :key="meas.iconfont" @click="clickInstros(meas, index)"
+                        :class="[meas.status ? 's-select' : '']">
+                        <i :class="'iconfont ' + meas.iconfont"></i><span>{{ meas.title }}</span>
                       </div>
                     </div>
                   </div>
-                  <div
-                      v-for="(item, index) in originalList"
-                      :key="item.iconfont"
-                      :class="['s-other', item.status ? 's-select' : '']"
-                      :title="item.title"
-                      @click="clickOriginal(item, index)"
-                  >
+                  <div v-for="(item, index) in originalList" :key="item.iconfont"
+                    :class="['s-other', item.status ? 's-select' : '']" :title="item.title"
+                    @click="clickOriginal(item, index)">
                     <i v-show="isVolumeVisible" :class="'t-active iconfont ' + 'icon-yanjing_xianshi_o'"
-                       style="font-size:28px;margin-top: 20px"></i>
+                      style="font-size:28px;margin-top: 20px"></i>
                     <i v-show="!isVolumeVisible" :class="'t-active iconfont ' + 'icon-yanjing_yincang_o'"
-                       style="font-size:28px;margin-top: 20px"></i>
+                      style="font-size:28px;margin-top: 20px"></i>
                   </div>
                   <!-- colorMap -->
-                  <div
-                      :class="['s-other t-dialog2', colorStatus ? 's-select' : '']"
-                      :title="'colorMap'"
-                  >
+                  <div :class="['s-other t-dialog2', colorStatus ? 's-select' : '']" :title="'colorMap'">
                     <i class="t-active iconfont iconiamge-colormap"></i>
                     <div class="r-tools" style="max-height: 300px; overflow-y: auto;">
-                      <div
-                          v-for="(color, index) in colorlist"
-                          :key="color.id"
-                          :class="['s-color', color.status ? 's-select' : '']"
-                          @click="clickColors(color.id, index)"
-                          :title="color.id"
-                      >
+                      <div v-for="(color, index) in colorlist" :key="color.id"
+                        :class="['s-color', color.status ? 's-select' : '']" @click="clickColors(color.id, index)"
+                        :title="color.id">
                         <span> {{ color.name }}</span>
                       </div>
                     </div>
                   </div>
                   <!--                  标签透明度更改-->
-                  <el-popover
-                      placement="bottom"
-                      width="200"
-                      trigger="click"
-                      :popper-options="{ boundariesElement: 'window', removeOnDestroy: true }">
+                  <el-popover placement="bottom" width="200" trigger="click"
+                    :popper-options="{ boundariesElement: 'window', removeOnDestroy: true }">
                     <el-slider v-model="opacitySlider" :format-tooltip="formatTooltipOpacity"></el-slider>
-                    <div
-                        slot="reference"
-                        v-for="(item, index) in opacityList"
-                        :key="item.iconfont"
-                        :class="['s-other', item.status ? 's-select' : '']"
-                        :title="item.title"
-                        @click="clickOpacity(item, index)"
-                    >
+                    <div slot="reference" v-for="(item, index) in opacityList" :key="item.iconfont"
+                      :class="['s-other', item.status ? 's-select' : '']" :title="item.title"
+                      @click="clickOpacity(item, index)">
                       <i :class="'t-active iconfont ' + item.iconfont"></i>
                     </div>
                   </el-popover>
 
                   <!-- 画笔操作 -->
-                  <el-popover
-                      placement="bottom"
-                      width="250"
-                      trigger="click"
-                      :popper-options="{ boundariesElement: 'window', removeOnDestroy: true }">
+                  <el-popover placement="bottom" width="250" trigger="click"
+                    :popper-options="{ boundariesElement: 'window', removeOnDestroy: true }">
                     <div style="display: flex; align-items: center; justify-content: space-between;">
                       <el-color-picker v-model="penColor" size="medium" color-format="rgb"></el-color-picker>
                       <el-select v-model="penValue" placeholder="请选择画笔类型" style="width: 80%;">
-                        <el-option
-                            v-for="item in penType"
-                            :key="item.value"
-                            :label="item.label"
-                            :value="item.value">
+                        <el-option v-for="item in penType" :key="item.value" :label="item.label" :value="item.value">
                         </el-option>
                       </el-select>
                     </div>
-                    <div
-                        slot="reference"
-                        v-for="(item, index) in penList"
-                        :key="item.iconfont"
-                        :class="['s-other', item.status ? 's-select' : '']"
-                        :title="item.title"
-                        @click="clickOpacity(item, index)"
-                    >
+                    <div slot="reference" v-for="(item, index) in penList" :key="item.iconfont"
+                      :class="['s-other', item.status ? 's-select' : '']" :title="item.title"
+                      @click="clickOpacity(item, index)">
                       <i :class="'t-active iconfont ' + item.iconfont" style="margin-top: 17px"></i>
                     </div>
                   </el-popover>
 
-                  <el-popover
-                      placement="bottom"
-                      width="200"
-                      trigger="click"
-                      :popper-options="{ boundariesElement: 'window', removeOnDestroy: true }">
+                  <el-popover placement="bottom" width="200" trigger="click"
+                    :popper-options="{ boundariesElement: 'window', removeOnDestroy: true }">
                     <el-select v-model="eraserValue" placeholder="请选择橡皮擦类型">
-                      <el-option
-                          v-for="item in eraserType"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value">
+                      <el-option v-for="item in eraserType" :key="item.value" :label="item.label" :value="item.value">
                       </el-option>
                     </el-select>
-                    <div
-                        slot="reference"
-                        v-for="(item, index) in eraserList"
-                        :key="item.iconfont"
-                        :class="['s-other', item.status ? 's-select' : '']"
-                        :title="item.title"
-                        @click="clickOpacity(item, index)"
-                    >
+                    <div slot="reference" v-for="(item, index) in eraserList" :key="item.iconfont"
+                      :class="['s-other', item.status ? 's-select' : '']" :title="item.title"
+                      @click="clickOpacity(item, index)">
                       <i :class="'t-active iconfont ' + item.iconfont" style="margin-top: 17px"></i>
                     </div>
                   </el-popover>
 
                   <!-- 撤回操作 -->
 
-                  <div
-                      v-for="(item, index) in backList"
-                      :key="item.iconfont"
-                      :class="['s-other', item.status ? 's-select' : '']"
-                      :title="item.title"
-                      @click="clickBack(item, index)"
-                  >
+                  <div v-for="(item, index) in backList" :key="item.iconfont"
+                    :class="['s-other', item.status ? 's-select' : '']" :title="item.title"
+                    @click="clickBack(item, index)">
                     <i :class="'t-active iconfont ' + item.iconfont"></i>
                   </div>
 
                   <!-- 删除标签、下载标签操作 -->
-                  <div
-                      v-for="(item, index) in editList"
-                      :key="item.iconfont"
-                      :class="['s-other', item.status ? 's-select' : '']"
-                      :title="item.title"
-                      @click="clickEdits(item, index)"
-                  >
+                  <div v-for="(item, index) in editList" :key="item.iconfont"
+                    :class="['s-other', item.status ? 's-select' : '']" :title="item.title"
+                    @click="clickEdits(item, index)">
                     <i :class="'t-active iconfont ' + item.iconfont" style="font-size:24px;margin-top: 17px"></i>
                   </div>
 
                   <!-- 调色盘 -->
-                  <div
-                      v-for="(item, index) in paletteList"
-                      :key="item.iconfont"
-                      :class="['s-other', item.status ? 's-select' : '']"
-                      :title="item.title"
-                      @click="clickPalette(item, index)"
-                  >
+                  <div v-for="(item, index) in paletteList" :key="item.iconfont"
+                    :class="['s-other', item.status ? 's-select' : '']" :title="item.title"
+                    @click="clickPalette(item, index)">
                     <i :class="'t-active iconfont ' + item.iconfont" style="font-size:25px;margin-top: 15px"></i>
                   </div>
 
 
                   <!-- 视图 -->
-                  <div
-                      :class="['s-other t-dialog3', viewStatus ? '' : '']"
-                      title="视图"
-                  >
+                  <div :class="['s-other t-dialog3', viewStatus ? '' : '']" title="视图">
                     <i class="t-active iconfont iconimage-view"></i>
                     <div class="r-tools">
-                      <div
-                          v-for="(meas, index) in viewList"
-                          :key="meas.iconfont"
-                          :class="['s-color', meas.status ? 's-select' : '']"
-                          @click="changeView(meas, index)"
-                          :title="meas.title"
-                      >
+                      <div v-for="(meas, index) in viewList" :key="meas.iconfont"
+                        :class="['s-color', meas.status ? 's-select' : '']" @click="changeView(meas, index)"
+                        :title="meas.title">
                         <span>{{ meas.title }}</span>
                       </div>
                     </div>
@@ -395,30 +277,17 @@
                   <div class="n-list" v-show="tabStatus">
                     <!-- 图像评估 -->
                     <div class="t-image">
-                      <div
-                          class="e-card"
-                          v-for="(item, index) in dataAnalysisList"
-                          :key="item.id"
-                          v-show="dataAnalysisList.length !== 0"
-                      >
+                      <div class="e-card" v-for="(item, index) in dataAnalysisList" :key="item.id"
+                        v-show="dataAnalysisList.length !== 0">
                         <div class="e-title">
-                        <span class="e-e">
-                          <el-input
-                              size="mini"
-                              v-model="item.name"
-                              maxlength="20"
-                              :placeholder="'' + item.name "
-                              @blur="blurTitle(item, index)"
-                          >
-                          </el-input>
-                        </span>
+                          <span class="e-e">
+                            <el-input size="mini" v-model="item.name" maxlength="20" :placeholder="'' + item.name"
+                              @blur="blurTitle(item, index)">
+                            </el-input>
+                          </span>
                           <span class="e-icon">
-                          <i
-                              class="el-icon-more"
-                              @click.stop="showDetails(item, index)"
-                              title="查看详细信息"
-                          ></i>
-                        </span>
+                            <i class="el-icon-more" @click.stop="showDetails(item, index)" title="查看详细信息"></i>
+                          </span>
                         </div>
                         <div class="e-result">
                           {{ item.value }}
@@ -462,7 +331,7 @@
                   <!--                  <el-button type="primary" @click="doSegmentation">3D分割</el-button>-->
                   <el-button type="primary" @click="clickVisible">测试数据可视化</el-button>
                   <el-dialog title="label Editor" :visible.sync="dialogTableVisible" center :append-to-body='true'
-                             :lock-scroll="false" width="30%">
+                    :lock-scroll="false" width="30%">
                     <Table @update-parent-var="onUpdateParentVar" :drawTableDataFromParent="drawTableData"></Table>
                   </el-dialog>
                   <br>
@@ -482,43 +351,23 @@
               <!--          </div>-->
               <!--  -->
               <!--  -->
-              <el-dialog
-                  :title="'器官测量'"
-                  :visible="organMeasurementVisible"
-                  width="500px"
-                  :before-close="handleOrganClose"
-                  class="dialog"
-                  top="23vh"
-                  :close-on-press-escape="false"
-                  :close-on-click-modal="false"
-                  v-dialogDrag
-              >
+              <el-dialog :title="'器官测量'" :visible="organMeasurementVisible" width="500px" :before-close="handleOrganClose"
+                class="dialog" top="23vh" :close-on-press-escape="false" :close-on-click-modal="false" v-dialogDrag>
                 <!--                <div-->
                 <!--                    :style="{ height: Math.round(spliceList.length / 7) * 150 + 'px' }"-->
                 <!--                    class="g-dis s-scrollbar"-->
                 <!--                ></div>-->
 
-                <div v-for="(item,index) in organDataList" :key="index">
-                  <span style="color: #9ccef9;font-size: 14px;font-weight: bold;">{{ item.name }}:{{item.data}}</span>
+                <div v-for="(item, index) in organDataList" :key="index">
+                  <span style="color: #9ccef9;font-size: 14px;font-weight: bold;">{{ item.name }}:{{ item.data }}</span>
                 </div>
               </el-dialog>
 
 
-              <el-dialog
-                  :title="'Slices，共' + spliceList.length + '个（' + splicePrecent + '%）'"
-                  :visible="visable"
-                  width="1060px"
-                  :before-close="handleClose"
-                  class="dialog"
-                  top="7vh"
-                  :close-on-press-escape="false"
-                  :close-on-click-modal="false"
-                  v-dialogDrag
-              >
-                <div
-                    :style="{ height: Math.round(spliceList.length / 7) * 150 + 'px' }"
-                    class="g-dis s-scrollbar"
-                ></div>
+              <el-dialog :title="'Slices，共' + spliceList.length + '个（' + splicePrecent + '%）'" :visible="visable"
+                width="1060px" :before-close="handleClose" class="dialog" top="7vh" :close-on-press-escape="false"
+                :close-on-click-modal="false" v-dialogDrag>
+                <div :style="{ height: Math.round(spliceList.length / 7) * 150 + 'px' }" class="g-dis s-scrollbar"></div>
                 <div class="g-main">
                   <div class="d-dicom" v-for="(item, i) in spliceList" :key="i">
                     <div :id="'d-dicom' + i" class="m-image"></div>
@@ -545,8 +394,8 @@ import Brand from '../components/elements/brand/Brand'
 import Team from '../components/elements/team/Team'
 // import * as niivue from '../niivue/niivue.umd.js'
 import Table from "../components/table/Table"
-import {Dialog} from "element-ui";
-import {Niivue} from '@niivue/niivue'
+import { Dialog } from "element-ui";
+import { Niivue } from '@niivue/niivue'
 import axios from 'axios'
 
 const nv = new Niivue({
@@ -558,7 +407,7 @@ const nv = new Niivue({
 })
 export default {
   name: 'Segmentation',
-  components: {Table, Team, Brand, Counter, Timeline, ServiceOne, AboutFour, SectionTitle, Separator, Layout},
+  components: { Table, Team, Brand, Counter, Timeline, ServiceOne, AboutFour, SectionTitle, Separator, Layout },
   data() {
     return {
       components: {
@@ -605,10 +454,10 @@ export default {
         value: '2',
         label: '填充型橡皮擦'
       },
-        {
-          value: '3',
-          label: '整块擦除'
-        }],
+      {
+        value: '3',
+        label: '整块擦除'
+      }],
       penValue: '',
       eraserValue: '',
       selectValue: '',
@@ -625,9 +474,9 @@ export default {
       colorlist: [],
       /* 视图 */
       viewList: [
-        {title: '矢状图', status: '', value: 'nifti-imagex', num: 1, titleEng: 'Sagittal'},
-        {title: '冠状图', status: '', value: 'nifti-imagey', num: 2, titleEng: 'Coronal'},
-        {title: '横断图', status: '', value: 'nifti-imagez', num: 3, titleEng: 'Axial'},
+        { title: '矢状图', status: '', value: 'nifti-imagex', num: 1, titleEng: 'Sagittal' },
+        { title: '冠状图', status: '', value: 'nifti-imagey', num: 2, titleEng: 'Coronal' },
+        { title: '横断图', status: '', value: 'nifti-imagez', num: 3, titleEng: 'Axial' },
         {
           title: '3D图',
           status: '',
@@ -818,12 +667,12 @@ export default {
       ],
       organDataList: [
         {
-          name:'心脏',
-          data:1111
+          name: '心脏',
+          data: 1111
         },
         {
-          name:'肠道',
-          data:222
+          name: '肠道',
+          data: 222
         }
       ],
       imageList: {}, // 存取所有图片集合
@@ -1025,7 +874,7 @@ export default {
       // 创建新的 tableData
       this.drawTableData = [];
       for (let i = 0; i < newColors.length; i++) {
-        this.drawTableData.push({color: newColors[i], label: `label ${i + 1}`});
+        this.drawTableData.push({ color: newColors[i], label: `label ${i + 1}` });
       }
     },
     clickBack(item, index) {
@@ -1103,7 +952,7 @@ export default {
     },
     clickCamera(item, index) {
       // nv.saveScene("ScreenShot.png")
-      nv.saveSceneToServer('/api/uploadavatar', 'test.png', {'historyid': '2'})
+      nv.saveSceneToServer('/api/uploadavatar', 'test.png', { 'historyid': '2' })
     },
     clickTools(item, index) {
       if (item.value === 'pan') {
@@ -1149,12 +998,12 @@ export default {
       }).then(response => {
         if (response.data.code === 200) {
           console.log(response)
-          nv.loadVolumes([{url: response.data.result.OriginFileUrl}]).then(() => {
+          nv.loadVolumes([{ url: response.data.result.OriginFileUrl }]).then(() => {
             nv.loadDrawingFromUrl(response.data.result.PredictFileUrl);
           })
-              .catch(err => {
-                console.error(err);
-              });
+            .catch(err => {
+              console.error(err);
+            });
         }
       }).catch(failResponse => {
         console.log(failResponse)
@@ -1163,12 +1012,12 @@ export default {
     handleAvatarSuccess(res, file) {
       console.log(res)
       this.currentRawImageUrl = res.result;
-      nv.loadVolumes([{url: res.result}])
+      nv.loadVolumes([{ url: res.result }])
 
     },
     getUploadFile(file) {
       console.log(file.name)
-      nv.loadVolumes([{url: file.name}])
+      nv.loadVolumes([{ url: file.name }])
     },
     changeView(meas, index) {
       if (meas.titleEng === 'Axial') {
@@ -1283,16 +1132,16 @@ export default {
     // 创建新的 tableData
     this.drawTableData = [];
     for (let i = 0; i < newColors.length; i++) {
-      this.drawTableData.push({color: newColors[i], label: `label ${i + 1}`});
+      this.drawTableData.push({ color: newColors[i], label: `label ${i + 1}` });
     }
 
     let cmaps = nv.colorMaps()
     for (var i = 0; i < cmaps.length; i++) {
       if (cmaps[i] !== 'gray') {
-        this.colorlist.push({'id': cmaps[i], 'name': cmaps[i], 'status': ''})
+        this.colorlist.push({ 'id': cmaps[i], 'name': cmaps[i], 'status': '' })
       }
     }
-    this.colorlist.unshift({'id': 'gray', 'name': 'gray', 'status': true})
+    this.colorlist.unshift({ 'id': 'gray', 'name': 'gray', 'status': true })
     nv.setInterpolation(false)
     nv.setRadiologicalConvention(false)
     nv.opts.multiplanarForceRender = true
@@ -1300,9 +1149,9 @@ export default {
     nv.loadVolumes(this.volumeList).then(() => {
       nv.loadDrawingFromUrl("/file/image/202302/0b2be9e0-886b-4144-99f0-8bb4c6eaa848-label.nii.gz");
     })
-        .catch(err => {
-          console.error(err);
-        });
+      .catch(err => {
+        console.error(err);
+      });
     nv.setSliceType(nv.sliceTypeMultiplanar)
     nv.setClipPlane([0.3, 270, 0]);
     nv.setRenderAzimuthElevation(120, 10);
@@ -1331,6 +1180,7 @@ export default {
 /* flex 居中3 */
 @import "../assets/icon/iconfont.css";
 @import "../assets/icon-expand/iconfont.css";
+
 @mixin fcc {
   display: flex;
   justify-content: center;
@@ -1990,7 +1840,7 @@ export default {
           display: flex;
           padding: 0 8px;
 
-          > div {
+          >div {
             flex: 1;
             display: flex;
 
@@ -2428,153 +2278,117 @@ export default {
           }
 
           .color-barautumn {
-            background: linear-gradient(
-                    90deg,
-                    rgba(254, 0, 0, 1) 0%,
-                    rgba(255, 171, 60, 1) 100%
-            );
+            background: linear-gradient(90deg,
+                rgba(254, 0, 0, 1) 0%,
+                rgba(255, 171, 60, 1) 100%);
           }
 
           .color-barblues {
-            background: linear-gradient(
-                    90deg,
-                    rgba(95, 180, 231, 1) 0%,
-                    rgba(203, 234, 255, 1) 100%
-            );
+            background: linear-gradient(90deg,
+                rgba(95, 180, 231, 1) 0%,
+                rgba(203, 234, 255, 1) 100%);
           }
 
           .color-barbone {
-            background: linear-gradient(
-                    90deg,
-                    rgba(52, 52, 112, 1) 0%,
-                    rgba(93, 103, 135, 1) 100%
-            );
+            background: linear-gradient(90deg,
+                rgba(52, 52, 112, 1) 0%,
+                rgba(93, 103, 135, 1) 100%);
           }
 
           .color-barcool {
-            background: linear-gradient(
-                    90deg,
-                    rgba(148, 106, 254, 1) 0%,
-                    rgba(8, 250, 254, 1) 100%
-            );
+            background: linear-gradient(90deg,
+                rgba(148, 106, 254, 1) 0%,
+                rgba(8, 250, 254, 1) 100%);
           }
 
           .color-barcoolwarm {
-            background: linear-gradient(
-                    90deg,
-                    rgba(56, 76, 200, 1) 0%,
-                    rgba(255, 210, 188, 1) 62%,
-                    rgba(196, 216, 255, 1) 100%
-            );
+            background: linear-gradient(90deg,
+                rgba(56, 76, 200, 1) 0%,
+                rgba(255, 210, 188, 1) 62%,
+                rgba(196, 216, 255, 1) 100%);
           }
 
           .color-barcopper {
-            background: linear-gradient(
-                    90deg,
-                    rgba(100, 57, 30, 1) 0%,
-                    rgba(171, 108, 69, 1) 100%
-            );
+            background: linear-gradient(90deg,
+                rgba(100, 57, 30, 1) 0%,
+                rgba(171, 108, 69, 1) 100%);
           }
 
           .color-bargray {
-            background: linear-gradient(
-                    90deg,
-                    rgba(45, 45, 45, 1) 0%,
-                    rgba(127, 127, 127, 1) 100%
-            );
+            background: linear-gradient(90deg,
+                rgba(45, 45, 45, 1) 0%,
+                rgba(127, 127, 127, 1) 100%);
           }
 
           .color-barhot {
-            background: linear-gradient(
-                    90deg,
-                    rgba(236, 2, 0, 1) 0%,
-                    rgba(72, 0, 0, 1) 100%
-            );
+            background: linear-gradient(90deg,
+                rgba(236, 2, 0, 1) 0%,
+                rgba(72, 0, 0, 1) 100%);
           }
 
           .color-barhotIron {
-            background: linear-gradient(
-                    90deg,
-                    rgba(163, 0, 1, 1) 0%,
-                    rgba(118, 0, 0, 1) 100%
-            );
+            background: linear-gradient(90deg,
+                rgba(163, 0, 1, 1) 0%,
+                rgba(118, 0, 0, 1) 100%);
           }
 
           .color-barhotMetalBlue {
-            background: linear-gradient(
-                    90deg,
-                    rgba(0, 16, 136, 1) 0%,
-                    rgba(207, 61, 0, 1) 100%
-            );
+            background: linear-gradient(90deg,
+                rgba(0, 16, 136, 1) 0%,
+                rgba(207, 61, 0, 1) 100%);
           }
 
           .color-barhsv {
-            background: linear-gradient(
-                    90deg,
-                    rgba(253, 16, 1, 1) 0%,
-                    rgba(86, 232, 46, 1) 53%,
-                    rgba(255, 215, 22, 1) 100%
-            );
+            background: linear-gradient(90deg,
+                rgba(253, 16, 1, 1) 0%,
+                rgba(86, 232, 46, 1) 53%,
+                rgba(255, 215, 22, 1) 100%);
           }
 
           .color-barjet {
-            background: linear-gradient(
-                    90deg,
-                    rgba(4, 0, 174, 1) 0%,
-                    rgba(63, 246, 160, 1) 56%,
-                    rgba(247, 246, 0, 1) 100%
-            );
+            background: linear-gradient(90deg,
+                rgba(4, 0, 174, 1) 0%,
+                rgba(63, 246, 160, 1) 56%,
+                rgba(247, 246, 0, 1) 100%);
           }
 
           .color-barpet {
-            background: linear-gradient(
-                    90deg,
-                    rgba(0, 108, 105, 1) 0%,
-                    rgba(28, 79, 169, 1) 56%,
-                    rgba(191, 44, 202, 1) 100%
-            );
+            background: linear-gradient(90deg,
+                rgba(0, 108, 105, 1) 0%,
+                rgba(28, 79, 169, 1) 56%,
+                rgba(191, 44, 202, 1) 100%);
           }
 
           .color-barpet20Step {
-            background: linear-gradient(
-                    90deg,
-                    rgba(99, 0, 83, 1) 0%,
-                    rgba(78, 79, 176, 1) 56%,
-                    rgba(78, 187, 79, 1) 100%
-            );
+            background: linear-gradient(90deg,
+                rgba(99, 0, 83, 1) 0%,
+                rgba(78, 79, 176, 1) 56%,
+                rgba(78, 187, 79, 1) 100%);
           }
 
           .color-barspectral {
-            background: linear-gradient(
-                    90deg,
-                    rgba(107, 0, 129, 1) 0%,
-                    rgba(6, 12, 214, 1) 49%,
-                    rgba(0, 205, 10, 1) 100%
-            );
+            background: linear-gradient(90deg,
+                rgba(107, 0, 129, 1) 0%,
+                rgba(6, 12, 214, 1) 49%,
+                rgba(0, 205, 10, 1) 100%);
           }
 
           .color-barspring {
-            background: linear-gradient(
-                    90deg,
-                    rgba(254, 9, 248, 1) 0%,
-                    rgba(253, 164, 91, 1) 100%
-            );
+            background: linear-gradient(90deg,
+                rgba(254, 9, 248, 1) 0%,
+                rgba(253, 164, 91, 1) 100%);
           }
 
           .color-barsummer {
-            background: linear-gradient(
-                    90deg,
-                    rgba(0, 128, 102, 1) 0%,
-                    rgba(151, 203, 102, 1) 100%
-            );
+            background: linear-gradient(90deg,
+                rgba(0, 128, 102, 1) 0%,
+                rgba(151, 203, 102, 1) 100%);
           }
 
           .color-barwinter {
-            background: linear-gradient(
-                    90deg,
-                    rgba(12, 2, 254, 1) 0%,
-                    rgba(2, 167, 172, 1) 100%
-            );
+            background: linear-gradient(90deg,
+                rgba(12, 2, 254, 1) 0%,
+                rgba(2, 167, 172, 1) 100%);
           }
 
         }
