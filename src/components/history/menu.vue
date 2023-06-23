@@ -1,16 +1,32 @@
 <template>
     <div>
-        <el-menu default-active="1-4-1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"
-            :collapse="isCollapse" background-color="transparent" text-color="#EBEEF5" router>
-            <el-menu-item index="/history/new">
-                <el-button icon="el-icon-plus" type="text">新建项目</el-button>
-            </el-menu-item>
+        <el-aside class="side-menu" :width="isCollapse ? '65px' : '200px'">
+            <i v-show="!isCollapse" class="el-icon-s-fold" style="font-size: 30px;margin-left: 160px;cursor: pointer"
+                @click="isCollapse = true"></i>
+            <i v-show="isCollapse" class="el-icon-s-unfold" style="font-size: 30px;margin-left: 20px;cursor: pointer"
+                @click="isCollapse = false"></i>
+            <el-menu
+                default-active="1"
+                class="el-menu-vertical-demo"
+                @open="handleOpen"
+                @close="handleClose"
+                :collapse="isCollapse"
+                background-color="transparent"
+                text-color="#EBEEF5"
+                router
+                :collapse-transition="false"
+                style="border: none"
+            >
+                <el-menu-item index="/history/new">
+                    <el-button icon="el-icon-plus" type="text">新建项目</el-button>
+                </el-menu-item>
 
-            <el-menu-item :index="item.id.toString()" v-for="item in tableData">
-                <!-- <i class="el-icon-menu"></i> -->
-                <span slot="title">{{ item.date }}</span>
-            </el-menu-item>
-        </el-menu>
+                <el-menu-item :index="'/history/'+item.id.toString()" v-for="item in tableData">
+                    <i class="el-icon-user-solid"></i>
+                    <span slot="title">{{ item.date }}</span>
+                </el-menu-item>
+            </el-menu>
+        </el-aside>
     </div>
 </template>
   
@@ -19,7 +35,7 @@ export default {
     name: "Menu",
     data() {
         return {
-            isCollapse: false,
+            isCollapse: true,
             tableData: [{
                 id: 1,
                 date: '病人1'
@@ -53,7 +69,7 @@ export default {
 .el-menu-vertical-demo:not(.el-menu--collapse) {
     width: 100%;
     min-height: 400px;
-    border: none;
+    border: none!important;
     text-align: center;
 }
 

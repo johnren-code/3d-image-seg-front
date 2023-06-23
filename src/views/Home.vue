@@ -7,21 +7,19 @@
           <div class="col-lg-12">
             <div class="inner text-center">
               <div class="react-image mb--20" data-aos="fade-up">
-<!--                <img src="../assets/images/demo/scu_logo.png" alt="Doob Vue"/>-->
+                <img src="../assets/images/logo/favicon.png" alt="Doob Vue"/>
               </div>
               <h1 class="title display-two" data-aos="fade-up" data-aos-delay="100">
                 3D医疗数据解析平台 <br/>
                 <span class="theme-gradient">深度学习</span> &
                 <span class="theme-gradient">3D影像分割</span>
                 <br/>
-                Vue.js Template.
               </h1>
               <p class="description" data-aos="fade-up" data-aos-delay="150">
-                We help our clients succeed by creating brand identities, digital
-                experiences, and print materials.
+                医生分析病例 / 病人查看分析结果 / 可编辑的3D建模
               </p>
               <div class="button-group" data-aos="fade-up" data-aos-delay="200">
-                <a class="btn-default btn-large round btn-icon" href="#demo">View Demo
+                <a class="btn-default btn-large round btn-icon" href="#demo">查看详情
                   <Icon name="arrow-down"/>
                 </a>
               </div>

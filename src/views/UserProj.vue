@@ -22,12 +22,12 @@
                             {{ form.sex }}
                         </div>
                     </el-descriptions-item>
-                    <el-descriptions-item label="出生日期">
+                    <el-descriptions-item label="出生日期" :contentStyle='contentStyle'>
                         <div class="inputDeep">
                             {{ form.date }}
                         </div>
                     </el-descriptions-item>
-                    <el-descriptions-item label="身高（cm）" :contentStyle='contentStyle'>
+                    <el-descriptions-item label="身高（cm）">
                         {{ form.height }}
                     </el-descriptions-item>
                     <el-descriptions-item label="体重（kg）">
@@ -35,7 +35,7 @@
                     </el-descriptions-item>
                     <el-descriptions-item label="年龄">
                         {{ form.age }}</el-descriptions-item>
-                    <el-descriptions-item label="籍贯" :contentStyle='contentStyle'>
+                    <el-descriptions-item label="籍贯">
                         {{ form.home }}
                     </el-descriptions-item>
                     <el-descriptions-item label="联系方式">
@@ -132,7 +132,7 @@ export default {
             },
             formLabelWidth: '120px',
             contentStyle: {
-                'width': '450px',
+                'width': '300px',
                 'height': '40px'
             },
             formNewhistory: {
@@ -323,6 +323,10 @@ export default {
 
 ::v-deep .el-descriptions__body {
     color: wheat !important;
+}
+
+.peopleDes {
+    width: 99%;
 }
 </style>
 

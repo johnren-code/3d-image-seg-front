@@ -81,16 +81,16 @@ export default {
     height: 800px;
 }
 
-.mytable {
-    /* // width: 500px */
+/* .mytable {
     position: relative;
     width: 300px;
     padding: 0;
     height: 100%;
-    /* background-color: #202123; */
-    /* background-color: white; */
-    /* border: solid; */
-    /* display: inline-block; */
+
+} */
+.mytable {
+    margin-right: 20px;
+    margin-top: 10px;
 }
 
 .customer-table th {
@@ -160,6 +160,6 @@ export default {
 
 .content {
     /* display: inline-block; */
-    width: 100%;
+    width: 90%;
 }
 </style>

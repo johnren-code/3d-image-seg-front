@@ -17,63 +17,64 @@
       <!--      </div>-->
       <!-- 侧边栏 -->
       <el-container>
-        <el-aside class="side-menu" :width="isCollapse ? '65px' : '350px'">
-
-          <i v-show="!isCollapse" class="el-icon-s-fold" style="font-size: 30px;margin-left: 320px;cursor: pointer"
-             @click="isCollapse=true"></i>
-          <i v-show="isCollapse" class="el-icon-s-unfold" style="font-size: 30px;margin-left: 20px;cursor: pointer"
-             @click="isCollapse=false"></i>
-          <el-menu
-              default-active="1"
-              class="el-menu-vertical-demo"
-              background-color="transparent"
-              text-color="#fff"
-              active-text-color="#0072FF"
-              style="border: none"
-              :collapse="isCollapse"
-          >
-            <el-menu-item index="1">
-              <i class="el-icon-user-solid"></i>
-              <span style="margin-left: 20px">病人编号123456</span>
-            </el-menu-item>
-            <el-menu-item index="2">
-              <i class="el-icon-user-solid"></i>
-              <span style="margin-left: 20px">病人编号123456</span>
-            </el-menu-item>
-            <el-menu-item index="3">
-              <i class="el-icon-user-solid"></i>
-              <span style="margin-left: 20px">病人编号123456</span>
-            </el-menu-item>
-            <el-menu-item index="4">
-              <i class="el-icon-user-solid"></i>
-              <span style="margin-left: 20px">病人编号123456</span>
-            </el-menu-item>
-            <el-menu-item index="5">
-              <i class="el-icon-user-solid"></i>
-              <span style="margin-left: 20px">病人编号123456</span>
-            </el-menu-item>
-            <el-menu-item index="6">
-              <i class="el-icon-user-solid"></i>
-              <span style="margin-left: 20px">病人编号123456</span>
-            </el-menu-item>
-            <el-menu-item index="7">
-              <i class="el-icon-user-solid"></i>
-              <span style="margin-left: 20px">病人编号123456</span>
-            </el-menu-item>
-            <el-menu-item index="8">
-              <i class="el-icon-user-solid"></i>
-              <span style="margin-left: 20px">病人编号123456</span>
-            </el-menu-item>
-            <el-menu-item index="9">
-              <i class="el-icon-user-solid"></i>
-              <span style="margin-left: 20px">病人编号123456</span>
-            </el-menu-item>
-            <el-menu-item index="10">
-              <i class="el-icon-user-solid"></i>
-              <span style="margin-left: 20px">病人编号123456</span>
-            </el-menu-item>
-          </el-menu>
-        </el-aside>
+        <Menu></Menu>
+<!--        <el-aside class="side-menu" :width="isCollapse ? '65px' : '350px'">-->
+<!--          <i v-show="!isCollapse" class="el-icon-s-fold" style="font-size: 30px;margin-left: 320px;cursor: pointer"-->
+<!--             @click="isCollapse=true"></i>-->
+<!--          <i v-show="isCollapse" class="el-icon-s-unfold" style="font-size: 30px;margin-left: 20px;cursor: pointer"-->
+<!--             @click="isCollapse=false"></i>-->
+<!--          <el-menu-->
+<!--              default-active="1"-->
+<!--              class="el-menu-vertical-demo"-->
+<!--              background-color="transparent"-->
+<!--              text-color="#fff"-->
+<!--              active-text-color="#0072FF"-->
+<!--              style="border: none"-->
+<!--              :collapse="isCollapse"-->
+<!--              :collapse-transition="false"-->
+<!--          >-->
+<!--            <el-menu-item index="1">-->
+<!--              <i class="el-icon-user-solid"></i>-->
+<!--              <span style="margin-left: 20px">病人编号123456</span>-->
+<!--            </el-menu-item>-->
+<!--            <el-menu-item index="2">-->
+<!--              <i class="el-icon-user-solid"></i>-->
+<!--              <span style="margin-left: 20px">病人编号123456</span>-->
+<!--            </el-menu-item>-->
+<!--            <el-menu-item index="3">-->
+<!--              <i class="el-icon-user-solid"></i>-->
+<!--              <span style="margin-left: 20px">病人编号123456</span>-->
+<!--            </el-menu-item>-->
+<!--            <el-menu-item index="4">-->
+<!--              <i class="el-icon-user-solid"></i>-->
+<!--              <span style="margin-left: 20px">病人编号123456</span>-->
+<!--            </el-menu-item>-->
+<!--            <el-menu-item index="5">-->
+<!--              <i class="el-icon-user-solid"></i>-->
+<!--              <span style="margin-left: 20px">病人编号123456</span>-->
+<!--            </el-menu-item>-->
+<!--            <el-menu-item index="6">-->
+<!--              <i class="el-icon-user-solid"></i>-->
+<!--              <span style="margin-left: 20px">病人编号123456</span>-->
+<!--            </el-menu-item>-->
+<!--            <el-menu-item index="7">-->
+<!--              <i class="el-icon-user-solid"></i>-->
+<!--              <span style="margin-left: 20px">病人编号123456</span>-->
+<!--            </el-menu-item>-->
+<!--            <el-menu-item index="8">-->
+<!--              <i class="el-icon-user-solid"></i>-->
+<!--              <span style="margin-left: 20px">病人编号123456</span>-->
+<!--            </el-menu-item>-->
+<!--            <el-menu-item index="9">-->
+<!--              <i class="el-icon-user-solid"></i>-->
+<!--              <span style="margin-left: 20px">病人编号123456</span>-->
+<!--            </el-menu-item>-->
+<!--            <el-menu-item index="10">-->
+<!--              <i class="el-icon-user-solid"></i>-->
+<!--              <span style="margin-left: 20px">病人编号123456</span>-->
+<!--            </el-menu-item>-->
+<!--          </el-menu>-->
+<!--        </el-aside>-->
         <el-main>
           <div class="dicom-main">
             <div class="l-bottom">
@@ -532,6 +533,7 @@ import Table from "../components/table/Table"
 import {Dialog} from "element-ui";
 import {Niivue} from '@niivue/niivue'
 import axios from 'axios'
+import Menu from "../components/history/menu";
 
 const nv = new Niivue({
   logging: true,
@@ -542,7 +544,7 @@ const nv = new Niivue({
 })
 export default {
   name: 'Segmentation',
-  components: {Table, Team, Brand, Counter, Timeline, ServiceOne, AboutFour, SectionTitle, Separator, Layout},
+  components: {Menu, Table, Team, Brand, Counter, Timeline, ServiceOne, AboutFour, SectionTitle, Separator, Layout},
   data() {
     return {
       components: {
@@ -988,6 +990,10 @@ export default {
     }
   },
   methods: {
+    saveCurrentState(){
+      this.saveImageToServer('/api/uploadlabel','new.nii.gz',true,{'historyid':'2'})
+      this.saveSceneToServer('/api/uploadavatar','screenshot.png',{'historyid':'2'})
+    },
     handleOrganClose() {
       this.organMeasurementVisible = false
     },
@@ -1136,21 +1142,25 @@ export default {
       }
     },
     doSegmentation() {
-      axios.post('/seg', {
-        uploadFileUrl: this.currentRawImageUrl
-      }).then(response => {
-        if (response.data.code === 200) {
-          console.log(response)
-          nv.loadVolumes([{url: response.data.result.OriginFileUrl}]).then(() => {
-            nv.loadDrawingFromUrl(response.data.result.PredictFileUrl);
-          })
-              .catch(err => {
-                console.error(err);
-              });
-        }
-      }).catch(failResponse => {
-        console.log(failResponse)
-      })
+      if(this.modelValue === '1' || this.modelValue === '2') {
+        axios.post('/seg', {
+          uploadFileUrl: this.currentRawImageUrl
+        }).then(response => {
+          if (response.data.code === 200) {
+            console.log(response)
+            nv.loadVolumes([{url: response.data.result.OriginFileUrl}]).then(() => {
+              nv.loadDrawingFromUrl(response.data.result.PredictFileUrl);
+            })
+                .catch(err => {
+                  console.error(err);
+                });
+          }
+        }).catch(failResponse => {
+          console.log(failResponse)
+        })
+      }else {
+        this.$message.error('请选择分割要使用的模型！')
+      }
     },
     handleAvatarSuccess(res, file) {
       console.log(res)
@@ -1307,6 +1317,7 @@ export default {
 }
 </script>
 <style lang="scss">
+
 
 .el-button--primary {
   color: #f7f4f4!important;

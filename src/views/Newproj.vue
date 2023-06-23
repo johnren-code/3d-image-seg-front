@@ -51,7 +51,7 @@
                             </el-select>
                         </div>
                     </el-descriptions-item>
-                    <el-descriptions-item label="出生日期">
+                    <el-descriptions-item label="出生日期" :contentStyle='contentStyle'>
                         <div class="inputDeep">
                             <el-date-picker type="date" placeholder="选择日期" v-model="form.date"
                                 style="width: 100%;"></el-date-picker>

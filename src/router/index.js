@@ -71,7 +71,7 @@ const routes = [
         name: 'Home',
         component: Home,
         meta: {
-            title: 'Doob || Doob Business and Consulting Bootstrap5 Template',
+            title: '主页',
         },
     },
     {
@@ -79,7 +79,7 @@ const routes = [
         name: 'Home',
         component: Home,
         meta: {
-            title: 'Doob || Doob Business and Consulting Bootstrap5 Template',
+            title: '主页',
         },
     },
     {
@@ -87,7 +87,7 @@ const routes = [
         name: 'Segmentation',
         component: Segmentation,
         meta: {
-            title: 'Doob || Doob Business and Consulting Bootstrap5 Template',
+            title: '3D分割',
         },
     },
     {
@@ -95,7 +95,7 @@ const routes = [
         name: 'Login',
         component: Login,
         meta: {
-            title: 'Doob || Doob Business and Consulting Bootstrap5 Template',
+            title: '登录/注册',
         },
     },
     {
@@ -103,7 +103,7 @@ const routes = [
         name: 'Test',
         component: Test,
         meta: {
-            title: 'Doob || Doob Business and Consulting Bootstrap5 Template',
+            title: '测试',
         },
     },
     {
@@ -552,7 +552,7 @@ const routes = [
         // redict: '/History/:id',
         component: History,
         meta: {
-            title: 'Web Agency || Doob Business and Consulting Bootstrap5 Template',
+            title: '历史记录',
         },
         children: [{
             path: ':id(\\d+)',
