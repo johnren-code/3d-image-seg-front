@@ -35,6 +35,17 @@
         </div>
       </div>
     </div>
+    <div>
+      <el-table :data="tableData">
+        <el-table-column label="选择颜色" width="120" >
+          <template slot-scope="scope">
+            <el-color-picker v-model="scope.row.color" color-format="rgb"></el-color-picker>
+          </template>
+        </el-table-column>
+        <el-table-column label="label" prop="otherProperty"></el-table-column>
+        <el-table-column label="RGB值" prop="otherProperty"></el-table-column>
+      </el-table>
+    </div>
   </Layout>
 </template>
 
@@ -112,4 +123,13 @@ export default {
   height: 178px;
   display: block;
 }
+.el-table, .el-table__expanded-cell {
+  background-color: transparent !important;
+}
+.el-table th,
+.el-table tr,
+.el-table td {
+    background-color: transparent !important;
+}
+
 </style>

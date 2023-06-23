@@ -185,6 +185,7 @@
 
 <script>
 import Button from "../elements/button/Button";
+import axios from "axios";
 
 export default {
   name: "Login",
@@ -244,47 +245,63 @@ export default {
     doLogin() {
       if (this.loginData.email === '' && this.loginData.username === '') {
         this.$message.error('请输入账号信息');
-      } else if (!this.email && this.loginData.writeCode !== this.identifyCode) {//如果账号密码登录且验证码不正确
-        this.$message.error('验证码错误');
       } else {
         var loginInfo
         var urlInfo
-        if (this.email) { //手机验证码
+        if (this.email) { //邮箱验证码
           urlInfo = 'login2'
           loginInfo = JSON.stringify({email: this.loginData.email, verity: this.loginData.writeCode})
         } else { //账号密码
           urlInfo = 'login'
           loginInfo = JSON.stringify({name: this.loginData.username, password: this.loginData.password})
         }
-        var that = this
-        this.$axios({
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          method: 'post',
-          url: this.$global.apiUrl + urlInfo,
-          data: loginInfo
-        }).then(res => {
-          that.fullscreenLoading = false
-          // console.log('登录成功')
-          if (res.data.code === 0) {
-            that.$message({
-              message: '登录成功！',
-              type: 'success'
-            });
-            this.hide()
-            this.$ls.set('userInfo', res.data.data)
-            // location.reload()
-            eventBus.$emit('userLogin', true)
-          } else {
-            that.$message.error(res.data.message);
-          }
+        // var that = this
+        const _this = this
+        axios.post('/api/login', {
+          username: this.loginData.username,
+          password: this.loginData.password
+        })
+            .then(rep => {
+              if (rep.data.code === 200) {
+                _this.store.commit('login', rep.data.result)
 
-        }).catch(function (error) {
-          that.fullscreenLoading = false
-          console.log(error);
-          that.$message.error('网络错误，稍后再试');
-        });
+                this.$router.push('/video')//否则跳转至首页
+              } else {
+                this.$message(rep.data.message)
+              }
+
+            })
+            .catch(failResponse => {
+              console.log(failResponse.response)
+            })
+        // this.$axios({
+        //   headers: {
+        //     'Content-Type': 'application/json'
+        //   },
+        //   method: 'post',
+        //   url: this.$global.apiUrl + urlInfo,
+        //   data: loginInfo
+        // }).then(res => {
+        //   that.fullscreenLoading = false
+        //   // console.log('登录成功')
+        //   if (res.data.code === 0) {
+        //     that.$message({
+        //       message: '登录成功！',
+        //       type: 'success'
+        //     });
+        //     this.hide()
+        //     this.$ls.set('userInfo', res.data.data)
+        //     // location.reload()
+        //     eventBus.$emit('userLogin', true)
+        //   } else {
+        //     that.$message.error(res.data.message);
+        //   }
+        //
+        // }).catch(function (error) {
+        //   that.fullscreenLoading = false
+        //   console.log(error);
+        //   that.$message.error('网络错误，稍后再试');
+        // });
       }
 
     },

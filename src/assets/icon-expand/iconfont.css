@@ -1,11 +1,11 @@
 @font-face {
   font-family: "iconfont"; /* Project id 4114593 */
-  src: url('iconfont.eot?t=1686326162028'); /* IE9 */
-  src: url('iconfont.eot?t=1686326162028#iefix') format('embedded-opentype'), /* IE6-IE8 */
-       url('iconfont.woff2?t=1686326162028') format('woff2'),
-       url('iconfont.woff?t=1686326162028') format('woff'),
-       url('iconfont.ttf?t=1686326162028') format('truetype'),
-       url('iconfont.svg?t=1686326162028#iconfont') format('svg');
+  src: url('iconfont.eot?t=1687171368888'); /* IE9 */
+  src: url('iconfont.eot?t=1687171368888#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('iconfont.woff2?t=1687171368888') format('woff2'),
+       url('iconfont.woff?t=1687171368888') format('woff'),
+       url('iconfont.ttf?t=1687171368888') format('truetype'),
+       url('iconfont.svg?t=1687171368888#iconfont') format('svg');
 }
 
 .iconfont {
@@ -14,6 +14,18 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-jiemian:before {
+  content: "\e602";
+}
+
+.icon-yanjing_xianshi_o:before {
+  content: "\e603";
+}
+
+.icon-yanjing_yincang_o:before {
+  content: "\e604";
 }
 
 .icon-zhuti_tiaosepan_o:before {

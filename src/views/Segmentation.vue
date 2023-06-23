@@ -120,21 +120,52 @@
                       action="/api/upload"
                       :show-file-list="false"
                       :on-success="handleAvatarSuccess"
-                      :before-upload="getUploadFile">
+                      :before-upload="addData"
+                      :data="additionalData"
+                  >
                     <i class="t-active iconfont el-icon-folder-opened"
                        style="font-size:28px;margin-top: 5px;margin-right: 10px"></i>
                   </el-upload>
+                  <!--上传标签文件-->
+                  <el-upload
+                      action="/api/uploadlabel"
+                      :show-file-list="false"
+                      :on-success="handleAvatarSuccess"
+                      :before-upload="addData"
+                      :data="additionalData"
+                  >
+                    <i class="t-active iconfont el-icon-upload2"
+                       style="font-size:28px;margin-top: 5px;margin-right: 10px;margin-left: 10px"></i>
+                  </el-upload>
+                  <!-- 移动 -->
+                  <div
+                      :class="['s-other t-dialog3', viewStatus ? '' : '']"
+                      title="移动"
+                  >
+                    <i class="t-active iconfont iconimage-move"></i>
+                    <div class="r-tools">
+                      <div
+                          v-for="(meas, index) in moveList"
+                          :key="meas.iconfont"
+                          :class="['s-color', meas.status ? '' : '']"
+                          @click="clickMoves(meas, index)"
+                          :title="meas.title"
+                      >
+                        <span>{{ meas.title }}</span>
+                      </div>
+                    </div>
+                  </div>
 
                   <!--移动-->
-                  <div
-                      v-for="(item, index) in moveList"
-                      :key="item.iconfont"
-                      :class="['s-other', item.status ? 's-select' : '']"
-                      :title="item.title"
-                      @click="clickMoves(item, index)"
-                  >
-                    <i :class="'t-active iconfont ' + item.iconfont" style="font-size:28px;margin-top: 15px"></i>
-                  </div>
+                  <!--                  <div-->
+                  <!--                      v-for="(item, index) in moveList"-->
+                  <!--                      :key="item.iconfont"-->
+                  <!--                      :class="['s-other', item.status ? 's-select' : '']"-->
+                  <!--                      :title="item.title"-->
+                  <!--                      @click="clickMoves(item, index)"-->
+                  <!--                  >-->
+                  <!--                    <i :class="'t-active iconfont ' + item.iconfont" style="font-size:28px;margin-top: 15px"></i>-->
+                  <!--                  </div>-->
 
                   <div
                       v-for="(item, index) in toolList"
@@ -145,6 +176,7 @@
                   >
                     <i :class="'t-active iconfont ' + item.iconfont"></i>
                   </div>
+
                   <el-popover
                       placement="bottom"
                       width="200"
@@ -162,6 +194,16 @@
                       <i :class="'t-active iconfont ' + item.iconfont"></i>
                     </div>
                   </el-popover>
+
+                  <div
+                      v-for="(item, index) in planeList"
+                      :key="item.iconfont"
+                      :class="['s-other', item.status ? 's-select' : '']"
+                      :title="item.title"
+                      @click="clickPlane(item, index)"
+                  >
+                    <i :class="'t-active iconfont ' + item.iconfont" style="font-size:28px;margin-top: 20px"></i>
+                  </div>
 
                   <div
                       v-for="(item, index) in cameraList"
@@ -191,26 +233,122 @@
                       </div>
                     </div>
                   </div>
-                  <!-- 颜色 -->
+                  <div
+                      v-for="(item, index) in originalList"
+                      :key="item.iconfont"
+                      :class="['s-other', item.status ? 's-select' : '']"
+                      :title="item.title"
+                      @click="clickOriginal(item, index)"
+                  >
+                    <i v-show="isVolumeVisible" :class="'t-active iconfont ' + 'icon-yanjing_xianshi_o'"
+                       style="font-size:28px;margin-top: 20px"></i>
+                    <i v-show="!isVolumeVisible" :class="'t-active iconfont ' + 'icon-yanjing_yincang_o'"
+                       style="font-size:28px;margin-top: 20px"></i>
+                  </div>
+                  <!-- colorMap -->
                   <div
                       :class="['s-other t-dialog2', colorStatus ? 's-select' : '']"
                       :title="'colorMap'"
                   >
                     <i class="t-active iconfont iconiamge-colormap"></i>
-                    <div class="r-tools">
+                    <div class="r-tools" style="max-height: 300px; overflow-y: auto;">
                       <div
                           v-for="(color, index) in colorlist"
                           :key="color.id"
                           :class="['s-color', color.status ? 's-select' : '']"
-                          @click="colorMap(color.id, index)"
+                          @click="clickColors(color.id, index)"
                           :title="color.id"
                       >
-                        <i :class="['color-bar' + color.id]"></i
-                        ><span> {{ color.name }}</span>
+                        <span> {{ color.name }}</span>
                       </div>
                     </div>
                   </div>
-                  <!-- 编辑操作 -->
+                  <!--                  标签透明度更改-->
+                  <el-popover
+                      placement="bottom"
+                      width="200"
+                      trigger="click"
+                      :popper-options="{ boundariesElement: 'window', removeOnDestroy: true }">
+                    <el-slider v-model="opacitySlider" :format-tooltip="formatTooltipOpacity"></el-slider>
+                    <div
+                        slot="reference"
+                        v-for="(item, index) in opacityList"
+                        :key="item.iconfont"
+                        :class="['s-other', item.status ? 's-select' : '']"
+                        :title="item.title"
+                        @click="clickOpacity(item, index)"
+                    >
+                      <i :class="'t-active iconfont ' + item.iconfont"></i>
+                    </div>
+                  </el-popover>
+
+                  <!-- 画笔操作 -->
+                  <el-popover
+                      placement="bottom"
+                      width="250"
+                      trigger="click"
+                      :popper-options="{ boundariesElement: 'window', removeOnDestroy: true }">
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                      <el-color-picker v-model="penColor" size="medium" color-format="rgb"></el-color-picker>
+                      <el-select v-model="penValue" placeholder="请选择画笔类型" style="width: 80%;">
+                        <el-option
+                            v-for="item in penType"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                        </el-option>
+                      </el-select>
+                    </div>
+                    <div
+                        slot="reference"
+                        v-for="(item, index) in penList"
+                        :key="item.iconfont"
+                        :class="['s-other', item.status ? 's-select' : '']"
+                        :title="item.title"
+                        @click="clickOpacity(item, index)"
+                    >
+                      <i :class="'t-active iconfont ' + item.iconfont" style="margin-top: 17px"></i>
+                    </div>
+                  </el-popover>
+
+                  <el-popover
+                      placement="bottom"
+                      width="200"
+                      trigger="click"
+                      :popper-options="{ boundariesElement: 'window', removeOnDestroy: true }">
+                    <el-select v-model="eraserValue" placeholder="请选择橡皮擦类型">
+                      <el-option
+                          v-for="item in eraserType"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value">
+                      </el-option>
+                    </el-select>
+                    <div
+                        slot="reference"
+                        v-for="(item, index) in eraserList"
+                        :key="item.iconfont"
+                        :class="['s-other', item.status ? 's-select' : '']"
+                        :title="item.title"
+                        @click="clickOpacity(item, index)"
+                    >
+                      <i :class="'t-active iconfont ' + item.iconfont" style="margin-top: 17px"></i>
+                    </div>
+                  </el-popover>
+
+                  <!-- 撤回操作 -->
+
+                  <div
+                      v-for="(item, index) in backList"
+                      :key="item.iconfont"
+                      :class="['s-other', item.status ? 's-select' : '']"
+                      :title="item.title"
+                      @click="clickBack(item, index)"
+                  >
+                    <i :class="'t-active iconfont ' + item.iconfont"></i>
+                  </div>
+
+                  <!-- 删除标签、下载标签操作 -->
                   <div
                       v-for="(item, index) in editList"
                       :key="item.iconfont"
@@ -218,11 +356,10 @@
                       :title="item.title"
                       @click="clickEdits(item, index)"
                   >
-                    <i :class="'t-active iconfont ' + item.iconfont" style="font-size:25px;margin-top: 15px"></i>
+                    <i :class="'t-active iconfont ' + item.iconfont" style="font-size:24px;margin-top: 17px"></i>
                   </div>
 
                   <!-- 调色盘 -->
-
                   <div
                       v-for="(item, index) in paletteList"
                       :key="item.iconfont"
@@ -233,9 +370,10 @@
                     <i :class="'t-active iconfont ' + item.iconfont" style="font-size:25px;margin-top: 15px"></i>
                   </div>
 
+
                   <!-- 视图 -->
                   <div
-                      :class="['s-other t-dialog3', viewStatus ? 's-select' : '']"
+                      :class="['s-other t-dialog3', viewStatus ? '' : '']"
                       title="视图"
                   >
                     <i class="t-active iconfont iconimage-view"></i>
@@ -271,16 +409,16 @@
                               size="mini"
                               v-model="item.title"
                               maxlength="20"
-                              :placeholder="'#-' + index"
+                              :placeholder="'' + index + '-器官计数'"
                               @blur="blurTitle(item, index)"
                           >
                           </el-input>
                         </span>
                           <span class="e-icon">
                           <i
-                              class="el-icon-close"
+                              class="el-icon-more"
                               @click.stop="deleteTool(item, index)"
-                              title="删除图像评估"
+                              title="查看详细信息"
                           ></i>
                         </span>
                         </div>
@@ -346,13 +484,13 @@
                   <!--                  <el-button type="primary" @click="doInferior">inferior</el-button>-->
                   <!--                  <el-button type="primary" @click="saveLabel">saveLabel</el-button>-->
                   <!--                  <el-button type="primary" @click="getBitMap">getBitMap</el-button>-->
-                  <!--                  <el-button type="primary" @click="labelEditor">label editor</el-button>-->
+                  <!--                                    <el-button type="primary" @click="labelEditor">label editor</el-button>-->
                   <!--                  <el-button type="primary" @click="undo">undo</el-button>-->
-                  <!--                  <el-button type="primary" @click="doSegmentation">3D分割</el-button>-->
-                  <!--                  <el-dialog title="label Editor" :visible.sync="dialogTableVisible" center :append-to-body='true'-->
-                  <!--                             :lock-scroll="false" width="30%">-->
-                  <!--                    <Table @update-parent-var="onUpdateParentVar"></Table>-->
-                  <!--                  </el-dialog>-->
+                  <el-button type="primary" @click="doSegmentation">3D分割</el-button>
+                  <el-dialog title="label Editor" :visible.sync="dialogTableVisible" center :append-to-body='true'
+                             :lock-scroll="false" width="30%">
+                    <Table @update-parent-var="onUpdateParentVar" :drawTableDataFromParent="drawTableData"></Table>
+                  </el-dialog>
                   <!--                  <div class="block">-->
                   <!--                    <span class="demonstration">Draw Opacity</span>-->
                   <!--                    <el-slider v-on:change="doDrawOpacity" v-model="sliderValue"></el-slider>-->
@@ -416,9 +554,10 @@ import Timeline from '../components/elements/timeline/Timeline'
 import Counter from '../components/elements/counterUp/Counter'
 import Brand from '../components/elements/brand/Brand'
 import Team from '../components/elements/team/Team'
-import {Niivue} from '@niivue/niivue'
+// import * as niivue from '../niivue/niivue.umd.js'
 import Table from "../components/table/Table"
 import {Dialog} from "element-ui";
+import {Niivue} from '@niivue/niivue'
 import axios from 'axios'
 
 const nv = new Niivue({
@@ -436,48 +575,7 @@ export default {
       components: {
         Table
       },
-      menuList: [
-        {
-          id: 0,
-          authName: "通讯录",
-          icon: "el-icon-s-custom",
-          children: [
-            {
-              authName: "用户与部门管理",
-              id: 1,
-              path: "department",
-              parentid: 0
-            },
-            {authName: "通讯录设置", id: 2, path: "adrbook", parentid: 0}
-          ]
-        },
-        {
-          id: 1,
-          authName: "数据报表",
-          icon: "el-icon-s-claim",
-          children: [
-            {authName: "数据概览", id: 1, path: "overview", parentid: 1},
-            {authName: "员工活跃数据", id: 2, path: "employees", parentid: 1}
-          ]
-        },
-        {
-          id: 2,
-          authName: "企业设置",
-          icon: "el-icon-office-building",
-          children: [
-            {
-              authName: "企业信息管理",
-              id: 1,
-              path: "information",
-              parentid: 2
-            },
-            {authName: "权限管理", id: 2, path: "authority", parentid: 2},
-            {authName: "团队邀请设置", id: 3, path: "team", parentid: 2},
-            {authName: "安全策略", id: 4, path: "safety", parentid: 2},
-            {authName: "管理员日志", id: 5, path: "journal", parentid: 2}
-          ]
-        }
-      ],
+      penColor: 'rgb(102,205,170)',
       dialogTableVisible: false,
       fontColor: "",
       sliderValue: 80,
@@ -498,41 +596,32 @@ export default {
         label: 'MultiPlanar'
       }
       ],
-      options: [{
-        value: '-1',
-        label: '关闭'
-      }, {
+      penType: [{
         value: '0',
-        label: '橡皮擦'
+        label: '取消画笔'
       }, {
         value: '1',
-        label: '红色'
+        label: '线型画笔'
       }, {
         value: '2',
-        label: '绿色'
+        label: '填充型画笔'
+      }],
+      eraserType: [{
+        value: '0',
+        label: '取消橡皮擦'
       }, {
-        value: '3',
-        label: '蓝色'
+        value: '1',
+        label: '线型橡皮擦'
       }, {
-        value: '8',
-        label: 'Filled Erase'
-      }, {
-        value: '9',
-        label: 'Filled Red'
-      }, {
-        value: '10',
-        label: 'Filled Green'
-      }, {
-        value: '11',
-        label: 'Filled Blue'
-      }, {
-        value: '12',
-        label: 'Erase Selected Cluste'
-      }, {
-        value: '13',
-        label: 'measurement'
-      }
-      ],
+        value: '2',
+        label: '填充型橡皮擦'
+      },
+        {
+          value: '3',
+          label: '整块擦除'
+        }],
+      penValue: '',
+      eraserValue: '',
       selectValue: '',
       selectViewValue: '',
       testUrl: '',
@@ -660,6 +749,14 @@ export default {
           value: 'crosshair',
         }
       ],
+      opacityList: [
+        {
+          title: '标签透明度',
+          iconfont: 'iconimage-level',
+          status: '',
+          value: 'opacity',
+        }
+      ],
       cameraList: [
         {
           title: '快照',
@@ -670,24 +767,6 @@ export default {
       ],
       editList: [
         {
-          title: '画笔',
-          iconfont: 'el-icon-edit',
-          status: '',
-          value: 'pen',
-        },
-        {
-          title: '橡皮擦',
-          iconfont: 'iconremark-erase',
-          status: '',
-          value: 'eraser',
-        },
-        {
-          title: '撤回',
-          iconfont: 'iconimage-recover',
-          status: '',
-          value: 'back',
-        },
-        {
           title: '删除标签',
           iconfont: 'el-icon-delete',
           status: '',
@@ -697,7 +776,15 @@ export default {
           title: '保存标签',
           iconfont: 'el-icon-download',
           status: '',
-          value: 'delete',
+          value: 'save',
+        }
+      ],
+      planeList: [
+        {
+          title: '3D分割截面',
+          iconfont: 'icon-jiemian',
+          status: true,
+          value: 'plane',
         }
       ],
       paletteList: [
@@ -707,6 +794,38 @@ export default {
           status: '',
           value: 'palette',
         }
+      ],
+      originalList: [
+        {
+          title: '显示/隐藏volume',
+          iconfont: 'icon-yanjing_xianshi_o',
+          status: '',
+          value: 'eye',
+        }
+      ],
+      penList: [
+        {
+          title: '画笔',
+          iconfont: 'el-icon-edit',
+          status: '',
+          value: 'pen',
+        }
+      ],
+      eraserList: [
+        {
+          title: '橡皮擦',
+          iconfont: 'iconremark-erase',
+          status: '',
+          value: 'eraser',
+        }
+      ],
+      backList: [
+        {
+          title: '撤回',
+          iconfont: 'iconimage-recover',
+          status: '',
+          value: 'back',
+        },
       ],
       imageList: {}, // 存取所有图片集合
       percentage: 0, // 进度
@@ -782,30 +901,149 @@ export default {
       parXYZ: {}, // 鼠标移动图层转换后的坐标
       spliceList: [], // 切片数组
       splicePrecent: 0, // 处理全部切片进度
-      imageMark: [],
+      imageMark: [1, 2, 3],
       imageMarkCopy: [],
       currentRawImageUrl: '',
       volumeList: [
-        {url: "/api/image/202302/0b2be9e0-886b-4144-99f0-8bb4c6eaa848.nii.gz",colormap:"gray",opacity:1,visible:true},
+        {
+          url: "/file/image/202302/0b2be9e0-886b-4144-99f0-8bb4c6eaa848.nii.gz",
+          colorMap: "gray",
+          opacity: 1,
+          visible: true
+        },
       ],
       isCollapse: true,
-      crosshairSlider:10
+      crosshairSlider: 10,
+      opacitySlider: 100,
+      isClipPlane: true,
+      isVolumeVisible: true,
+      drawcmap: {
+        R: [0, 255, 255, 0, 255, 0, 255, 255, 0, 205, 210, 102, 0, 0, 46, 255, 106],
+        G: [0, 0, 0, 0, 255, 255, 0, 239, 0, 133, 180, 205, 0, 139, 139, 228, 90],
+        B: [0, 0, 225, 255, 0, 255, 255, 213, 205, 63, 140, 170, 128, 139, 87, 225, 205],
+        A: [0, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255],
+      },
+      currentDrawIndex: 11,
+      drawTableData: '',
+      additionalData:{}
     }
   },
-  watch:{
-    crosshairSlider(newVal,oldVal){
-      nv.setCrosshairWidth(newVal/10)
+  watch: {
+    crosshairSlider(newVal, oldVal) {
+      nv.setCrosshairWidth(newVal / 10)
+    },
+    opacitySlider(newVal, oldVal) {
+      nv.setDrawOpacity(newVal * 0.01)
+    },
+    eraserValue(newVal, oldVal) {
+      if (newVal === '0') {
+        nv.setDrawingEnabled(false)
+        this.eraserList[0].status = false
+      } else if (newVal === '1') {
+        nv.setDrawingEnabled(true)
+        nv.setPenValue(0)
+        this.eraserList[0].status = true
+      } else if (newVal === '2') {
+        nv.setDrawingEnabled(true)
+        nv.setPenValue(0, true)
+        this.eraserList[0].status = true
+      } else {
+        nv.setDrawingEnabled(true)
+        nv.setPenValue(-0, true)
+        this.eraserList[0].status = true
+      }
+    },
+    penValue(newVal, oldVal) {
+      if (newVal === '0') {
+        nv.setDrawingEnabled(false)
+        this.penList[0].status = false
+      } else if (newVal === '1') {
+        nv.setDrawingEnabled(true)
+        nv.setPenValue(this.currentDrawIndex)
+        this.penList[0].status = true
+      } else {
+        nv.setDrawingEnabled(true)
+        nv.setPenValue(this.currentDrawIndex, true)
+        this.penList[0].status = true
+        nv.setDrawColormap()
+      }
+    },
+    penColor(newVal, oldVal) {
+      let numbers = newVal.match(/\d+/g).map(Number);
+      this.currentDrawIndex = this.currentDrawIndex + 1
+      this.drawcmap.R[this.currentDrawIndex] = numbers[0]
+      this.drawcmap.G[this.currentDrawIndex] = numbers[1]
+      this.drawcmap.B[this.currentDrawIndex] = numbers[2]
+      this.drawcmap.A[this.currentDrawIndex] = 255
+      nv.setDrawColormap(this.drawcmap)
+      if (this.penValue === '1') {
+        nv.setPenValue(this.currentDrawIndex)
+      }
+      if (this.penValue === '2') {
+        nv.setPenValue(this.currentDrawIndex, true)
+      }
+      this.updateDrawTableData();
     }
   },
   methods: {
+    addData(){
+      this.additionalData.historyid='2'
+      return true
+    },
+    updateDrawTableData() {
+      console.log("监听到了")
+      let newColors = [];
+      for (let i = 1; i <= this.currentDrawIndex; i++) {
+        let r = this.drawcmap.R[i];
+        let g = this.drawcmap.G[i];
+        let b = this.drawcmap.B[i];
+        let colorString = `rgb(${r}, ${g}, ${b})`;
+        newColors.push(colorString);
+      }
+
+      // 创建新的 tableData
+      this.drawTableData = [];
+      for (let i = 0; i < newColors.length; i++) {
+        this.drawTableData.push({color: newColors[i], label: `label ${i + 1}`});
+      }
+    },
+    clickBack(item, index) {
+      nv.drawUndo()
+    },
+    clickOriginal(item, index) {
+      if (this.isVolumeVisible) {
+        nv.volumes[0].opacity = 0
+      } else {
+        nv.volumes[0].opacity = 1
+      }
+      this.isVolumeVisible = !this.isVolumeVisible
+      nv.updateGLVolume()
+    },
+    clickPlane(item, index) {
+      if (this.isClipPlane) {
+        nv.setClipPlane(false);
+      } else {
+        nv.setClipPlane([0.3, 270, 0])
+      }
+      this.isClipPlane = !this.isClipPlane
+      this.planeList[index].status = !item.status
+    },
+    clickColors(id, index) {
+      nv.volumes[0].colorMap = id;
+      this.colorlist.forEach((item) => {
+        item.status = false;
+      });
+      this.colorlist[index].status = true;
+      nv.updateGLVolume();
+    },
     formatTooltip(val) {
       return val / 10;
     },
+    formatTooltipOpacity(val) {
+      return val / 100;
+    },
     clickPalette(index, value) {
-      let cmap=nv.colorMaps()
-      nv.volumes[0].colormap=cmap[2];
-      console.log(cmap[2]);
-      nv.updateGLVolume();
+      this.dialogTableVisible = true
     },
     recordTab() {
       this.tabStatus = !this.tabStatus;
@@ -829,10 +1067,21 @@ export default {
       console.log(key, keyPath);
     },
     clickEdits(item, index) {
-
+      if (item.value === 'pen') {
+        nv.setDrawingEnabled(true)
+        nv.setPenValue(15)
+      }
+      if (item.value === 'save') {
+        nv.saveImage("draw.nii.gz", true)
+        // nv.saveImageToServer('/api/uploadlabel','test.nii.gz',true,{'historyid':'2'})
+      }
+      if (item.value === 'back') {
+        nv.drawUndo()
+      }
     },
-    clickCamera(item,index){
-      nv.saveScene("ScreenShot.png")
+    clickCamera(item, index) {
+      // nv.saveScene("ScreenShot.png")
+      nv.saveSceneToServer('/api/uploadavatar', 'test.png', {'historyid': '2'})
     },
     clickTools(item, index) {
       if (item.value === 'pan') {
@@ -952,61 +1201,26 @@ export default {
     locationChangeHandler(data) {
       console.log(data);
     },
-    showView() {
-      const viewValue = this.selectViewValue
-      if (viewValue === 'Axial') {
-        nv.setSliceType(nv.sliceTypeAxial)
-      }
-      if (viewValue === 'Coronal') {
-        nv.setSliceType(nv.sliceTypeCoronal)
-      }
-      if (viewValue === 'Sagittal') {
-        nv.setSliceType(nv.sliceTypeSagittal)
-      }
-      if (viewValue === 'Render') {
-        nv.setSliceType(nv.sliceTypeRender)
-      }
-      if (viewValue === 'MultiPlanar') {
-        nv.opts.multiplanarForceRender = false
-        nv.setSliceType(nv.sliceTypeMultiplanar)
-      }
-    },
-    undo() {
-      nv.drawUndo()
-    },
     onUpdateParentVar(newVal) {
-      const hexColor = newVal[0].color;
-      const red = parseInt(hexColor.substring(1, 3), 16);
-      const green = parseInt(hexColor.substring(3, 5), 16);
-      const blue = parseInt(hexColor.substring(5, 7), 16);
+      console.log(newVal)
       let cmap = {
-        R: [0, red, 0, 0, 255, 0, 255, 255, 0, 205, 210, 102],
-        G: [0, green, 255, 0, 255, 255, 0, 239, 0, 133, 180, 205],
-        B: [0, blue, 0, 255, 0, 255, 255, 213, 205, 63, 140, 170],
-        A: [0, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255],
-      };
-      nv.setDrawColormap(cmap)
-    },
-    getBitMap() {
-
+        R: [0],
+        G: [0],
+        B: [0],
+        A: [0]
+      }
+      for (let i = 0; i < newVal.length; i++) {
+        let numbers = newVal[i].color.match(/\d+/g).map(Number);
+        cmap.R[i + 1] = numbers[0]
+        cmap.G[i + 1] = numbers[1]
+        cmap.B[i + 1] = numbers[2]
+        cmap.A[i + 1] = 255
+      }
+      this.drawcmap = cmap
+      nv.setDrawColormap(this.drawcmap)
     },
     labelEditor() {
       this.dialogTableVisible = true;
-    },
-    doLeft() {
-      nv.moveCrosshairInVox(-1, 0, 0)
-    },
-    doRight() {
-      nv.moveCrosshairInVox(1, 0, 0)
-    },
-    doPosterior() {
-      nv.moveCrosshairInVox(0, -1, 0)
-    },
-    doAnterior() {
-      nv.moveCrosshairInVox(0, 1, 0)
-    },
-    doInferior() {
-      nv.moveCrosshairInVox(0, 0, -1)
     },
     saveLabel() {
       nv.saveImage("draw.nii", true);
@@ -1031,13 +1245,38 @@ export default {
     }
   },
   mounted() {
-    let cmap=nv.colorMaps()
+    // this.drawcmap.R[this.currentDrawIndex] = 255
+    // this.drawcmap.G[this.currentDrawIndex] = 0
+    // this.drawcmap.B[this.currentDrawIndex] = 0
+    // nv.setDrawColormap(this.drawcmap)
+    let newColors = [];
+    for (let i = 1; i <= this.currentDrawIndex; i++) {
+      let r = this.drawcmap.R[i];
+      let g = this.drawcmap.G[i];
+      let b = this.drawcmap.B[i];
+      let colorString = `rgb(${r}, ${g}, ${b})`;
+      newColors.push(colorString);
+    }
+
+    // 创建新的 tableData
+    this.drawTableData = [];
+    for (let i = 0; i < newColors.length; i++) {
+      this.drawTableData.push({color: newColors[i], label: `label ${i + 1}`});
+    }
+
+    let cmaps = nv.colorMaps()
+    for (var i = 0; i < cmaps.length; i++) {
+      if (cmaps[i] !== 'gray') {
+        this.colorlist.push({'id': cmaps[i], 'name': cmaps[i], 'status': ''})
+      }
+    }
+    this.colorlist.unshift({'id': 'gray', 'name': 'gray', 'status': true})
     nv.setInterpolation(false)
     nv.setRadiologicalConvention(false)
     nv.opts.multiplanarForceRender = true
     nv.attachTo('gl')
     nv.loadVolumes(this.volumeList).then(() => {
-      nv.loadDrawingFromUrl("/api/image/202302/0b2be9e0-886b-4144-99f0-8bb4c6eaa848-label.nii.gz");
+      nv.loadDrawingFromUrl("/file/image/202302/0b2be9e0-886b-4144-99f0-8bb4c6eaa848-label.nii.gz");
     })
         .catch(err => {
           console.error(err);
