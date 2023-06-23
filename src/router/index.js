@@ -556,10 +556,16 @@ const routes = [
         },
         children: [{
             path: ':id(\\d+)',
-            component: UserProj
+            component: UserProj,
+            meta: {
+                title: '用户项目',
+            }
         }, {
             path: '/',
-            component: Projcreate
+            component: Projcreate,
+            meta: {
+                title: '创建新项目',
+            }
         }, {
             path: 'new',
             component: Newproj

@@ -2,14 +2,50 @@
     <div>
         <SectionTitle text-align="center" :title="titleName" description="" data-aos="fade-up" />
         <el-form :label-position="labelPosition" label-width="80px" :model="formLabelAlign">
-            <el-row class="projname">
+            <!-- <el-row class="projname">
                 <el-form-item size='medium' label="项目名称" width="400px">
                     <el-input v-model="formLabelAlign.name"></el-input>
                 </el-form-item>
             </el-row>
             <el-form-item label="项目描述">
                 <el-input v-model="formLabelAlign.region" type="textarea" :rows="2"></el-input>
-            </el-form-item>
+            </el-form-item> -->
+            <div class="peopleDes">
+                <el-descriptions direction="vertical" :column="3" border>
+                    <el-descriptions-item label="用户名" :contentStyle='contentStyle'>
+                        <div class="inputDeep">
+                            {{ form.name }}
+                        </div>
+                    </el-descriptions-item>
+                    <el-descriptions-item label="性别" :contentStyle='contentStyle'>
+                        <div class="inputDeep">
+                            {{ form.sex }}
+                        </div>
+                    </el-descriptions-item>
+                    <el-descriptions-item label="出生日期">
+                        <div class="inputDeep">
+                            {{ form.date }}
+                        </div>
+                    </el-descriptions-item>
+                    <el-descriptions-item label="身高（cm）" :contentStyle='contentStyle'>
+                        {{ form.height }}
+                    </el-descriptions-item>
+                    <el-descriptions-item label="体重（kg）">
+                        {{ form.weight }}
+                    </el-descriptions-item>
+                    <el-descriptions-item label="年龄">
+                        {{ form.age }}</el-descriptions-item>
+                    <el-descriptions-item label="籍贯" :contentStyle='contentStyle'>
+                        {{ form.home }}
+                    </el-descriptions-item>
+                    <el-descriptions-item label="联系方式">
+                        {{ form.tel }}
+                    </el-descriptions-item>
+                    <el-descriptions-item label="血型">
+                        {{ form.blood }}
+                    </el-descriptions-item>
+                </el-descriptions>
+            </div>
             <el-row>
                 <el-col :span="10">历史记录</el-col>
                 <el-col :span="3" :offset="11"> <el-button size="mini" type="success" class="addHistory"
@@ -29,7 +65,7 @@
                         </el-table-column>
                         <el-table-column label="操作" fixed="right" width="300">
                             <template slot-scope="scope">
-                                <el-button size="mini" type="primary">生成报告</el-button>
+                                <el-button size="mini" type="primary" @click="generateReport">生成报告</el-button>
                                 <el-button size="mini" @click="checkHistory">查看</el-button>
                                 <el-button size="mini" type="danger" @click="open">删除</el-button>
                             </template>
@@ -39,12 +75,13 @@
             </el-form-item>
         </el-form>
         <el-dialog title="新建历史记录" :visible.sync="dialogFormVisible">
-            <el-form :model="form">
+            <el-form :model="formNewhistory">
                 <el-form-item label="日期：" :label-width="formLabelWidth">
-                    <el-input v-model="form.name" autocomplete="off"></el-input>
+                    <el-date-picker type="date" placeholder="选择日期" v-model="formNewhistory.date"
+                        style="width: 100%;"></el-date-picker>
                 </el-form-item>
                 <el-form-item label="病人描述：" :label-width="formLabelWidth">
-                    <el-input v-model="form.name" autocomplete="off"></el-input>
+                    <el-input v-model="formNewhistory.introduction" autocomplete="off"></el-input>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -64,6 +101,7 @@ import VueRouter from 'vue-router'
 // Vue.use(VueRouter)
 import axios from "axios";
 
+// this.sendFormValue()
 export default {
     name: 'UserProj',
     components: { SectionTitle },
@@ -91,50 +129,35 @@ export default {
             dialogVisible: false,
             disabled: false,
             form: {
-                name: '',
-                region: '',
-                date1: '',
-                date2: '',
-                delivery: false,
-                type: [],
-                resource: '',
-                desc: ''
             },
-            formLabelWidth: '120px'
+            formLabelWidth: '120px',
+            contentStyle: {
+                'width': '450px',
+                'height': '40px'
+            },
+            formNewhistory: {
+                date: '',
+                introduction: ''
+            }
         }
     },
     methods: {
         sendFormValue() {
             this.dialogFormVisible = false
             this.$router.push('/segmentation')
-            sessionStorage.setItem('historyId', JSON.stringify('1'))
+            sessionStorage.setItem('historyId', JSON.stringify(this.form.name))
         },
         checkHistory() {
-            // axios.post('/submitFile').then(res => {
-            //     console.log(res.data);
-            // }, err => {
-            //     console.log(err);
-            // })
+            axios.post('/login', {
+                "username": "zyj",
+                "password": "123456"
+            }).then(res => {
+                console.log(res.data);
+            }, err => {
+                console.log(err);
+            })
             this.$router.push('/segmentation')
             sessionStorage.setItem('historyId', JSON.stringify('1'))
-        },
-        handleRemove(file, fileList) {
-            console.log(file, fileList);
-        },
-        handlePreview(file) {
-            console.log(file);
-        },
-        handleExceed(files, fileList) {
-            this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
-        },
-        beforeRemove(file, fileList) {
-            return this.$confirm(`确定移除 ${file.name}？`);
-        },
-        handleSuccess(response, file, fileList) {
-            console.log(response)
-        },
-        handleDelete() {
-            this.$router.push('/segmentation')
         },
         open() {
             this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
@@ -157,6 +180,9 @@ export default {
                     message: '已取消删除'
                 });
             });
+        },
+        generateReport() {
+            alert('生成报告')
         }
 
     },
@@ -164,6 +190,7 @@ export default {
         '$route.params.id': function (to, from) {
             console.log(to);
             this.titleName = '用户' + this.$route.params.id + '的项目'
+            this.form.name = this.$route.params.id
         },
         handleRemove(file, fileList) {
             console.log(file, fileList);
@@ -171,23 +198,33 @@ export default {
         handlePreview(file) {
             console.log(file);
         },
+    },
+    mounted() {
+        // axios.post('/login', form).then(res => {
+        //     console.log(res.data);
+        // }, err => {
+        //     console.log(err);
+        // })
+        // alert(this.$route.params.id)
+        this.form = {
+            name: this.$route.params.id,
+            sex: '男',
+            date: '2000-10-21',
+            height: '177',
+            weight: '66',
+            age: '12',
+            home: '河南',
+            tel: '1456454356',
+            blood: 'A型'
+        }
     }
 }
 </script>
-<style lang="scss">
+<style scoped lang="scss">
 .projname {
     width: 400px;
 }
 
-.el-textarea__inner,
-.el-input__inner {
-    background: transparent !important;
-    border-color: #242636 !important;
-}
-
-.inputDeep>>>.el-input__inner {
-    border: 0;
-}
 
 .fileUpload {
     display: flex;
@@ -198,7 +235,6 @@ export default {
 }
 
 .user_skills {
-    // width: 50%;
     margin: auto;
 }
 
@@ -207,7 +243,6 @@ export default {
     background-color: transparent !important;
 }
 
-// ::v-deep .
 
 .el-table th {
     background-color: transparent !important;
@@ -218,6 +253,76 @@ export default {
     background-color: transparent !important;
     border: none !important;
 
+}
+
+
+
+::v-deep .el-table,
+.el-table__expanded-cell {
+    background-color: transparent !important;
+}
+
+::v-deep .el-table tr {
+    background-color: transparent !important;
+}
+
+::v-deep .el-table tbody tr:hover>td {
+    background-color: transparent !important
+}
+
+::v-deep .el-table--enable-row-transition .el-table__body td,
+.el-table .cell {
+    background-color: transparent !important;
+}
+
+/*最外层透明*/
+::v-deep .el-table,
+::v-deep .el-table__expanded-cell {
+    background-color: transparent !important;
+}
+
+/* 表格内背景颜色 */
+::v-deep .el-table th,
+::v-deep .el-table tr,
+::v-deep .el-table td {
+    background-color: transparent !important;
+    border: 0; //去除表格
+}
+
+/*去除底边框*/
+::v-deep.el-table td.el-table__cell {
+    border: 0 !important;
+}
+
+// 表格顶部边框
+::v-deep.el-table th.el-table__cell.is-leaf {
+    // border: 0 !important;
+}
+
+/*去除底部灰条.el-table::before*/
+::v-deep .el-table::before {
+    // display: none;
+}
+
+// 去除row的白底
+::v-deep .el-descriptions-item__cell,
+::v-deep .el-descriptions-item__content {
+    background-color: transparent !important;
+    border: 0; //去除表格
+}
+
+::v-deep .el-descriptions__body {
+    background-color: transparent !important;
+    border: 0;
+}
+
+// 字体颜色
+::v-deep .el-descriptions-item__label.is-bordered-label {
+    color: white !important;
+}
+
+::v-deep .el-descriptions__body {
+    color: wheat !important;
 }
 </style>
 

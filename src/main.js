@@ -21,18 +21,18 @@ import VModal from 'vue-js-modal/dist/index.nocss.js'
 import 'vue-js-modal/dist/styles.css'
 import IdentifyCode from './components/login/IdentifyCode'
 Vue.component('s-identify', IdentifyCode)
-axios.defaults.withCredentials =true
+axios.defaults.withCredentials = true
 Vue.config.productionTip = false
 Vue.use(CoolLightBox)
 Vue.use(VueScrollActive)
 Vue.use(VueTypedJs)
 Vue.use(ElementUI)
 Vue.use(VModal)
-axios.defaults.withCredentials =true
-axios.defaults.baseURL='/api'
+axios.defaults.withCredentials = true
+axios.defaults.baseURL = ''
 new Vue({
   router,
-  created () {
+  created() {
     AOS.init({
       duration: 800,
       once: true,
