@@ -4,7 +4,7 @@
         <li><router-link to="/segmentation">3D影像分割</router-link></li>
         <li><router-link to="/test">测试</router-link></li>
         <li><router-link to="/contact">Contact</router-link></li>
-        <li><router-link to="/history">历史记录</router-link></li>
+        <li><router-link to="/history/">项目管理</router-link></li>
     </ul>
 </template>
 

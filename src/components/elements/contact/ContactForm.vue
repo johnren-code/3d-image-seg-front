@@ -1,6 +1,6 @@
 <template>
     <form class="contact-form-1" action="" @submit="sendEmail">
-        <div class="form-group">
+        <div class="form-gro    up">
             <input
                 type="text"
                 name="fullname"

@@ -935,7 +935,7 @@ export default {
       currentDrawIndex: 11,
       drawTableData: '',
       additionalData: {},
-      organMeasurementVisible: ''
+      organMeasurementVisible: false
     }
   },
   watch: {
