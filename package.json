@@ -23,6 +23,7 @@
     "vue-cool-lightbox": "^2.7.4",
     "vue-count-to": "^1.0.13",
     "vue-js-modal": "^2.0.1",
+    "vue-ls": "^4.2.0",
     "vue-router": "^3.2.0",
     "vue-scrollactive": "^0.9.3",
     "vue-slick-carousel": "^1.0.6",

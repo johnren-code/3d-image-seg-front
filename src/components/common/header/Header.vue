@@ -1,47 +1,47 @@
 <template>
   <div :class="{'header-transparent-with-topbar': data.headerTransparency}">
-    <div v-if="data.showTopHeader && data.topbarStyle === 2"
-         class="header-top-bar">
-      <div class="container">
-        <div class="row align-items-center">
-          <div class="col-lg-4 col-md-12 col-12">
-            <div class="header-left">
-              <p><a href="#">Get the most advanced template
-                <Icon name="chevron-right"/>
-              </a></p>
-            </div>
-          </div>
-          <div class="col-lg-8 col-md-12 col-12">
-            <div class="header-right">
-              <div class="address-content">
-                <p>
-                  <Icon name="map-pin"/>
-                  <span>Alabama, USA</span></p>
-                <p>
-                  <Icon name="phone"/>
-                  <span><a href="#">+06 58 49 99 56</a></span></p>
-              </div>
-              <div class="social-icon-wrapper">
-                <ul class="social-icon social-default icon-naked">
-                  <li><a target="_blank" href="https://www.facebook.com/">
-                    <Icon name="facebook"/>
-                  </a></li>
-                  <li><a target="_blank" href="https://www.twitter.com">
-                    <Icon name="twitter"/>
-                  </a></li>
-                  <li><a target="_blank" href="https://www.instagram.com">
-                    <Icon name="instagram"/>
-                  </a></li>
-                  <li><a target="_blank" href="https://www.linkedin.com">
-                    <Icon name="linkedin"/>
-                  </a></li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+<!--    <div v-if="data.showTopHeader && data.topbarStyle === 2"-->
+<!--         class="header-top-bar">-->
+<!--      <div class="container">-->
+<!--        <div class="row align-items-center">-->
+<!--          <div class="col-lg-4 col-md-12 col-12">-->
+<!--            <div class="header-left">-->
+<!--              <p><a href="#">Get the most advanced template-->
+<!--                <Icon name="chevron-right"/>-->
+<!--              </a></p>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="col-lg-8 col-md-12 col-12">-->
+<!--            <div class="header-right">-->
+<!--              <div class="address-content">-->
+<!--                <p>-->
+<!--                  <Icon name="map-pin"/>-->
+<!--                  <span>Alabama, USA</span></p>-->
+<!--                <p>-->
+<!--                  <Icon name="phone"/>-->
+<!--                  <span><a href="#">+06 58 49 99 56</a></span></p>-->
+<!--              </div>-->
+<!--              <div class="social-icon-wrapper">-->
+<!--                <ul class="social-icon social-default icon-naked">-->
+<!--                  <li><a target="_blank" href="https://www.facebook.com/">-->
+<!--                    <Icon name="facebook"/>-->
+<!--                  </a></li>-->
+<!--                  <li><a target="_blank" href="https://www.twitter.com">-->
+<!--                    <Icon name="twitter"/>-->
+<!--                  </a></li>-->
+<!--                  <li><a target="_blank" href="https://www.instagram.com">-->
+<!--                    <Icon name="instagram"/>-->
+<!--                  </a></li>-->
+<!--                  <li><a target="_blank" href="https://www.linkedin.com">-->
+<!--                    <Icon name="linkedin"/>-->
+<!--                  </a></li>-->
+<!--                </ul>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
 
 
     <!-- Start Header Area -->
@@ -60,9 +60,18 @@
 
                 <!-- Start Header Btn -->
                 <div class="header-btn">
-                  <a :class="data.buyButtonClass" href="#" @click="showDialog">
+                  <a :class="data.buyButtonClass" href="#" @click="showDialog" v-if="!login">
                     注册/登录
                   </a>
+                  <div class="has-droupdown has-menu-child-item" v-if="login"  style="display: flex;flex-direction: row;">
+                    <p style="margin-top: 30px;margin-right: 25px;">
+                      欢迎您，{{username}}
+                    </p>
+                    <div @click="toPersonalPage" style="cursor: pointer;margin-top: 23px;" slot="reference">
+                      <el-avatar :src="avatar"> </el-avatar>
+                    </div>
+                    <i class="el-icon-switch-button" v-if="login" title="登出" @click="logout" style="margin-top:35px;font-size: 20px;margin-left: 20px;cursor: pointer"></i>
+                  </div>
                 </div>
                 <!-- End Header Btn  -->
 
@@ -77,21 +86,21 @@
                 </div>
                 <!-- Start Mobile-Menu-Bar -->
 
-                <div v-if="data.showThemeSwitcherButton" id="my_switcher" class="my_switcher">
-                  <ul>
-                    <li>
-                      <a href="javascript: void(0);"
-                         @click.prevent="AppFunctions.toggleClass('body', 'active-light-mode')">
-                        <img class="light-icon"
-                             src="../../../assets/images/icons/sun-01.svg"
-                             alt="Sun images">
-                        <img class="dark-icon"
-                             src="../../../assets/images/icons/vector.svg"
-                             alt="Moon Images">
-                      </a>
-                    </li>
-                  </ul>
-                </div>
+<!--                <div v-if="data.showThemeSwitcherButton" id="my_switcher" class="my_switcher">-->
+<!--                  <ul>-->
+<!--                    <li>-->
+<!--                      <a href="javascript: void(0);"-->
+<!--                         @click.prevent="AppFunctions.toggleClass('body', 'active-light-mode')">-->
+<!--                        <img class="light-icon"-->
+<!--                             src="../../../assets/images/icons/sun-01.svg"-->
+<!--                             alt="Sun images">-->
+<!--                        <img class="dark-icon"-->
+<!--                             src="../../../assets/images/icons/vector.svg"-->
+<!--                             alt="Moon Images">-->
+<!--                      </a>-->
+<!--                    </li>-->
+<!--                  </ul>-->
+<!--                </div>-->
               </div>
             </div>
           </template>
@@ -171,23 +180,33 @@ import Nav from './Nav'
 import Logo from '../../elements/logo/Logo'
 import Login from "../../login/Login";
 import Button from "../../elements/button/Button";
+import eventBus from "../../../global/eventBus";
 
 export default {
   name: 'Header',
   props: {
     data: {
       default: null,
-      login:false
     }
   },
   components: {Button, Logo, Nav, MobileMenu, Icon, Login},
   data() {
     return {
       dialogFormVisible: false,
-      AppFunctions
+      AppFunctions,
+      login:false,
+      avatar:'',
+      username:''
     }
   },
   methods: {
+    logout(){
+      this.$ls.clear()
+      eventBus.$emit('userLogin',false)
+    },
+    toPersonalPage(){
+      this.$router.push('/personal')
+    },
     showDialog() {
       this.$refs.loginPage.show()
     },
@@ -202,9 +221,23 @@ export default {
   },
   created() {
     window.addEventListener('scroll', this.toggleStickyHeader);
+    eventBus.$on('userLogin',data=>{
+      this.login = data
+      if(this.login){
+        this.avatar = this.$ls.get('userInfo').avatar
+        this.username = this.$ls.get('userInfo').username
+      }else {
+        this.$ls.clear()
+      }
+    })
   },
   mounted() {
     this.toggleStickyHeader();
+    this.login = this.$ls.get('userInfo',null)!=null
+    if(this.login){
+      this.username=this.$ls.get('userInfo').username
+      this.avatar = this.$ls.get('userInfo').avatar
+    }
   },
   beforeDestroy() {
     window.removeEventListener('scroll', this.toggleStickyHeader);
