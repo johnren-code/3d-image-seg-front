@@ -5,9 +5,9 @@
          :adaptive="true">
     <div class="login_form">
       <div class="login_form_left">
-        <img src="../../assets/images/logo/logo-dark.png" alt="Doob Vue" style="display: inline-block;"/>
+        <img src="../../assets/images/logo/logo.png" alt="Doob Vue" style="display: inline-block;"/>
         <p class="description" style="color: #E4E6EA">
-        <h5><br/>可视化和可编辑的分割<br/><br/></h5>
+        <h5><br/>&nbsp可视化和可编辑的分割<br/><br/></h5>
         </p>
         <img src="../../assets/images/modal/login.png" alt="Doob Vue" style="display: inline-block;"/>
       </div>
@@ -339,7 +339,7 @@ export default {
             }).then(res => {
               this.fullscreenLoading = false
               if (res.data.code === 200) {
-                this.$ls.set('userInfo', res.data.data)
+                this.$ls.set('userInfo', res.data.result)
                 eventBus.$emit('userLogin', true)
               }
             })

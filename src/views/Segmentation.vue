@@ -554,7 +554,6 @@ import Timeline from '../components/elements/timeline/Timeline'
 import Counter from '../components/elements/counterUp/Counter'
 import Brand from '../components/elements/brand/Brand'
 import Team from '../components/elements/team/Team'
-// import * as niivue from '../niivue/niivue.umd.js'
 import Table from "../components/table/Table"
 import {Dialog} from "element-ui";
 import {Niivue} from '@niivue/niivue'
