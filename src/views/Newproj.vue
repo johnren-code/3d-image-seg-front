@@ -232,11 +232,16 @@ export default {
 }
 
 ::v-deep .el-descriptions-item__label.is-bordered-label {
-    color: white !important;
+    // color: white !important;
+    color: #868e96 !important
 }
 
 ::v-deep .el-input__inner {
     color: white !important;
     border: none;
+}
+
+::v-deep .el-descriptions .is-bordered .el-descriptions-item__cell {
+    border: 1px solid #868e96;
 }
 </style>
