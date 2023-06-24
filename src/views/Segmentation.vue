@@ -444,6 +444,7 @@
                     </el-option>
                   </el-select>
                   <el-button type="primary" @click="doSegmentation" round style="margin-left:10px">点击进行分割</el-button>
+                  <el-button type="primary" @click="getDrawBitMap" round style="margin-left:10px">getBitmap</el-button>
                   <el-button type="primary" @click="saveCurrentState" round style="position: absolute;right:100px">保存</el-button>
 <!--                  <el-button type="primary" @click="clickVisible">测试数据可视化</el-button>-->
                   <el-dialog title="label Editor" :visible.sync="dialogTableVisible" center :append-to-body='true'
@@ -488,6 +489,31 @@
                 </div>
               </el-dialog>
 
+              <el-dialog
+                  :title="'上传后处理脚本'"
+                  :visible="uploadScriptVisible"
+                  width="500px"
+                  :before-close="handleUploadClose"
+                  class="dialog"
+                  top="23vh"
+                  :close-on-press-escape="false"
+                  :close-on-click-modal="false"
+                  v-dialogDrag
+              >
+                <el-upload
+                    class="upload-demo"
+                    ref="upload"
+                    action="https://jsonplaceholder.typicode.com/posts/"
+                    :on-preview="handlePreview"
+                    :on-remove="handleRemove"
+                    :file-list="fileList"
+                    style="margin: 15px"
+                    :auto-upload="false">
+                  <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+                  <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>
+                  <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+                </el-upload>
+              </el-dialog>
 
               <el-dialog
                   :title="'Slices，共' + spliceList.length + '个（' + splicePrecent + '%）'"
@@ -929,7 +955,8 @@ export default {
       currentDrawIndex: 11,
       drawTableData: '',
       additionalData: {},
-      organMeasurementVisible: false
+      organMeasurementVisible: false,
+      uploadScriptVisible:false
     }
   },
   watch: {
@@ -990,6 +1017,9 @@ export default {
     }
   },
   methods: {
+    getDrawBitMap(){
+      console.log(nv.drawBitmap)
+    },
     saveCurrentState(){
       this.saveImageToServer('/api/uploadlabel','new.nii.gz',true,{'historyid':'2'})
       this.saveSceneToServer('/api/uploadavatar','screenshot.png',{'historyid':'2'})
@@ -997,9 +1027,15 @@ export default {
     handleOrganClose() {
       this.organMeasurementVisible = false
     },
+    handleUploadClose(){
+      this.uploadScriptVisible = false
+    },
     showDetails(item, index) {
       if (item.name === '器官测量') {
         this.organMeasurementVisible = true
+      }
+      if(item.name === '上传后处理脚本'){
+        this.uploadScriptVisible = true
       }
     },
     clickVisible() {

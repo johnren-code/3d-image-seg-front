@@ -372,30 +372,40 @@ export default {
     sendVerifyCode(email) {
       var that = this
       if (email === '') {
-        that.$message.error('输入号码为空');
+        that.$message.error('输入邮箱为空');
       } else {
         // console.log('开始发送验证码了，是否在登录',that.login)
-        var url = this.login ? 'sendCode' : 'sendRegister'
-        this.$axios.get(this.$global.apiUrl + 'code/' + url, {
-          params: {memPhone: email}
-        }).then(res => {
-          // console.log(res.data)
-          if (res.data.message === '手机号未注册！') {
-            that.$message.error('手机号未注册');
-          } else {
-            that.$message({message: '发送成功！', type: 'success'});
-            //开始倒计时
-            that.countDown = 60
-            var interval = setInterval(function () {
-              that.countDown--
-              if (that.countDown == 0) {
-                clearInterval(interval)
-              }
-            }, 1000)
+        axios.get('/api/sendCode',{
+          params:{
+            email:email
           }
-        }).catch(function (error) {
-          that.$message.error('发送失败，请稍后再试');
-        });
+        }).then(res =>{
+          console.log('没有跳转到error')
+          console.log(res)
+        }).catch(error => {
+          console.error(error)
+        })
+        // var url = this.login ? 'sendCode' : 'sendRegister'
+        // this.$axios.get(this.$global.apiUrl + 'code/' + url, {
+        //   params: {memPhone: email}
+        // }).then(res => {
+        //   // console.log(res.data)
+        //   if (res.data.message === '手机号未注册！') {
+        //     that.$message.error('手机号未注册');
+        //   } else {
+        //     that.$message({message: '发送成功！', type: 'success'});
+        //     //开始倒计时
+        //     that.countDown = 60
+        //     var interval = setInterval(function () {
+        //       that.countDown--
+        //       if (that.countDown == 0) {
+        //         clearInterval(interval)
+        //       }
+        //     }, 1000)
+        //   }
+        // }).catch(function (error) {
+        //   that.$message.error('发送失败，请稍后再试');
+        // });
       }
     },
     // 验证码相关方法

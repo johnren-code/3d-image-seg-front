@@ -62,6 +62,7 @@ import History from "../views/History";
 import UserProj from "../views/UserProj"
 import Projcreate from "../views/Projcreate"
 import Newproj from "../views/Newproj"
+import PersonalPage from "../views/PersonalPage";
 
 Vue.use(VueRouter)
 
@@ -104,6 +105,14 @@ const routes = [
         component: Test,
         meta: {
             title: '测试',
+        },
+    },
+    {
+        path: '/personal',
+        name: 'PersonalPage',
+        component: PersonalPage,
+        meta: {
+            title: '个人界面测试',
         },
     },
     {
