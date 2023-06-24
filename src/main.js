@@ -30,6 +30,13 @@ Vue.use(ElementUI)
 Vue.use(VModal)
 axios.defaults.withCredentials = true
 axios.defaults.baseURL = ''
+import Storage from 'vue-ls'
+const storageOptions = {
+  namespace: 'vue_',
+  name: 'ls',
+  storage: 'local'
+}
+
 new Vue({
   router,
   created() {
@@ -40,3 +47,4 @@ new Vue({
   },
   render: h => h(App)
 }).$mount('#app')
+Vue.use(Storage, storageOptions)

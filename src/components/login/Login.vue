@@ -1,65 +1,38 @@
 <template>
-  <modal name="login-modal"
-         :width="800"
-         :height="500"
-         :adaptive="true">
+  <modal name="login-modal" :width="800" :height="500" :adaptive="true">
     <div class="login_form">
       <div class="login_form_left">
-        <img src="../../assets/images/logo/logo-dark.png" alt="Doob Vue" style="display: inline-block;"/>
+        <img src="../../assets/images/logo/logo-dark.png" alt="Doob Vue" style="display: inline-block;" />
         <p class="description" style="color: #E4E6EA">
-        <h5><br/>可视化和可编辑的分割<br/><br/></h5>
+        <h5><br />可视化和可编辑的分割<br /><br /></h5>
         </p>
-        <img src="../../assets/images/modal/login.png" alt="Doob Vue" style="display: inline-block;"/>
+        <img src="../../assets/images/modal/login.png" alt="Doob Vue" style="display: inline-block;" />
       </div>
       <div class="login_form_right" v-if="login">
         <div class="contact-form-1">
           <div v-if="this.email">
             邮箱
             <div class="form-group">
-              <input
-                  type="text"
-                  name="email"
-                  placeholder="Email Address"
-                  required
-                  v-model="loginData.email"
-              />
+              <input type="text" name="email" placeholder="Email Address" required v-model="loginData.email" />
             </div>
           </div>
           <div v-if="!this.email">
             用户名
             <div class="form-group">
-              <input
-                  type="text"
-                  name="email"
-                  placeholder="User Name"
-                  required
-                  v-model="loginData.username"
-              />
+              <input type="text" name="email" placeholder="User Name" required v-model="loginData.username" />
             </div>
           </div>
 
           <div v-if="!email">
             密码
             <div class="form-group">
-              <input
-                  type="password"
-                  name="password"
-                  placeholder="Password"
-                  required
-                  v-model="loginData.password"
-              />
+              <input type="password" name="password" placeholder="Password" required v-model="loginData.password" />
             </div>
           </div>
 
           验证码
           <div class="verify-code">
-            <input
-                type="text"
-                name="verifyCode"
-                placeholder="Verify Code"
-                v-model="loginData.writeCode"
-                required
-            />
+            <input type="text" name="verifyCode" placeholder="Verify Code" v-model="loginData.writeCode" required />
             <div class="code" @click="refreshCode" v-if="!email">
               <s-identify :identifyCode="identifyCode"></s-identify>
             </div>
@@ -67,17 +40,14 @@
               <!-- <Button :read-more-button="true">
                   <span @click="sendVerifyCode(loginData.email)">点击发送验证码</span>
               </Button> -->
-              <Button :title="countDown>0?countDown+'s':'发送验证码'"
-                      :style="{cursor:countDown>0?'not-allowed !important':'', pointerEvents:countDown>0?'none':''}"
-                      size="small" :outlined="true" @click.native="sendVerifyCode(loginData.email)"></Button>
+              <Button :title="countDown > 0 ? countDown + 's' : '发送验证码'"
+                :style="{ cursor: countDown > 0 ? 'not-allowed !important' : '', pointerEvents: countDown > 0 ? 'none' : '' }"
+                size="small" :outlined="true" @click.native="sendVerifyCode(loginData.email)"></Button>
             </div>
           </div>
           <div style="display: flex;flex-direction: row;align-items: center;justify-content: space-between">
             <div class="form-group" style="margin-top: 30px;">
-              <button
-                  class="btn-default"
-                  @click="doLogin"
-                  v-loading.fullscreen.lock="fullscreenLoading">立即登录
+              <button class="btn-default" @click="doLogin" v-loading.fullscreen.lock="fullscreenLoading">立即登录
               </button>
             </div>
             <Button :read-more-button="true" v-if="!email">
@@ -99,75 +69,42 @@
         <div action="" @submit="doRegister" class="contact-form-1">
           用户名
           <div class="register-input" style="margin-bottom: 10px;">
-            <input
-                type="text"
-                name="username"
-                placeholder="User Name"
-                required
-                v-model="registerData.username"
-                @blur="checkExist"
-            />
+            <input type="text" name="username" placeholder="User Name" required v-model="registerData.username"
+              @blur="checkExist" />
           </div>
           邮箱
           <div class="register-input">
-            <input
-                type="text"
-                name="email"
-                placeholder="Email Address"
-                required
-                v-model="registerData.email"
-            />
+            <input type="text" name="email" placeholder="Email Address" required v-model="registerData.email" />
           </div>
           <div class="psw-form">
             <div>
               密码
               <div class="register-input">
-                <input
-                    type="password"
-                    name="password"
-                    placeholder="Password"
-                    required
-                    v-model="registerData.password"
-                />
+                <input type="password" name="password" placeholder="Password" required v-model="registerData.password" />
               </div>
             </div>
             <div style="margin-left: 30px;">
               确认密码
               <div class="register-input">
-                <input
-                    type="password"
-                    name="repassword"
-                    placeholder="Password"
-                    required
-                    v-model="repsw"
-                    @blur="checkPsw"
-                />
+                <input type="password" name="repassword" placeholder="Password" required v-model="repsw"
+                  @blur="checkPsw" />
               </div>
             </div>
           </div>
           验证码
           <div class="verify-code">
-            <input
-                type="text"
-                name="verifyCode"
-                placeholder="Verify Code"
-                required
-                v-model="registerData.verifyCode"
-            />
+            <input type="text" name="verifyCode" placeholder="Verify Code" required v-model="registerData.verifyCode" />
             <div style="margin-left: 20px;">
               <!-- <Button :read-more-button="true">
                   <span @click="sendVerifyCode(registerData.email)">发送验证码</span>
               </Button> -->
-              <Button :title="countDown>0?countDown+'s':'发送验证码'"
-                      :style="{cursor:countDown>0?'not-allowed !important':'', pointerEvents:countDown>0?'none':''}"
-                      size="small" :outlined="true" @click.native="sendVerifyCode(registerData.email)"></Button>
+              <Button :title="countDown > 0 ? countDown + 's' : '发送验证码'"
+                :style="{ cursor: countDown > 0 ? 'not-allowed !important' : '', pointerEvents: countDown > 0 ? 'none' : '' }"
+                size="small" :outlined="true" @click.native="sendVerifyCode(registerData.email)"></Button>
             </div>
           </div>
           <div class="form-group" style="margin-top: 30px;">
-            <button
-                class="btn-default"
-                @click="doRegister"
-                v-loading.fullscreen.lock="fullscreenLoading">立即注册
+            <button class="btn-default" @click="doRegister" v-loading.fullscreen.lock="fullscreenLoading">立即注册
             </button>
           </div>
           <div class="form-group">
@@ -180,7 +117,6 @@
       </div>
     </div>
   </modal>
-
 </template>
 
 <script>
@@ -189,7 +125,7 @@ import axios from "axios";
 
 export default {
   name: "Login",
-  components: {Button},
+  components: { Button },
   data() {
     return {
       fullscreenLoading: false,//加载状态
@@ -250,30 +186,30 @@ export default {
         var urlInfo
         if (this.email) { //邮箱验证码
           urlInfo = 'login2'
-          loginInfo = JSON.stringify({email: this.loginData.email, verity: this.loginData.writeCode})
+          loginInfo = JSON.stringify({ email: this.loginData.email, verity: this.loginData.writeCode })
         } else { //账号密码
           urlInfo = 'login'
-          loginInfo = JSON.stringify({name: this.loginData.username, password: this.loginData.password})
+          loginInfo = JSON.stringify({ name: this.loginData.username, password: this.loginData.password })
         }
         // var that = this
         const _this = this
-        axios.post('/api/login', {
+        axios.post('/login', {
           username: this.loginData.username,
           password: this.loginData.password
         })
-            .then(rep => {
-              if (rep.data.code === 200) {
-                _this.store.commit('login', rep.data.result)
+          .then(rep => {
+            if (rep.data.code === 200) {
+              _this.store.commit('login', rep.data.result)
 
-                this.$router.push('/video')//否则跳转至首页
-              } else {
-                this.$message(rep.data.message)
-              }
+              this.$router.push('/video')//否则跳转至首页
+            } else {
+              this.$message(rep.data.message)
+            }
 
-            })
-            .catch(failResponse => {
-              console.log(failResponse.response)
-            })
+          })
+          .catch(failResponse => {
+            console.log(failResponse.response)
+          })
         // this.$axios({
         //   headers: {
         //     'Content-Type': 'application/json'
@@ -341,7 +277,7 @@ export default {
 
           //注册后直接登录
           let urlInfo = 'login'
-          let loginInfo = JSON.stringify({name: this.registerData.username, password: this.registerData.password})
+          let loginInfo = JSON.stringify({ name: this.registerData.username, password: this.registerData.password })
           this.$axios({
             headers: {
               'Content-Type': 'application/json'
@@ -377,13 +313,13 @@ export default {
         // console.log('开始发送验证码了，是否在登录',that.login)
         var url = this.login ? 'sendCode' : 'sendRegister'
         this.$axios.get(this.$global.apiUrl + 'code/' + url, {
-          params: {memPhone: email}
+          params: { memPhone: email }
         }).then(res => {
           // console.log(res.data)
           if (res.data.message === '手机号未注册！') {
             that.$message.error('手机号未注册');
           } else {
-            that.$message({message: '发送成功！', type: 'success'});
+            that.$message({ message: '发送成功！', type: 'success' });
             //开始倒计时
             that.countDown = 60
             var interval = setInterval(function () {
@@ -409,8 +345,8 @@ export default {
     makeCode(o, l) {
       for (let i = 0; i < l; i++) {
         this.identifyCode += this.identifyCodes[
-            this.randomNum(0, this.identifyCodes.length)
-            ];
+          this.randomNum(0, this.identifyCodes.length)
+        ];
       }
       // console.log(this.identifyCode);
     },
@@ -445,10 +381,14 @@ export default {
   padding: 50px;
   opacity: 1;
   background-color: #008FD5;
-  background: -webkit-linear-gradient(left top, #211013, #0B2F41); /* Safari 5.1 - 6.0 */
-  background: -o-linear-gradient(bottom right, #211013, #0B2F41); /* Opera 11.1 - 12.0 */
-  background: -moz-linear-gradient(bottom right, #211013, #0B2F41); /* Firefox 3.6 - 15 */
-  background: linear-gradient(to bottom right, #211013, #0B2F41); /* 标准的语法 */
+  background: -webkit-linear-gradient(left top, #211013, #0B2F41);
+  /* Safari 5.1 - 6.0 */
+  background: -o-linear-gradient(bottom right, #211013, #0B2F41);
+  /* Opera 11.1 - 12.0 */
+  background: -moz-linear-gradient(bottom right, #211013, #0B2F41);
+  /* Firefox 3.6 - 15 */
+  background: linear-gradient(to bottom right, #211013, #0B2F41);
+  /* 标准的语法 */
 }
 
 .login_form_right {
@@ -457,10 +397,14 @@ export default {
   margin-left: 1px;
   padding: 50px;
   opacity: 1;
-  background: -webkit-linear-gradient(left top, #211013, #0B2F41); /* Safari 5.1 - 6.0 */
-  background: -o-linear-gradient(bottom right, #211013, #0B2F41); /* Opera 11.1 - 12.0 */
-  background: -moz-linear-gradient(bottom right, #211013, #0B2F41); /* Firefox 3.6 - 15 */
-  background: linear-gradient(to bottom right, #211013, #0B2F41); /* 标准的语法 */
+  background: -webkit-linear-gradient(left top, #211013, #0B2F41);
+  /* Safari 5.1 - 6.0 */
+  background: -o-linear-gradient(bottom right, #211013, #0B2F41);
+  /* Opera 11.1 - 12.0 */
+  background: -moz-linear-gradient(bottom right, #211013, #0B2F41);
+  /* Firefox 3.6 - 15 */
+  background: linear-gradient(to bottom right, #211013, #0B2F41);
+  /* 标准的语法 */
 }
 
 .verify-code {

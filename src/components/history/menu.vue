@@ -5,25 +5,15 @@
                 @click="isCollapse = true"></i>
             <i v-show="isCollapse" class="el-icon-s-unfold" style="font-size: 30px;margin-left: 20px;cursor: pointer"
                 @click="isCollapse = false"></i>
-            <el-menu
-                default-active="1"
-                class="el-menu-vertical-demo"
-                @open="handleOpen"
-                @close="handleClose"
-                :collapse="isCollapse"
-                background-color="transparent"
-                text-color="#EBEEF5"
-                router
-                :collapse-transition="false"
-                style="border: none"
-            >
+            <el-menu default-active="1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"
+                :collapse="isCollapse" background-color="transparent" text-color="#EBEEF5" router
+                :collapse-transition="false" style="border: none">
                 <el-menu-item index="/history/new">
                     <el-button icon="el-icon-plus" type="text">新建项目</el-button>
                 </el-menu-item>
-
-                <el-menu-item :index="'/history/'+item.id.toString()" v-for="item in tableData">
+                <el-menu-item :index="'/history/' + item.id.toString()" v-for="item in tableData">
                     <i class="el-icon-user-solid"></i>
-                    <span slot="title">{{ item.date }}</span>
+                    <span slot="title">病人{{ item.name }}</span>
                 </el-menu-item>
             </el-menu>
         </el-aside>
@@ -31,27 +21,14 @@
 </template>
   
 <script>
+import axios from "axios";
+
 export default {
     name: "Menu",
     data() {
         return {
             isCollapse: true,
-            tableData: [{
-                id: 1,
-                date: '病人1'
-            },
-            {
-                id: 2,
-                date: '病人2'
-            },
-            {
-                id: 3,
-                date: '病人3'
-            },
-            {
-                id: 4,
-                date: '病人4'
-            }],
+            tableData: [],
         };
     },
     methods: {
@@ -61,6 +38,26 @@ export default {
         handleClose(key, keyPath) {
             console.log(key, keyPath);
         }
+    },
+    watch: {
+        '$route.params': function (to, from) {
+            axios.post('/proj/my', { permission: 'all' }).then(res => {
+                // this.form = res.data.result
+                this.tableData = res.data.result
+                console.log(res.data);
+            }, err => {
+                console.log(err);
+            })
+        },
+    },
+    mounted() {
+        axios.post('/proj/my', { permission: 'all' }).then(res => {
+            // this.form = res.data.result
+            this.tableData = res.data.result
+            console.log(res.data);
+        }, err => {
+            console.log(err);
+        })
     }
 }
 </script>
@@ -69,7 +66,7 @@ export default {
 .el-menu-vertical-demo:not(.el-menu--collapse) {
     width: 100%;
     min-height: 400px;
-    border: none!important;
+    border: none !important;
     text-align: center;
 }
 
