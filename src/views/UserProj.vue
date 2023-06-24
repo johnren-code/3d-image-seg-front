@@ -47,8 +47,17 @@
                 </el-descriptions>
             </div>
             <el-row>
-                <el-col :span="10">历史记录</el-col>
-                <el-col :span="3" :offset="11"> <el-button size="mini" type="success" class="addHistory"
+                <el-col :span="16">历史记录</el-col>
+                <el-col :span="3">
+                    <el-input v-model="searchInfo" prefix-icon="el-icon-search" style="width: 90%;margin-right: 10px"
+                        clearable @clear="search" @keydown.enter.native="search"></el-input>
+                </el-col>
+                <el-col :span="2">
+                    <el-button icon="el-icon-search" type="primary" @click="search" size="mini" style="width: 90%;">
+                        搜索记录
+                    </el-button>
+                </el-col>
+                <el-col :span="3"> <el-button size="mini" type="success" class="addHistory"
                         @click="dialogFormVisible = true">添加历史记录</el-button></el-col>
             </el-row>
             <el-form-item>
@@ -107,6 +116,7 @@ export default {
     components: { SectionTitle },
     data() {
         return {
+            searchInfo: '',
             titleName: '用户' + this.$route.params.id + '的项目',
             labelPosition: 'top',
             formLabelAlign: {
@@ -138,7 +148,8 @@ export default {
             formNewhistory: {
                 date: '',
                 introduction: ''
-            }
+            },
+
         }
     },
     methods: {
@@ -183,6 +194,11 @@ export default {
         },
         generateReport() {
             alert('生成报告')
+        },
+
+        // 搜索历史记录
+        search() {
+            alert(`查找项目名为${this.$route.params.id},搜索内容为${this.searchInfo}`)
         }
 
     },
@@ -327,6 +343,10 @@ export default {
 
 .peopleDes {
     width: 99%;
+}
+
+::v-deep .el-descriptions .is-bordered .el-descriptions-item__cell {
+    border: 1px solid #868e96;
 }
 </style>
 
