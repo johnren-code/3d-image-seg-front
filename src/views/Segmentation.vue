@@ -2,79 +2,9 @@
   <Layout header-class="header-transparent" :show-newsletter="true" :show-cta="false">
     <!-- Start Service Area -->
     <div class="rn-service-area rn-section-gap">
-      <!--      <div class="container">-->
-      <!--        <div class="row">-->
-      <!--          <div class="col-lg-12">-->
-      <!--            <SectionTitle-->
-      <!--                text-align="center"-->
-      <!--                subtitle="我们能为你做什么？"-->
-      <!--                title="精准的3D医学影像分割"-->
-      <!--                description="There are many variations of passages of Lorem Ipsum available, <br /> but the majority have suffered alteration."-->
-      <!--                data-aos="fade-up"-->
-      <!--            />-->
-      <!--          </div>-->
-      <!--        </div>-->
-      <!--      </div>-->
       <!-- 侧边栏 -->
       <el-container>
         <Menu></Menu>
-<!--        <el-aside class="side-menu" :width="isCollapse ? '65px' : '350px'">-->
-<!--          <i v-show="!isCollapse" class="el-icon-s-fold" style="font-size: 30px;margin-left: 320px;cursor: pointer"-->
-<!--             @click="isCollapse=true"></i>-->
-<!--          <i v-show="isCollapse" class="el-icon-s-unfold" style="font-size: 30px;margin-left: 20px;cursor: pointer"-->
-<!--             @click="isCollapse=false"></i>-->
-<!--          <el-menu-->
-<!--              default-active="1"-->
-<!--              class="el-menu-vertical-demo"-->
-<!--              background-color="transparent"-->
-<!--              text-color="#fff"-->
-<!--              active-text-color="#0072FF"-->
-<!--              style="border: none"-->
-<!--              :collapse="isCollapse"-->
-<!--              :collapse-transition="false"-->
-<!--          >-->
-<!--            <el-menu-item index="1">-->
-<!--              <i class="el-icon-user-solid"></i>-->
-<!--              <span style="margin-left: 20px">病人编号123456</span>-->
-<!--            </el-menu-item>-->
-<!--            <el-menu-item index="2">-->
-<!--              <i class="el-icon-user-solid"></i>-->
-<!--              <span style="margin-left: 20px">病人编号123456</span>-->
-<!--            </el-menu-item>-->
-<!--            <el-menu-item index="3">-->
-<!--              <i class="el-icon-user-solid"></i>-->
-<!--              <span style="margin-left: 20px">病人编号123456</span>-->
-<!--            </el-menu-item>-->
-<!--            <el-menu-item index="4">-->
-<!--              <i class="el-icon-user-solid"></i>-->
-<!--              <span style="margin-left: 20px">病人编号123456</span>-->
-<!--            </el-menu-item>-->
-<!--            <el-menu-item index="5">-->
-<!--              <i class="el-icon-user-solid"></i>-->
-<!--              <span style="margin-left: 20px">病人编号123456</span>-->
-<!--            </el-menu-item>-->
-<!--            <el-menu-item index="6">-->
-<!--              <i class="el-icon-user-solid"></i>-->
-<!--              <span style="margin-left: 20px">病人编号123456</span>-->
-<!--            </el-menu-item>-->
-<!--            <el-menu-item index="7">-->
-<!--              <i class="el-icon-user-solid"></i>-->
-<!--              <span style="margin-left: 20px">病人编号123456</span>-->
-<!--            </el-menu-item>-->
-<!--            <el-menu-item index="8">-->
-<!--              <i class="el-icon-user-solid"></i>-->
-<!--              <span style="margin-left: 20px">病人编号123456</span>-->
-<!--            </el-menu-item>-->
-<!--            <el-menu-item index="9">-->
-<!--              <i class="el-icon-user-solid"></i>-->
-<!--              <span style="margin-left: 20px">病人编号123456</span>-->
-<!--            </el-menu-item>-->
-<!--            <el-menu-item index="10">-->
-<!--              <i class="el-icon-user-solid"></i>-->
-<!--              <span style="margin-left: 20px">病人编号123456</span>-->
-<!--            </el-menu-item>-->
-<!--          </el-menu>-->
-<!--        </el-aside>-->
         <el-main>
           <div class="dicom-main">
             <div class="l-bottom">
@@ -995,7 +925,6 @@ export default {
         nv.setDrawingEnabled(true)
         nv.setPenValue(this.currentDrawIndex, true)
         this.penList[0].status = true
-        nv.setDrawColormap()
       }
     },
     penColor(newVal, oldVal) {
@@ -1178,8 +1107,10 @@ export default {
     },
     doSegmentation() {
       if(this.modelValue === '1' || this.modelValue === '2') {
-        axios.post('/seg', {
-          uploadFileUrl: this.currentRawImageUrl
+        axios.post('/api/seg', {
+          // uploadFileUrl: this.currentRawImageUrl,
+          modelname:this.modelValue,
+          historyid:'2'
         }).then(response => {
           if (response.data.code === 200) {
             console.log(response)
@@ -1334,12 +1265,12 @@ export default {
     nv.setRadiologicalConvention(false)
     nv.opts.multiplanarForceRender = true
     nv.attachTo('gl')
-    nv.loadVolumes(this.volumeList).then(() => {
-      nv.loadDrawingFromUrl("/file/image/202302/0b2be9e0-886b-4144-99f0-8bb4c6eaa848-label.nii.gz");
-    })
-        .catch(err => {
-          console.error(err);
-        });
+    // nv.loadVolumes(this.volumeList).then(() => {
+    //   nv.loadDrawingFromUrl("/file/image/202302/0b2be9e0-886b-4144-99f0-8bb4c6eaa848-label.nii.gz");
+    // })
+    //     .catch(err => {
+    //       console.error(err);
+    //     });
     nv.setSliceType(nv.sliceTypeMultiplanar)
     nv.setClipPlane([0.3, 270, 0]);
     nv.setRenderAzimuthElevation(120, 10);

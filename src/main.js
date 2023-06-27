@@ -37,6 +37,7 @@ Vue.use(ElementUI)
 Vue.use(VModal)
 axios.defaults.withCredentials = true
 axios.defaults.baseURL = ''
+
 new Vue({
   router,
   created() {
@@ -47,3 +48,4 @@ new Vue({
   },
   render: h => h(App)
 }).$mount('#app')
+Vue.use(Storage, storageOptions)

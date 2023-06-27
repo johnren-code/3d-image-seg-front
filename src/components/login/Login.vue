@@ -249,32 +249,50 @@ export default {
       } else if (!this.email && this.loginData.writeCode !== this.identifyCode) {
         this.$message.error('验证码错误')
       } else {
-        var loginInfo
-        var urlInfo
+        // var loginInfo
+        // var urlInfo
         if (this.email) { //邮箱验证码
-          urlInfo = 'login2'
-          loginInfo = JSON.stringify({email: this.loginData.email, verity: this.loginData.writeCode})
+          axios.post('/api/loginWithEmail',{
+            email:this.loginData.email,
+            code:this.loginData.writeCode
+          }).then(res=>{
+            this.fullscreenLoading=false
+            if(res.data.code === 400){
+              this.$message.error(res.data.message)
+            }else {
+              console.log(res)
+              this.$message.success('登录成功')
+              this.hide()
+              this.$ls.set('userInfo', res.data.result)
+              eventBus.$emit('userLogin', true)
+            }
+          }).catch(error=>{
+            this.fullscreenLoading=false
+            this.$message.error('登录错误，请稍后再试')
+          })
+          // urlInfo = 'login2'
+          // loginInfo = JSON.stringify({email: this.loginData.email, verity: this.loginData.writeCode})
         } else { //账号密码
-          urlInfo = 'login'
-          loginInfo = JSON.stringify({name: this.loginData.username, password: this.loginData.password})
+          // urlInfo = 'login'
+          // loginInfo = JSON.stringify({name: this.loginData.username, password: this.loginData.password})
+          axios.post('/api/login', {
+            username: this.loginData.username,
+            password: this.loginData.password
+          }).then(res => {
+            this.fullscreenLoading = false
+            if (res.data.code === 400) {
+              this.$message.error(res.data.message)
+            } else {
+              this.$message.success('登录成功')
+              this.hide()
+              this.$ls.set('userInfo', res.data.result)
+              eventBus.$emit('userLogin', true)
+            }
+          }).catch(error => {
+            this.fullscreenLoading = false
+            this.$message.error('登录错误，请稍后再试')
+          })
         }
-        axios.post('/api/login', {
-          username: this.loginData.username,
-          password: this.loginData.password
-        }).then(res => {
-          this.fullscreenLoading = false
-          if (res.data.code === 400) {
-            this.$message.error(res.data.message)
-          } else {
-            this.$message.success('登录成功')
-            this.hide()
-            this.$ls.set('userInfo', res.data.result)
-            eventBus.$emit('userLogin', true)
-          }
-        }).catch(error => {
-          this.fullscreenLoading = false
-          this.$message.error('登录错误，请稍后再试')
-        })
         // this.$axios({
         //   headers: {
         //     'Content-Type': 'application/json'

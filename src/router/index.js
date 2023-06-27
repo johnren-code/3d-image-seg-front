@@ -90,6 +90,13 @@ const routes = [
         meta: {
             title: '3D分割',
         },
+        children: [{
+            path: ':id(\\d+)',
+            component: Segmentation,
+            meta: {
+                title: '病人分割案例',
+            }
+        }]
     },
     {
         path: '/login',

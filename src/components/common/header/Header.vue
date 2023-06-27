@@ -181,6 +181,7 @@ import Logo from '../../elements/logo/Logo'
 import Login from "../../login/Login";
 import Button from "../../elements/button/Button";
 import eventBus from "../../../global/eventBus";
+import axios from "axios";
 
 export default {
   name: 'Header',
@@ -201,6 +202,15 @@ export default {
   },
   methods: {
     logout(){
+      axios.get('/api/logout').then(res=>{
+        if(res.data.code===400){
+          this.$message.error(res.data.message)
+        }else {
+          this.$message.success('登出成功')
+        }
+      }).catch(error=>{
+        this.$message.error('登出错误，请稍后再试')
+      })
       this.$ls.clear()
       eventBus.$emit('userLogin',false)
     },
