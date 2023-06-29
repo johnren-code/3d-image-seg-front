@@ -1,59 +1,91 @@
 <template>
   <div>
-    <SectionTitle text-align="center" :title="titleName" description="" data-aos="fade-up"/>
+    <SectionTitle text-align="center" :title="'病人' + form.name + '的项目'" description="" data-aos="fade-up" />
     <el-row>
-      <el-col :offset="20" class="deleHistory">
-        <el-button size="mini" type="primary"
-                   @click="dialogVisibleRule = true">修改权限
+      <el-col :offset="19" class="deleHistory">
+        <el-button v-if="edit" size="mini" type="success" @click="editPersonal">编辑基本信息
         </el-button>
-        <el-button size="mini" type="danger"
-                   @click="delProj">删除项目
+        <el-button v-else="edit" size="mini" type="success" @click="editPersonal">完成编辑
+        </el-button>
+        <el-button size="mini" type="primary" @click="dialogVisibleRule = true">修改权限
+        </el-button>
+        <el-button size="mini" type="danger" @click="delProj">删除项目
         </el-button>
       </el-col>
     </el-row>
     <el-form :label-position="labelPosition" label-width="80px" :model="formLabelAlign">
       <div class="peopleDes">
-        <el-descriptions direction="vertical" :column="3" border>
-          <el-descriptions-item label="用户名" :contentStyle='contentStyle'>
-            <div class="inputDeep">
-              {{ form.name }}
-            </div>
-          </el-descriptions-item>
-          <el-descriptions-item label="项目描述" :contentStyle='contentStyle'>
-            <div class="inputDeep">
-              {{ form.description }}
-            </div>
-          </el-descriptions-item>
-          <el-descriptions-item label="出生日期" :contentStyle='contentStyle'>
-            <div class="inputDeep">
-              {{ form.birthday }}
-            </div>
-          </el-descriptions-item>
-          <el-descriptions-item label="身高（cm）">
-            {{ form.height }}
-          </el-descriptions-item>
-          <el-descriptions-item label="体重（kg）">
-            {{ form.weight }}
-          </el-descriptions-item>
-          <el-descriptions-item label="年龄">
-            {{ form.age }}
-          </el-descriptions-item>
-          <el-descriptions-item label="籍贯">
-            {{ form.location }}
-          </el-descriptions-item>
-          <el-descriptions-item label="联系方式">
-            {{ form.phone }}
-          </el-descriptions-item>
-          <el-descriptions-item label="血型">
-            {{ form.bloodType }}
-          </el-descriptions-item>
-        </el-descriptions>
+        <div class="desc">
+          <!-- <el-descriptions direction="vertical" :column="3" border>
+            <el-descriptions-item label="用户名" :contentStyle='contentStyle'>
+              <div class="inputDeep">
+                {{ form.name }}
+              </div>
+            </el-descriptions-item>
+            <el-descriptions-item label="项目描述" :contentStyle='contentStyle'>
+              <div class="inputDeep">
+                {{ form.description }}
+              </div>
+            </el-descriptions-item>
+            <el-descriptions-item label="出生日期" :contentStyle='contentStyle'>
+              <div class="inputDeep">
+                {{ form.birthday }}
+              </div>
+            </el-descriptions-item>
+            <el-descriptions-item label="身高（cm）">
+              {{ form.height }}
+            </el-descriptions-item>
+            <el-descriptions-item label="体重（kg）">
+              {{ form.weight }}
+            </el-descriptions-item>
+            <el-descriptions-item label="年龄">
+              {{ form.age }}
+            </el-descriptions-item>
+            <el-descriptions-item label="籍贯">
+              {{ form.location }}
+            </el-descriptions-item>
+            <el-descriptions-item label="联系方式">
+              {{ form.phone }}
+            </el-descriptions-item>
+            <el-descriptions-item label="血型">
+              {{ form.bloodType }}
+            </el-descriptions-item>
+          </el-descriptions> -->
+          <el-descriptions title="用户信息">
+            <el-descriptions-item v-if="edit" label="生日">{{ form.birthday }}</el-descriptions-item>
+            <el-descriptions-item v-else="edit" label="生日"><el-input
+                v-model="form.birthday"></el-input></el-descriptions-item>
+            <el-descriptions-item v-if="edit" label="年龄">{{ form.age }}</el-descriptions-item>
+            <el-descriptions-item v-else="edit" label="年龄"><el-input v-model="form.age"></el-input></el-descriptions-item>
+            <el-descriptions-item v-if="edit" label="联系方式">{{ form.phone }}</el-descriptions-item>
+            <el-descriptions-item v-else="edit" label="联系方式"><el-input
+                v-model="form.phone"></el-input></el-descriptions-item>
+            <el-descriptions-item v-if="edit" label="身高(m)">{{ form.height }}</el-descriptions-item>
+            <el-descriptions-item v-else="edit" label="身高(m)"><el-input
+                v-model="form.height"></el-input></el-descriptions-item>
+            <el-descriptions-item v-if="edit" label="体重(kg)">{{ form.weight }}</el-descriptions-item>
+            <el-descriptions-item v-else="edit" label="体重(kg)"><el-input
+                v-model="form.weight"></el-input></el-descriptions-item>
+            <el-descriptions-item v-if="edit" label="血型">{{ form.bloodType }}</el-descriptions-item>
+            <el-descriptions-item v-else="edit" label="血型"><el-input
+                v-model="form.bloodType"></el-input></el-descriptions-item>
+            <el-descriptions-item v-if="edit" label="居住地">{{ form.location }}</el-descriptions-item>
+            <el-descriptions-item v-else="edit" label="居住地"><el-input
+                v-model="form.location"></el-input></el-descriptions-item>
+            <el-descriptions-item v-if="edit" label="情况描述">{{ form.description }}</el-descriptions-item>
+            <el-descriptions-item v-else="edit" label="情况描述"><el-input
+                v-model="form.description"></el-input></el-descriptions-item>
+          </el-descriptions>
+        </div>
+        <div>
+          <SectionTitle text-align="center" title="这里可以放一个折线图" description="" data-aos="fade-up" />
+        </div>
       </div>
       <el-row>
-        <el-col :span="16">历史记录</el-col>
+        <el-col :span="16" class="historyTitle">历史记录</el-col>
         <el-col :span="3">
-          <el-input v-model="searchInfo" prefix-icon="el-icon-search" style="width: 90%;margin-right: 10px"
-                    clearable @clear="search" @keydown.enter.native="search"></el-input>
+          <el-input v-model="searchInfo" prefix-icon="el-icon-search" style="width: 90%;margin-right: 10px" clearable
+            @clear="search" @keydown.enter.native="search"></el-input>
         </el-col>
         <el-col :span="2">
           <el-button icon="el-icon-search" type="primary" @click="search" size="mini" style="width: 90%;">
@@ -61,15 +93,14 @@
           </el-button>
         </el-col>
         <el-col :span="3">
-          <el-button size="mini" type="success" class="addHistory"
-                     @click="addHistory">添加历史记录
+          <el-button size="mini" type="success" class="addHistory" @click="addHistory">添加历史记录
           </el-button>
         </el-col>
       </el-row>
       <el-form-item>
         <div class="user_skills">
           <el-table :data="tableData" style="width: 100%" background-color="transparent"
-                    element-loading-background="rgba(0,0,0,0.5)" cell-style="color:white" width="400">
+            element-loading-background="rgba(0,0,0,0.5)" cell-style="color:white" width="400">
             <el-table-column prop="id" label="编号" width="180">
             </el-table-column>
             <el-table-column prop="image" label="缩略图" width="180">
@@ -80,7 +111,7 @@
             </el-table-column>
             <el-table-column label="操作" fixed="right" width="300">
               <template slot-scope="scope">
-                <el-button size="mini" type="primary" @click="generateReport">生成报告</el-button>
+                <el-button size="mini" type="primary" @click="generateReport(scope.row.id)">生成报告</el-button>
                 <el-button size="mini" @click="checkHistory(scope.row.id)">查看</el-button>
                 <el-button size="mini" type="danger" @click="open">删除</el-button>
               </template>
@@ -93,7 +124,7 @@
       <el-form :model="formNewhistory">
         <el-form-item label="日期：" :label-width="formLabelWidth">
           <el-date-picker type="date" placeholder="选择日期" v-model="formNewhistory.date"
-                          style="width: 100%;"></el-date-picker>
+            style="width: 100%;"></el-date-picker>
         </el-form-item>
         <el-form-item label="病人描述：" :label-width="formLabelWidth">
           <el-input v-model="formNewhistory.introduction" autocomplete="off"></el-input>
@@ -112,10 +143,11 @@
         <el-option label="not" value="not"></el-option>
       </el-select>
       <span slot="footer" class="dialog-footer">
-                <el-button @click="dialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="changeRule">确 定</el-button>
-            </span>
+        <el-button @click="dialogVisibleRule = false">取 消</el-button>
+        <el-button type="primary" @click="changeRule">确 定</el-button>
+      </span>
     </el-dialog>
+
   </div>
 </template>
 
@@ -131,7 +163,7 @@ import axios from "axios";
 // this.sendFormValue()
 export default {
   name: 'UserProj',
-  components: {SectionTitle},
+  components: { SectionTitle },
   data() {
     return {
       searchInfo: '',
@@ -148,15 +180,15 @@ export default {
       dialogVisible: false,
       disabled: false,
       form: {
-        name: '',
-        description: '',
-        birthday: '',
-        height: "",
-        weight: "",
-        age: "",
-        location: '',
-        phone: '',
-        bloodType: ''
+        name: 'vivion',
+        description: '病人体态臃肿',
+        birthday: '2000-07-09',
+        height: "1.75",
+        weight: "75",
+        age: "23",
+        location: '河南郑州',
+        phone: '14543567658',
+        bloodType: 'A型'
       },
       formLabelWidth: '120px',
       contentStyle: {
@@ -168,7 +200,9 @@ export default {
         introduction: ''
       },
       dialogVisibleRule: false,
-      rule: ''
+      rule: '',
+      generateReportVisible: false,
+      edit: false
     }
   },
   methods: {
@@ -221,7 +255,10 @@ export default {
       });
     },
     generateReport() {
-      alert('生成报告')
+      // alert('生成报告')
+      // this.generateReportVisible = true
+      this.$router.push(`${this.$route.params.id}/report`)
+
     },
 
     // 搜索历史记录
@@ -246,7 +283,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        axios.put(`/api/proj/delete`, {projectId: this.$route.params.id}).then(res => {
+        axios.put(`/api/proj/delete`, { projectId: this.$route.params.id }).then(res => {
           console.log(res.data);
           this.$message({
             type: 'success',
@@ -278,10 +315,18 @@ export default {
       }, err => {
         console.log(err);
       })
-
-
+    },
+    // 修改权限的handleclose
+    handleClose(done) {
+      this.$confirm('确认关闭？')
+        .then(_ => {
+          done();
+        })
+        .catch(_ => { });
+    },
+    editPersonal() {
+      this.edit = !this.edit
     }
-
   },
   watch: {
     '$route.params.id': function (to, from) {
@@ -367,7 +412,7 @@ export default {
   background-color: transparent !important;
 }
 
-::v-deep .el-table tbody tr:hover > td {
+::v-deep .el-table tbody tr:hover>td {
   background-color: transparent !important
 }
 
@@ -427,6 +472,7 @@ export default {
 }
 
 .peopleDes {
+  display: flex;
   width: 99%;
 }
 
@@ -437,6 +483,20 @@ export default {
 .deleHistory {
   position: relative;
   top: -10px;
+}
+
+.desc {
+  width: 60%;
+  margin-right: 30px;
+}
+
+::v-deep .el-descriptions {
+  color: #efca09;
+}
+
+.historyTitle {
+  color: #efca09;
+  font-weight: bold
 }
 </style>
 

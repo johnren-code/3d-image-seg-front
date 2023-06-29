@@ -63,6 +63,7 @@ import UserProj from "../views/UserProj"
 import Projcreate from "../views/Projcreate"
 import Newproj from "../views/Newproj"
 import PersonalPage from "../views/PersonalPage";
+import Report from "../views/Report";
 
 Vue.use(VueRouter)
 
@@ -575,7 +576,11 @@ const routes = [
             component: UserProj,
             meta: {
                 title: '用户项目',
-            }
+            },
+            // children: [{
+            //     path: 'report',
+            //     component: Report
+            // }]
         }, {
             path: '/',
             component: Projcreate,
@@ -585,7 +590,15 @@ const routes = [
         }, {
             path: 'new',
             component: Newproj
-        }]
+        }, {
+            path: ':id(\\d+)/report',
+            component: Report,
+            meta: {
+                title: '用户项目',
+            },
+        }
+
+        ]
     },
 ]
 
