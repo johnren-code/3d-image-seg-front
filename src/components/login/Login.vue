@@ -9,7 +9,7 @@
         <p class="description" style="color: #E4E6EA">
         <h5><br/>&nbsp可视化和可编辑的分割<br/><br/></h5>
         </p>
-        <img src="../../assets/images/modal/login.png" alt="Doob Vue" style="display: inline-block;"/>
+        <img src="../../assets/images/modal/login-new.png" alt="Doob Vue" style="display: inline-block;"/>
       </div>
       <div class="login_form_right" v-if="login">
         <div class="contact-form-1">

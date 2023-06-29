@@ -63,6 +63,7 @@ import UserProj from "../views/UserProj"
 import Projcreate from "../views/Projcreate"
 import Newproj from "../views/Newproj"
 import PersonalPage from "../views/PersonalPage";
+import ShareTest from "../views/ShareTest";
 
 Vue.use(VueRouter)
 
@@ -81,6 +82,14 @@ const routes = [
         component: Home,
         meta: {
             title: '主页',
+        },
+    },
+    {
+        path: '/sharetest',
+        name: 'ShareTest',
+        component: ShareTest,
+        meta: {
+            title: '协同编辑测试',
         },
     },
     {

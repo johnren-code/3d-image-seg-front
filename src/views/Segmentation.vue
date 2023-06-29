@@ -322,6 +322,11 @@
                       </div>
                     </div>
                   </div>
+
+                  <Button :read-more-button="true" >
+                    <span style="color: grey;margin-left: 40px" v-if="!isReportSubmit">点击编辑病例报告</span>
+                    <span style="color: grey;margin-left: 40px" v-if="isReportSubmit">提交成功，点击修改</span>
+                  </Button>
                 </div>
                 <!-- dicom 图 -->
                 <div class="t-main">
@@ -376,6 +381,7 @@
                   <el-button type="primary" @click="doSegmentation" round style="margin-left:10px">点击进行分割</el-button>
                   <el-button type="primary" @click="getDrawBitMap" round style="margin-left:10px">getBitmap</el-button>
                   <el-button type="primary" @click="saveCurrentState" round style="position: absolute;right:100px">保存</el-button>
+
 <!--                  <el-button type="primary" @click="clickVisible">测试数据可视化</el-button>-->
                   <el-dialog title="label Editor" :visible.sync="dialogTableVisible" center :append-to-body='true'
                              :lock-scroll="false" width="30%">
@@ -433,13 +439,16 @@
                 <el-upload
                     class="upload-demo"
                     ref="upload"
-                    action="https://jsonplaceholder.typicode.com/posts/"
+                    action="/flask/upload"
                     :on-preview="handlePreview"
                     :on-remove="handleRemove"
                     :file-list="fileList"
+                    :data="scriptAdditionalData"
                     style="margin: 15px"
+                    :before-upload="scriptAddData"
+                    :on-success="scriptUploadSuccess"
                     :auto-upload="false">
-                  <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+                  <el-button slot="trigger" size="small" type="primary">点击上传文件</el-button>
                   <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>
                   <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
                 </el-upload>
@@ -485,6 +494,7 @@ import Counter from '../components/elements/counterUp/Counter'
 import Brand from '../components/elements/brand/Brand'
 import Team from '../components/elements/team/Team'
 import Table from "../components/table/Table"
+import Button from "../components/elements/button/Button";
 import {Dialog} from "element-ui";
 import {Niivue} from '@niivue/niivue'
 import axios from 'axios'
@@ -499,15 +509,17 @@ const nv = new Niivue({
 })
 export default {
   name: 'Segmentation',
-  components: {Menu, Table, Team, Brand, Counter, Timeline, ServiceOne, AboutFour, SectionTitle, Separator, Layout},
+  components: {Menu, Table, Team, Brand, Counter, Timeline, ServiceOne, AboutFour, SectionTitle, Separator, Layout, Button},
   data() {
     return {
       components: {
         Table
       },
+      isReportSubmit:false,
       penColor: 'rgb(102,205,170)',
       dialogTableVisible: false,
       fontColor: "",
+      fileList: [],
       sliderValue: 80,
       viewOptions: [{
         value: 'Axial',
@@ -885,7 +897,8 @@ export default {
       drawTableData: '',
       additionalData: {},
       organMeasurementVisible: false,
-      uploadScriptVisible:false
+      uploadScriptVisible:false,
+      scriptAdditionalData:{}
     }
   },
   watch: {
@@ -945,6 +958,18 @@ export default {
     }
   },
   methods: {
+    scriptUploadSuccess(res,file){
+      console.log(res)
+    },
+    submitUpload() {
+      this.$refs.upload.submit();
+    },
+    handleRemove(file, fileList) {
+      console.log(file, fileList);
+    },
+    handlePreview(file) {
+      console.log(file);
+    },
     getDrawBitMap(){
       console.log(nv.drawBitmap)
     },
@@ -968,6 +993,10 @@ export default {
     },
     clickVisible() {
       this.visable = true
+    },
+    scriptAddData(){
+      this.scriptAdditionalData.input_path = 'http://10.135.1.120:9595/UploadOriginFile/0b2be9e0-886b-4144-99f0-8bb4c6eaa848_iazzmk.nii.gz'
+      return true
     },
     addData() {
       this.additionalData.historyid = '2'
