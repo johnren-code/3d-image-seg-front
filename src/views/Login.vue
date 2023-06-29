@@ -1,25 +1,21 @@
 <template>
-
   <body id="paper">
-  <div class="login-container">
-    <el-form :model="loginForm" label-position="left"
-             label-width="0px" v-loading="loading">
-      <h3 class="login_title">系统登录</h3>
-      <el-form-item prop="username">
-        <el-input type="text" v-model="loginForm.username"
-                  auto-complete="off" placeholder="账号"></el-input>
-      </el-form-item>
-      <el-form-item prop="password">
-        <el-input type="password" v-model="loginForm.password"
-                  auto-complete="off" placeholder="密码"></el-input>
-      </el-form-item>
-      <br>
-      <el-form-item class="login-button">
+    <div class="login-container">
+      <el-form :model="loginForm" label-position="left" label-width="0px" v-loading="loading">
+        <h3 class="login_title">系统登录</h3>
+        <el-form-item prop="username">
+          <el-input type="text" v-model="loginForm.username" auto-complete="off" placeholder="账号"></el-input>
+        </el-form-item>
+        <el-form-item prop="password">
+          <el-input type="password" v-model="loginForm.password" auto-complete="off" placeholder="密码"></el-input>
+        </el-form-item>
+        <br>
+        <el-form-item class="login-button">
 
-      </el-form-item>
-    </el-form>
-    <el-button type="primary" v-on:click="login">登录</el-button>
-  </div>
+        </el-form-item>
+      </el-form>
+      <el-button type="primary" v-on:click="login">登录</el-button>
+    </div>
   </body>
 </template>
 <script>
@@ -40,27 +36,27 @@ export default {
     login() {
       const _this = this
       axios.post('/login', {
-            username: this.loginForm.username,
-            password: this.loginForm.password
-          })
-          .then(rep => {
-            if (rep.data.code === 200) {
-              _this.store.commit('login', rep.data.result)
+        username: this.loginForm.username,
+        password: this.loginForm.password
+      })
+        .then(rep => {
+          if (rep.data.code === 200) {
+            _this.store.commit('login', rep.data.result)
 
-              this.$router.push('/video')//否则跳转至首页
-            } else {
-              this.$message(rep.data.message)
-            }
+            this.$router.push('/video')//否则跳转至首页
+          } else {
+            this.$message(rep.data.message)
+          }
 
-          })
-          .catch(failResponse => {
-            console.log(failResponse.response)
-          })
+        })
+        .catch(failResponse => {
+          console.log(failResponse.response)
+        })
     }
   }
 }
 </script>
-<style>
+<style scoped>
 #paper {
   background: url("../assets/images/pageBg.png") no-repeat center;
   height: 100%;
@@ -102,5 +98,4 @@ body {
   width: 100%;
   text-align: center;
 }
-
 </style>

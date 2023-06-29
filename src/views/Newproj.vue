@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="col-lg-12">
-      <SectionTitle text-align="center" title="新建项目" description="" data-aos="fade-up"/>
+      <SectionTitle text-align="center" title="新建项目" description="" data-aos="fade-up" />
       <div class="peopleDes">
         <el-descriptions direction="vertical" :column="3" border>
           <el-descriptions-item label="用户名" :contentStyle='contentStyle'>
@@ -17,7 +17,7 @@
           <el-descriptions-item label="出生日期" :contentStyle='contentStyle'>
             <div class="inputDeep">
               <el-date-picker type="date" placeholder="选择日期" v-model="form.birthday"
-                              style="width: 100%;"></el-date-picker>
+                style="width: 100%;"></el-date-picker>
             </div>
           </el-descriptions-item>
           <el-descriptions-item label="身高（cm）">
@@ -62,7 +62,7 @@ import axios from "axios";
 
 export default {
   name: 'Newproj',
-  components: {SectionTitle},
+  components: { SectionTitle },
   data() {
     return {
       labelPosition: 'top',
@@ -117,9 +117,9 @@ export default {
         bloodType: this.form.bloodType,
         birthday: this.form.birthday
       }).then(res => {
-        if(res.data.code===400){
+        if (res.data.code === 400) {
           this.$message.error(res.data.message)
-        }else{
+        } else {
           console.log(res.data);
           this.$message({
             message: '创建成功',
@@ -151,16 +151,16 @@ export default {
   border: 0;
 }
 
-.inputDeep > > > .el-input__inner {
+.inputDeep>>>.el-input__inner {
   border: 0;
   width: 100%;
 }
 
-> > > .el-descriptions__body {
+>>>.el-descriptions__body {
   width: 100%;
 }
 
-> > > .el-input__inner {
+>>>.el-input__inner {
   border: 0 !important;
 }
 
@@ -168,7 +168,7 @@ export default {
     width: 300px;
 } */
 
-.peopleDes > > > .el-table {
+.peopleDes>>>.el-table {
   background-color: transparent;
 }
 
@@ -197,7 +197,7 @@ export default {
   background-color: transparent !important;
 }
 
-::v-deep .el-table tbody tr:hover > td {
+::v-deep .el-table tbody tr:hover>td {
   background-color: transparent !important
 }
 

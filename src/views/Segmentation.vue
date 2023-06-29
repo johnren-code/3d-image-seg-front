@@ -324,8 +324,8 @@
                   </div>
 
                   <Button :read-more-button="true" >
-                    <span style="color: grey;margin-left: 40px" v-if="!isReportSubmit">点击编辑病例报告</span>
-                    <span style="color: grey;margin-left: 40px" v-if="isReportSubmit">提交成功，点击修改</span>
+                    <span style="color: grey;margin-left: 40px" v-if="!isReportSubmit" @click="moveToReport(historyId)">点击编辑病例报告</span>
+                    <span style="color: grey;margin-left: 40px" v-if="isReportSubmit" @click="moveToReport(historyId)">提交成功，点击修改</span>
                   </Button>
                 </div>
                 <!-- dicom 图 -->
@@ -515,6 +515,7 @@ export default {
       components: {
         Table
       },
+      historyId:this.$route.params.id,
       isReportSubmit:false,
       penColor: 'rgb(102,205,170)',
       dialogTableVisible: false,
@@ -958,6 +959,10 @@ export default {
     }
   },
   methods: {
+    moveToReport(id){
+      alert(id)
+      this.$router.push(`/sharetest/${id}`)
+    },
     scriptUploadSuccess(res,file){
       console.log(res)
     },

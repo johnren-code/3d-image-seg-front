@@ -91,6 +91,13 @@ const routes = [
         meta: {
             title: '协同编辑测试',
         },
+        children: [{
+            path: ':id(\\d+)',
+            component: ShareTest,
+            meta: {
+                title: '编辑病例报告',
+            }
+        }]
     },
     {
         path: '/segmentation',
