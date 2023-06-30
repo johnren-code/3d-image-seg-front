@@ -63,7 +63,8 @@ import UserProj from "../views/UserProj"
 import Projcreate from "../views/Projcreate"
 import Newproj from "../views/Newproj"
 import PersonalPage from "../views/PersonalPage";
-import ShareTest from "../views/ShareTest";
+import ShareTest from "../views/ShareEdit";
+import ShareEdit from "../views/ShareEdit";
 
 Vue.use(VueRouter)
 
@@ -85,15 +86,15 @@ const routes = [
         },
     },
     {
-        path: '/sharetest',
-        name: 'ShareTest',
-        component: ShareTest,
+        path: '/shareedit',
+        name: 'ShareEdit',
+        component: ShareEdit,
         meta: {
             title: '协同编辑测试',
         },
         children: [{
             path: ':id(\\d+)',
-            component: ShareTest,
+            component: ShareEdit,
             meta: {
                 title: '编辑病例报告',
             }

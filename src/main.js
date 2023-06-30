@@ -18,7 +18,6 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import 'element-ui/lib/theme-chalk/icon.css';
 import VModal from 'vue-js-modal/dist/index.nocss.js'
-import 'vue-js-modal/dist/styles.css'
 import IdentifyCode from './components/login/IdentifyCode'
 import Storage from 'vue-ls'
 const storageOptions = {

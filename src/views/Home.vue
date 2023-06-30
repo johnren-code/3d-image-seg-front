@@ -116,7 +116,6 @@ import Layout from '../components/common/Layout'
 import Icon from '../components/icon/Icon'
 import Separator from '../components/elements/separator/Separator'
 import SectionTitle from '../components/elements/sectionTitle/SectionTitle'
-
 export default {
   name: 'Home',
   components: {Icon, Layout, Separator, SectionTitle},

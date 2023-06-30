@@ -6,7 +6,7 @@
         <li><router-link to="/contact">Contact</router-link></li>
         <li><router-link to="/history/">项目管理</router-link></li>
         <li><router-link to="/personal">个人界面测试</router-link></li>
-      <li><router-link to="/sharetest">协同编辑测试</router-link></li>
+      <li><router-link to="/shareedit">协同编辑测试</router-link></li>
     </ul>
 </template>
 

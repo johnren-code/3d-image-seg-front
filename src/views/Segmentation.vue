@@ -499,6 +499,7 @@ import {Dialog} from "element-ui";
 import {Niivue} from '@niivue/niivue'
 import axios from 'axios'
 import Menu from "../components/history/menu";
+import ShareEdit from "./ShareEdit";
 
 const nv = new Niivue({
   logging: true,
@@ -509,7 +510,9 @@ const nv = new Niivue({
 })
 export default {
   name: 'Segmentation',
-  components: {Menu, Table, Team, Brand, Counter, Timeline, ServiceOne, AboutFour, SectionTitle, Separator, Layout, Button},
+  components: {
+    ShareEdit,
+    Menu, Table, Team, Brand, Counter, Timeline, ServiceOne, AboutFour, SectionTitle, Separator, Layout, Button},
   data() {
     return {
       components: {
@@ -961,7 +964,11 @@ export default {
   methods: {
     moveToReport(id){
       alert(id)
-      this.$router.push(`/sharetest/${id}`)
+      let text= this.$router.resolve({
+        path: `/shareedit/${id}`
+      });
+      // 打开一个新的页面
+      window.open(text.href, '_blank')
     },
     scriptUploadSuccess(res,file){
       console.log(res)
