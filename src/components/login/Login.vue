@@ -186,6 +186,7 @@
 <script>
 import Button from "../elements/button/Button";
 import eventBus from "../../global/eventBus";
+import 'vue-js-modal/dist/styles.css'
 import axios from "axios";
 
 export default {

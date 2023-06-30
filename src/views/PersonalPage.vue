@@ -1,47 +1,71 @@
 <template>
-  <Layout>
-    <SectionTitle text-align="center" subtitle="Personal Information" title="个人信息" description="" data-aos="fade-up" />
-    <center>
-      <div class="edit_form" data-aos="fade-up">
-        <form class="contact-form-1" action="" @submit.prevent="sendEditInformation">
-          <div class="form-group">
-            <el-upload class="avatar-uploader" :action="''" :show-file-list="false" :on-success="handleAvatarSuccess"
-              :before-upload="beforeAvatarUpload">
-              <img v-model="userData.avatarUrl" v-if="userData.avatarUrl" :src="userData.avatarUrl" class="avatar">
-              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-            </el-upload>
-          </div>
-          <div class="form-title">用户名</div>
-          <div class="form-group">
-            <input type="text" name="username" placeholder="请输入新用户名" required v-model="userData.username" />
-          </div>
-          <div class="form-title">邮箱</div>
-          <div class="form-group">
-            <input type="text" name="phone" placeholder="请输入新邮箱" required v-model="userData.phone" />
-          </div>
-          <div class="form-title">新密码</div>
-          <div class="form-group">
-            <input type="text" name="password" placeholder="请输入新密码" required v-model="userData.password" />
-          </div>
-          <div class="form-title">个人简介</div>
-          <div class="form-group">
-            <input type="text" name="description" placeholder="请输入个人简介" required v-model="userData.content" />
-          </div>
-          <div class="form-group">
-            <button class="btn-default btn-large">保存</button>
-          </div>
-        </form>
+  <Layout :tab-name="5">
+    <div class="rwt-team-area rn-section-gap">
+      <div class="container">
+        <el-row>
+          <el-col :span="9">
+            <div class="grid-content bg-purple">
+              <div class="row row--15">
+                <div class="col-lg-10 offset-lg-1"
+                     v-for="(teamMember, index) in teamData"
+                     :key="index">
+                  <Team :team-member="teamMember"/>
+                </div>
+              </div>
+            </div>
+          </el-col>
+          <el-col :span="15">
+            <div class="grid-content bg-purple-light">
+              <div class="row">
+                <div class="col-lg-10 offset-lg-1" style="margin-top: -50px;">
+                  <SectionTitle
+                      subtitle="function frequency"
+                      title="功能使用频率"
+                      data-aos="fade-up"
+                  />
+                </div>
+              </div>
+              <Progressbar :progress-data="progressOneData"/>
+            </div>
+          </el-col>
+        </el-row>
       </div>
-    </center>
+    </div>
+
+<!--    <Separator/>-->
+
+<!--    <div class="rwt-portfolio-area rn-section-gap">-->
+<!--      <div class="container">-->
+<!--        <div class="row">-->
+<!--          <div class="col-lg-12">-->
+<!--            <SectionTitle-->
+<!--                text-align="center"-->
+<!--                subtitle="Image History"-->
+<!--                title="图片历史记录"-->
+<!--                data-aos="fade-up"-->
+<!--                data-aos-delay="60"-->
+<!--            />-->
+<!--          </div>-->
+<!--        </div>-->
+<!--        <Portfolio class="mt&#45;&#45;20" ref="portfolio" column="col-lg-3 col-md-6 mt&#45;&#45;30"/>-->
+<!--      </div>-->
+<!--    </div>-->
   </Layout>
 </template>
 
 <script>
 import Layout from '../components/common/Layout.vue'
+import Team from '../components/elements/team/Team.vue'
 import SectionTitle from '../components/elements/sectionTitle/SectionTitle.vue'
+import Separator from '../components/elements/separator/Separator.vue'
+import Portfolio from '../components/elements/portfolio/Portfolio.vue'
+import PortfolioItemMixin from '../mixins/PortfolioItemMixin.js'
+import Progressbar from '../components/elements/progressbar/Progressbar.vue'
+import Button from '../components/elements/button/Button.vue'
+
 export default {
   name: 'PersonalPage',
-  components: { Layout, SectionTitle },
+  components: {Layout, Team, SectionTitle, Separator, Portfolio, Progressbar, Button},
   data() {
     return {
       // avatarUrl:this.$global.apiUrl+'file/uploadAvatar/'+this.$ls.get('userInfo').id,
@@ -51,74 +75,85 @@ export default {
         phone: '',
         password: '',
         content: '',
-      }
+      },
+      teamData: [
+        {
+          image: '22',
+          name: '22',
+          phone: '22',
+          description: '22',
+        }
+      ],
+      progressOneData: [
+        {
+          id: 1,
+          title: '目标提取',
+          percentage: 0,
+          progressClass: 'bar-color-1',
+        },
+        {
+          id: 2,
+          title: '变化检测',
+          percentage: 0,
+          progressClass: 'bar-color-2',
+        },
+        {
+          id: 3,
+          title: '目标检测',
+          percentage: 0,
+          progressClass: 'bar-color-3',
+        },
+        {
+          id: 4,
+          title: "地物分类",
+          percentage: 0,
+          progressClass: 'bar-color-4',
+        },
+      ]
     };
   },
   mounted() {
-    // this.getUserInfo()
+    if(this.$ls.get('userInfo')!==null){
+      this.getPercentage()
+      this.getUserInfo()
+      // this.$refs.portfolio.portfolioData=this.portfolioItems
+    }
   },
   methods: {
-    // getUserInfo(){
-    //   var that = this;
-    //   /* var token =this.$ls.get('userInfo').token */
-    //   that.$axios.get(this.$global.apiUrl+'user/'+this.$ls.get('userInfo').id,{
-    //     headers:{
-    //       'token':this.$ls.get('userInfo').token
-    //     }
-    //   })
-    //       .then(res=>{
-    //         var userInfo=res.data.data;
-    //         this.userData.avatarUrl=userInfo.avatar;
-    //         this.userData.username=userInfo.name;
-    //         this.userData.phone=userInfo.phone;
-    //         this.userData.password=userInfo.password;
-    //         this.userData.content=userInfo.content;
-    //       })
-    //       .catch(function(error) {
-    //         console.log(error);
-    //       });
-    // },
-    handleAvatarSuccess(res, file) {
-      // console.log(res)
-      this.userData.avatarUrl = res.data
+    getUserInfo(){
+      var that = this;
+      /* var token =this.$ls.get('userInfo').token */
+      that.$axios.get(this.$global.apiUrl+'user/'+this.$ls.get('userInfo').id,{
+        headers:{
+          'token':this.$ls.get('userInfo').token
+        }
+      })
+          .then(res=>{
+            var userInfo=res.data.data;
+            that.teamData[0].image=userInfo.avatar
+            that.teamData[0].name=userInfo.name
+            that.teamData[0].phone=userInfo.phone
+            that.teamData[0].description=userInfo.content || "这家伙很懒，什么都没有留下"
+          })
+          .catch(function(error) {
+            console.log(error);
+          });
     },
-    beforeAvatarUpload(file) {
-      const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
-      const isLt2M = file.size / 1024 / 1024 < 2;
-
-      if (!isJPG) {
-        this.$message.error('上传头像图片只能是 JPG或PNG 格式!');
-      }
-      if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!');
-      }
-      return isJPG && isLt2M;
-    },
-    // sendEditInformation(){
-    //   var that =this;
-    //   that.$axios.put(this.$global.apiUrl+'user/'+this.$ls.get('userInfo').id,{
-    //     name:this.userData.username,
-    //     password:this.userData.password,
-    //     avatar:this.userData.avatarUrl,
-    //     phone:this.userData.phone,
-    //     content:this.userData.content
-    //   })
-    //       .then(res=>{
-    //         // console.log(res)
-    //         that.$message.success("修改成功！")
-    //         var userInfo = this.$ls.get('userInfo')
-    //         userInfo.name=this.userData.username
-    //         userInfo.avatar=this.userData.avatarUrl
-    //         this.$ls.set('userInfo',userInfo)
-    //         eventBus.$emit('userLogin',true)
-    //         this.$router.push('/personal')
-    //       })
-    //       .catch(function(error) {
-    //         that.$message.error("网络繁忙，请重试！")
-    //         // console.log("失败")
-    //         console.log(error);
-    //       });
-    // }
+    getPercentage(){
+      var that = this;
+      that.$axios.get(this.$global.apiUrl+'record/statistics?userId='+this.$ls.get('userInfo').id)
+          .then(res=>{
+            // console.log(this.$global.apiUrl+'record/statistics?userId='+this.$ls.get('userInfo').id)
+            var percentageArray = res.data.data;
+            that.progressOneData[0].percentage = Math.round(100*percentageArray.目标提取)
+            that.progressOneData[1].percentage = Math.round(100*percentageArray.变化检测)
+            that.progressOneData[2].percentage = Math.round(100*percentageArray.目标检测)
+            that.progressOneData[3].percentage = Math.round(100*percentageArray.地物分类)
+          })
+          .catch(function(error) {
+            console.log(error);
+          });
+    }
   }
 }
 </script>
