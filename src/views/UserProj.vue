@@ -16,41 +16,6 @@
     <el-form :label-position="labelPosition" label-width="80px" :model="formLabelAlign">
       <div class="peopleDes">
         <div class="desc">
-          <!-- <el-descriptions direction="vertical" :column="3" border>
-            <el-descriptions-item label="用户名" :contentStyle='contentStyle'>
-              <div class="inputDeep">
-                {{ form.name }}
-              </div>
-            </el-descriptions-item>
-            <el-descriptions-item label="项目描述" :contentStyle='contentStyle'>
-              <div class="inputDeep">
-                {{ form.description }}
-              </div>
-            </el-descriptions-item>
-            <el-descriptions-item label="出生日期" :contentStyle='contentStyle'>
-              <div class="inputDeep">
-                {{ form.birthday }}
-              </div>
-            </el-descriptions-item>
-            <el-descriptions-item label="身高（cm）">
-              {{ form.height }}
-            </el-descriptions-item>
-            <el-descriptions-item label="体重（kg）">
-              {{ form.weight }}
-            </el-descriptions-item>
-            <el-descriptions-item label="年龄">
-              {{ form.age }}
-            </el-descriptions-item>
-            <el-descriptions-item label="籍贯">
-              {{ form.location }}
-            </el-descriptions-item>
-            <el-descriptions-item label="联系方式">
-              {{ form.phone }}
-            </el-descriptions-item>
-            <el-descriptions-item label="血型">
-              {{ form.bloodType }}
-            </el-descriptions-item>
-          </el-descriptions> -->
           <el-descriptions title="用户信息">
             <el-descriptions-item v-if="edit" label="生日">{{ form.birthday }}</el-descriptions-item>
             <el-descriptions-item v-else="edit" label="生日"><el-input
@@ -188,7 +153,8 @@ export default {
         age: "23",
         location: '河南郑州',
         phone: '14543567658',
-        bloodType: 'A型'
+        bloodType: 'A型',
+        patientId: ''
       },
       formLabelWidth: '120px',
       contentStyle: {
@@ -202,7 +168,7 @@ export default {
       dialogVisibleRule: false,
       rule: '',
       generateReportVisible: false,
-      edit: false
+      edit: false,
     }
   },
   methods: {
@@ -268,12 +234,21 @@ export default {
     },
     addHistory() {
       this.dialogFormVisible = true
-      // axios.get('/proj/Info/4').then(res => {
-      //     this.form = res.data.result
-      //     console.log(res.data);
-      // }, err => {
-      //     console.log(err);
-      // })
+      axios.post('/createhistory', {
+        Date: this.formNewhistory.date,
+        Description: this.formNewhistory.introduction,
+        patient_id: this.form.patientId,
+        pid: this.$route.params.id
+      }).then(res => {
+        this.form = res.data.result
+        console.log(res.data);
+        this.$message({
+          type: 'success',
+          message: '添加成功!'
+        });
+      }, err => {
+        console.log(err);
+      })
     },
 
     // 删除项目
@@ -341,13 +316,6 @@ export default {
       }, err => {
         console.log(err);
       })
-      // axios.post('/proj/my', { permission: 'all' }).then(res => {
-      //     // this.form = res.data.result
-      //     this.tableData = res.data.result[]
-      //     console.log(res.data);
-      // }, err => {
-      //     console.log(err);
-      // })
     },
     handleRemove(file, fileList) {
       console.log(file, fileList);
