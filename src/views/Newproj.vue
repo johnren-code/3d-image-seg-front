@@ -4,14 +4,14 @@
       <SectionTitle text-align="center" title="新建项目" description="" data-aos="fade-up" />
       <div class="peopleDes">
         <el-descriptions direction="vertical" :column="3" border>
-          <el-descriptions-item label="用户名" :contentStyle='contentStyle'>
+          <el-descriptions-item label="就诊人名称" :contentStyle='contentStyle'>
             <div class="inputDeep">
               <el-input v-model="form.name"></el-input>
             </div>
           </el-descriptions-item>
-          <el-descriptions-item label="项目描述" :contentStyle='contentStyle'>
+          <el-descriptions-item label="就诊人id" :contentStyle='contentStyle'>
             <div class="inputDeep">
-              <el-input v-model="form.description"></el-input>
+              <el-input v-model="form.patientId"></el-input>
             </div>
           </el-descriptions-item>
           <el-descriptions-item label="出生日期" :contentStyle='contentStyle'>
@@ -44,7 +44,11 @@
               <el-option label="其他" value="其他"></el-option>
             </el-select>
           </el-descriptions-item>
+          <el-descriptions-item label="就诊人描述">
+            <el-input v-model="form.description"></el-input>
+          </el-descriptions-item>
         </el-descriptions>
+
         <el-col :offset="11">
           <el-button type="primary" @click="onSubmit">立即创建</el-button>
           <el-button type="danger" @click="reset">重置</el-button>
@@ -80,16 +84,10 @@ export default {
         age: "",
         location: '',
         phone: '',
-        bloodType: ''
+        bloodType: '',
+        patientId: ''
       },
-      fileList: [{
-        name: 'food.jpeg',
-        url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-      }, {
-        name: 'food2.jpeg',
-        url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-      }],
-      dialogImageUrl: 'D:/runajianbeiA3/front/3d-image-seg-front/src/assets/images/about/about-1.png',
+      // dialogImageUrl: 'D:/runajianbeiA3/front/3d-image-seg-front/src/assets/images/about/about-1.png',
       dialogVisible: false,
       disabled: false,
       contentStyle: {
@@ -105,7 +103,7 @@ export default {
       console.log(file);
     },
     onSubmit() {
-      console.log(typeof (7.5))
+      // console.log(typeof (7.5))
       axios.post('/api/proj/creat', {
         name: this.form.name,
         location: this.form.location,
@@ -125,7 +123,19 @@ export default {
             message: '创建成功',
             type: 'success'
           });
-          this.$router.push(`/history/${res.data.result.id}`)
+          axios.post('/api/proj/findPatient', {
+            patientId: this.form.patientId,
+            projectId: res.data.result.id
+          }).then(res1 => {
+            console.log(res1.data);
+            this.$message({
+              message: '绑定数据成功',
+              type: 'success'
+            });
+            this.$router.push(`/history/${res.data.result.id}`)
+          }, err => {
+            console.log(err);
+          })
         }
       }, err => {
         console.log(err);
