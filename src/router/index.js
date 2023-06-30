@@ -63,7 +63,7 @@ import UserProj from "../views/UserProj"
 import Projcreate from "../views/Projcreate"
 import Newproj from "../views/Newproj"
 import PersonalPage from "../views/PersonalPage";
-import Report from "../views/Report";
+import ShareTest from "../views/ShareTest";
 
 Vue.use(VueRouter)
 
@@ -83,6 +83,21 @@ const routes = [
         meta: {
             title: '主页',
         },
+    },
+    {
+        path: '/sharetest',
+        name: 'ShareTest',
+        component: ShareTest,
+        meta: {
+            title: '协同编辑测试',
+        },
+        children: [{
+            path: ':id(\\d+)',
+            component: ShareTest,
+            meta: {
+                title: '编辑病例报告',
+            }
+        }]
     },
     {
         path: '/segmentation',
@@ -576,11 +591,7 @@ const routes = [
             component: UserProj,
             meta: {
                 title: '用户项目',
-            },
-            // children: [{
-            //     path: 'report',
-            //     component: Report
-            // }]
+            }
         }, {
             path: '/',
             component: Projcreate,
@@ -590,15 +601,7 @@ const routes = [
         }, {
             path: 'new',
             component: Newproj
-        }, {
-            path: ':id(\\d+)/report',
-            component: Report,
-            meta: {
-                title: '用户项目',
-            },
-        }
-
-        ]
+        }]
     },
 ]
 
