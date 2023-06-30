@@ -1,12 +1,13 @@
 <template>
     <ul class="mainmenu">
         <li><router-link to="/home">首页</router-link></li>
+        <li><router-link to="/technical">技术要点与介绍</router-link></li>
         <li><router-link to="/segmentation">3D影像分割</router-link></li>
         <li><router-link to="/test">测试</router-link></li>
         <li><router-link to="/contact">Contact</router-link></li>
         <li><router-link to="/history/">项目管理</router-link></li>
         <li><router-link to="/personal">个人界面测试</router-link></li>
-      <li><router-link to="/shareedit">协同编辑测试</router-link></li>
+        <li><router-link to="/shareedit">协同编辑测试</router-link></li>
     </ul>
 </template>
 

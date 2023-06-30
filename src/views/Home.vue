@@ -1,5 +1,5 @@
 <template>
-  <Layout :footer-style="2">
+  <Layout :footer-style="1">
     <!-- Start Slider Area -->
     <div class="demo-slider-area slider-area bg-transparent slider-style-1 pb--100 pt--70">
       <div class="container">
@@ -7,20 +7,20 @@
           <div class="col-lg-12">
             <div class="inner text-center">
               <div class="react-image mb--20" data-aos="fade-up">
-                <img src="../assets/images/logo/favicon.png" alt="Doob Vue"/>
+                <img src="../assets/images/logo/favicon.png" alt="Doob Vue" />
               </div>
               <h1 class="title display-two" data-aos="fade-up" data-aos-delay="100">
-                3D医疗数据解析平台 <br/>
+                3D医疗数据解析平台 <br />
                 <span class="theme-gradient">深度学习</span> &
                 <span class="theme-gradient">3D影像分割</span>
-                <br/>
+                <br />
               </h1>
               <p class="description" data-aos="fade-up" data-aos-delay="150">
                 医生分析病例 / 病人查看分析结果 / 可编辑的3D建模
               </p>
               <div class="button-group" data-aos="fade-up" data-aos-delay="200">
                 <a class="btn-default btn-large round btn-icon" href="#demo">查看详情
-                  <Icon name="arrow-down"/>
+                  <Icon name="arrow-down" />
                 </a>
               </div>
             </div>
@@ -30,33 +30,25 @@
     </div>
     <!-- End Slider Area -->
 
-    <Separator/>
+    <Separator />
 
     <!-- Start Our Demo -->
     <div class="rn-demo-area rn-section-gap" id="demo">
       <div class="wrapper plr--150 plr_lg--30 plr_md--30 plr_sm--30">
         <div class="row">
           <div class="col-lg-12">
-            <SectionTitle
-                text-align="center"
-                subtitle="All Demo Here"
-                title="Doob All Demo."
-                description="We create a business and consulting Vue.js template with 50+ elements features. <br /> 19+ demo pages, faster loading and well documentated code."
-                data-aos="fade-up"
-            />
+            <SectionTitle text-align="center" subtitle="Functions List" title="功能列表"
+              description="使用AI对医疗产业赋能，是加速AI落地的重要举措" data-aos="fade-up" />
           </div>
         </div>
         <div class="row row--15">
-          <div class="col-lg-4 col-md-6 col-12 mt--40"
-               v-for="(page, index) in demoPages"
-               :key="index"
-               data-aos="fade-up"
-               :data-aos-delay="100 + index">
+          <div class="col-lg-4 col-md-6 col-12 mt--40" v-for="(page, index) in demoPages" :key="index" data-aos="fade-up"
+            :data-aos-delay="100 + index">
             <div class="single-demo">
               <router-link :to="page.url">
                 <div class="thumbnail">
-                  <img class="image-dark" :src="page.image" alt="Corporate images"/>
-                  <img class="image-light" :src="page.imageLight" alt="Corporate images"/>
+                  <img class="image-dark" :src="page.image" alt="Corporate images" />
+                  <img class="image-light" :src="page.imageLight" alt="Corporate images" />
                   <span v-if="page.badge" class="label-badge">{{ page.badge }}</span>
                 </div>
               </router-link>
@@ -70,43 +62,36 @@
     </div>
     <!-- End Our Demo -->
 
-    <Separator/>
+    <Separator />
 
     <!-- Start Inner Pages -->
     <div class="rn-inner-pages rn-section-gap">
       <div class="wrapper plr--150 plr_lg--30 plr_md--30 plr_sm--30">
         <div class="row">
           <div class="col-lg-12">
-            <SectionTitle
-                text-align="center"
-                subtitle="All Others Pages"
-                title="All Others Pages."
-                description="Have a nice inner pages include in doob template."
-                data-aos="fade-up"
-            />
+            <SectionTitle text-align="center" subtitle="Statics Of Models" title="模型表现"
+              description="模型对脾脏、肝、胃等11个器官的平均分割精度为0.92567，其中左右肾、脾脏、肝分割精度尤佳" data-aos="fade-up" />
           </div>
         </div>
         <div class="row">
-          <div class="col-lg-4 col-md-6 col-12 mt--40"
-               v-for="(page, index) in innerPages"
-               :key="index"
-               data-aos="fade-up"
-               :data-aos-delay="100 + index">
-            <div class="single-demo">
-              <router-link :to="page.url">
-                <div class="thumbnail">
-                  <img class="image-dark" :src="page.image" alt="Corporate images"/>
-                  <img class="image-light" :src="page.imageLight" alt="Corporate images"/>
-                </div>
-              </router-link>
-              <h4 class="title">
-                <router-link :to="page.url">{{ page.title }}</router-link>
-              </h4>
-            </div>
-          </div>
+          <Counter text-align="center" :counter-data="counterOneData" column="col-lg-3 col-md-6 col-sm-6 col-12" />
         </div>
       </div>
     </div>
+    <Separator />
+    <section class="rn-service-area rn-section-gap">
+      <div class="container">
+        <div class="row row--30">
+          <div class="col-lg-12">
+            <SectionTitle class="mb--50" text-align="center" subtitle="Advantages of Product" title="产品优势"
+              description="相对于传统基于医生的目视解译判断方法<br/>基于深度学习的方法可以自动分析3d医疗图像中各器官的形状和大小，在准确率和效率方面展现出极大的潜力" data-aos="fade-up"
+              data-aos-delay="60" />
+          </div>
+        </div>
+        <ServiceOne service-style="service__style--1 bg-color-blackest radius mt--25" icon-size="62"
+          text-align="center" />
+      </div>
+    </section>
     <!-- End Inner Pages -->
   </Layout>
 </template>
@@ -116,159 +101,53 @@ import Layout from '../components/common/Layout'
 import Icon from '../components/icon/Icon'
 import Separator from '../components/elements/separator/Separator'
 import SectionTitle from '../components/elements/sectionTitle/SectionTitle'
+import Counter from "../components/elements/counterUp/Counter";
+import ServiceOne from "../components/elements/service/ServiceOne";
 export default {
   name: 'Home',
-  components: {Icon, Layout, Separator, SectionTitle},
+  components: { Icon, Layout, Separator, SectionTitle, Counter, ServiceOne },
   data() {
     return {
       demoPages: [
         {
-          url: '/business-consulting',
-          image: require('@/assets/images/demo/business-consulting.png'),
-          imageLight: require('@/assets/images/demo/business-consulting-light.png'),
-          title: 'Business Consulting',
+          url: '/segmentation',
+          image: require('@/assets/images/home/medicalseg.png'),
+          imageLight: require('@/assets/images/home/medicalseg.png'),
+          title: '医学分割',
           badge: '',
         },
         {
-          url: '/business-consulting-2',
-          image: require('@/assets/images/demo/business-consulting-2.png'),
+          url: '/history/',
+          image: require('@/assets/images/home/projmanage.png'),
+          imageLight: require('@/assets/images/home/projmanage.png'),
+          title: '就诊管理',
+          badge: '',
+        },
+        {
+          url: '/shareedit',
+          image: require('@/assets/images/home/editshare.png'),
           imageLight: require('@/assets/images/demo/business-consulting-2-light.png'),
-          title: 'Business Consulting 2',
+          title: '协同编辑',
           badge: '',
         },
+      ],
+      counterOneData: [
         {
-          url: '/corporate',
-          image: require('@/assets/images/demo/corporate.png'),
-          imageLight: require('@/assets/images/demo/corporate-light.png'),
-          title: 'Corporate',
-          badge: '',
+          number: 96,
+          title: '左肾',
         },
         {
-          url: '/startup',
-          image: require('@/assets/images/demo/startup.png'),
-          imageLight: require('@/assets/images/demo/startup-light.png'),
-          title: 'Startup',
-          badge: 'Trendy',
+          number: 97,
+          title: '脾脏',
         },
         {
-          url: '/web-agency',
-          image: require('@/assets/images/demo/web-agency.png'),
-          imageLight: require('@/assets/images/demo/web-agency-light.png'),
-          title: 'Web Agency',
-          badge: 'Trendy',
+          number: 97,
+          title: '肝',
         },
         {
-          url: '/international-consulting',
-          image: require('@/assets/images/demo/international-consulting.png'),
-          imageLight: require('@/assets/images/demo/international-consulting-light.png'),
-          title: 'International Consulting',
-          badge: 'Trendy',
-        },
-        {
-          url: '/consulting',
-          image: require('@/assets/images/demo/consulting.png'),
-          imageLight: require('@/assets/images/demo/consulting-light.png'),
-          title: 'Consulting',
-          badge: 'Hot',
-        },
-        {
-          url: '/finance',
-          image: require('@/assets/images/demo/finance.png'),
-          imageLight: require('@/assets/images/demo/finance-light.png'),
-          title: 'Finance',
-          badge: '',
-        },
-        {
-          url: '/digital-agency',
-          image: require('@/assets/images/demo/digital-agency.png'),
-          imageLight: require('@/assets/images/demo/digital-agency-light.png'),
-          title: 'Digital Agency',
-          badge: '',
-        },
-        {
-          url: '/seo-agency',
-          image: require('@/assets/images/demo/seo-agency.png'),
-          imageLight: require('@/assets/images/demo/seo-agency-light.png'),
-          title: 'SEO Agency',
-          badge: '',
-        },
-        {
-          url: '/company',
-          image: require('@/assets/images/demo/company.png'),
-          imageLight: require('@/assets/images/demo/company-light.png'),
-          title: 'Company',
-          badge: '',
-        },
-        {
-          url: '/personal-portfolio',
-          image: require('@/assets/images/demo/portfolio.png'),
-          imageLight: require('@/assets/images/demo/portfolio-light.png'),
-          title: 'Personal Portfolio',
-          badge: '',
-        },
-        {
-          url: '/freelancer',
-          image: require('@/assets/images/demo/freelancer.png'),
-          imageLight: require('@/assets/images/demo/freelancer-light.png'),
-          title: 'Freelancer',
-          badge: 'Hot',
-        },
-        {
-          url: '/marketing-agency',
-          image: require('@/assets/images/demo/marketing.png'),
-          imageLight: require('@/assets/images/demo/marketing-light.png'),
-          title: 'Marketing Agency',
-          badge: '',
-        },
-        {
-          url: '/travel-agency',
-          image: require('@/assets/images/demo/travel-agency.png'),
-          imageLight: require('@/assets/images/demo/travel-agency-light.png'),
-          title: 'Travel Agency',
-          badge: '',
-        },
-        {
-          url: '/business',
-          image: require('@/assets/images/demo/business.png'),
-          imageLight: require('@/assets/images/demo/business-light.png'),
-          title: 'Business',
-          badge: '',
-        },
-        {
-          url: '/event-conference',
-          image: require('@/assets/images/demo/event-conference.png'),
-          imageLight: require('@/assets/images/demo/event-conference-light.png'),
-          title: 'Event Conference',
-          badge: '',
-        },
-        {
-          url: '/creative-portfolio',
-          image: require('@/assets/images/demo/creative-portfolio.png'),
-          imageLight: require('@/assets/images/demo/creative-portfolio-light.png'),
-          title: 'Creative Portfolio',
-          badge: '',
-        },
-        {
-          url: '/about',
-          image: require('@/assets/images/demo/about-us.png'),
-          imageLight: require('@/assets/images/demo/about-us-light.png'),
-          title: 'Corporate About',
-          badge: '',
-        },
-        {
-          url: '#demo',
-          image: require('@/assets/images/demo/coming-soon.png'),
-          imageLight: require('@/assets/images/demo/coming-soon.png'),
-          title: 'Finance Consulting',
-          badge: '',
-        },
-        {
-          url: '#demo',
-          image: require('@/assets/images/demo/coming-soon.png'),
-          imageLight: require('@/assets/images/demo/coming-soon.png'),
-          title: 'Finance Consulting',
-          badge: '',
-        },
+          number: 96,
+          title: '右肾',
+        }
       ],
       innerPages: [
         {
