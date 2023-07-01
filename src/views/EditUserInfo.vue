@@ -17,7 +17,7 @@
           </div>
           <div class="form-title">邮箱</div>
           <div class="form-group">
-            <input type="text" name="phone" placeholder="请输入新邮箱" required v-model="userData.phone" />
+            <input type="text" name="phone" placeholder="请输入新邮箱" required v-model="userData.email" />
           </div>
           <div class="form-title">新密码</div>
           <div class="form-group">
@@ -25,7 +25,7 @@
           </div>
           <div class="form-title">个人简介</div>
           <div class="form-group">
-            <input type="text" name="description" placeholder="请输入个人简介" required v-model="userData.content" />
+            <input type="text" name="description" placeholder="请输入个人简介" required v-model="userData.description" />
           </div>
           <div class="form-group">
             <button class="btn-default btn-large">保存</button>
@@ -48,36 +48,22 @@ export default {
       userData: {
         avatarUrl: '',
         username: '',
-        phone: '',
+        email: '',
         password: '',
-        content: '',
+        description: '',
       }
     };
   },
   mounted() {
-    // this.getUserInfo()
+    this.getUserInfo()
   },
   methods: {
-    // getUserInfo(){
-    //   var that = this;
-    //   /* var token =this.$ls.get('userInfo').token */
-    //   that.$axios.get(this.$global.apiUrl+'user/'+this.$ls.get('userInfo').id,{
-    //     headers:{
-    //       'token':this.$ls.get('userInfo').token
-    //     }
-    //   })
-    //       .then(res=>{
-    //         var userInfo=res.data.data;
-    //         this.userData.avatarUrl=userInfo.avatar;
-    //         this.userData.username=userInfo.name;
-    //         this.userData.phone=userInfo.phone;
-    //         this.userData.password=userInfo.password;
-    //         this.userData.content=userInfo.content;
-    //       })
-    //       .catch(function(error) {
-    //         console.log(error);
-    //       });
-    // },
+    getUserInfo(){
+      this.userData.avatarUrl = this.$ls.get('userInfo').avatar
+      this.userData.username = this.$ls.get('userInfo').username
+      this.userData.email = this.$ls.get('userInfo').email
+      this.userData.description = this.$ls.get('userInfo').description || '这家伙很懒，什么都没有留下'
+    },
     handleAvatarSuccess(res, file) {
       // console.log(res)
       this.userData.avatarUrl = res.data
@@ -94,31 +80,31 @@ export default {
       }
       return isJPG && isLt2M;
     },
-    // sendEditInformation(){
-    //   var that =this;
-    //   that.$axios.put(this.$global.apiUrl+'user/'+this.$ls.get('userInfo').id,{
-    //     name:this.userData.username,
-    //     password:this.userData.password,
-    //     avatar:this.userData.avatarUrl,
-    //     phone:this.userData.phone,
-    //     content:this.userData.content
-    //   })
-    //       .then(res=>{
-    //         // console.log(res)
-    //         that.$message.success("修改成功！")
-    //         var userInfo = this.$ls.get('userInfo')
-    //         userInfo.name=this.userData.username
-    //         userInfo.avatar=this.userData.avatarUrl
-    //         this.$ls.set('userInfo',userInfo)
-    //         eventBus.$emit('userLogin',true)
-    //         this.$router.push('/personal')
-    //       })
-    //       .catch(function(error) {
-    //         that.$message.error("网络繁忙，请重试！")
-    //         // console.log("失败")
-    //         console.log(error);
-    //       });
-    // }
+    sendEditInformation(){
+      var that =this;
+      that.$axios.put(this.$global.apiUrl+'user/'+this.$ls.get('userInfo').id,{
+        name:this.userData.username,
+        password:this.userData.password,
+        avatar:this.userData.avatarUrl,
+        phone:this.userData.phone,
+        content:this.userData.content
+      })
+          .then(res=>{
+            // console.log(res)
+            that.$message.success("修改成功！")
+            var userInfo = this.$ls.get('userInfo')
+            userInfo.name=this.userData.username
+            userInfo.avatar=this.userData.avatarUrl
+            this.$ls.set('userInfo',userInfo)
+            eventBus.$emit('userLogin',true)
+            this.$router.push('/personal')
+          })
+          .catch(function(error) {
+            that.$message.error("网络繁忙，请重试！")
+            // console.log("失败")
+            console.log(error);
+          });
+    }
   }
 }
 </script>

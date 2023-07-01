@@ -7,7 +7,7 @@
         </figure>
         <figcaption class="content">
           <h2 class="title">{{ teamMember.name }}</h2>
-          <h6 class="subtitle theme-gradient">{{ teamMember.designation }}</h6>
+          <h6 class="subtitle theme-gradient">{{ teamMember.email }}</h6>
           <p class="description">{{ teamMember.description }}</p>
 
           <!--                    <ul class="social-icon social-default icon-naked mt&#45;&#45;20" >-->
@@ -74,6 +74,7 @@
 import Icon from "../../icon/Icon";
 import Button from "../button/Button.vue";
 import eventBus from "../../../global/eventBus";
+import axios from "axios";
 
 export default {
   name: 'Team',
@@ -100,6 +101,16 @@ export default {
     },
     logout() {
       this.$router.push('/');
+      axios.get('/api/logout').then(res => {
+        if (res.data.code === 400) {
+          this.$message.error(res.data.message)
+        } else {
+          this.$message.success('登出成功')
+        }
+      }).catch(error => {
+        this.$message.error('登出错误，请稍后再试')
+      })
+      this.$ls.clear()
       eventBus.$emit('userLogin', false)
     }
   }

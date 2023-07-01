@@ -65,6 +65,7 @@ import Newproj from "../views/Newproj"
 import PersonalPage from "../views/PersonalPage";
 import ShareTest from "../views/ShareEdit";
 import ShareEdit from "../views/ShareEdit";
+import EditUserInfo from "../views/EditUserInfo";
 
 Vue.use(VueRouter)
 
@@ -83,6 +84,14 @@ const routes = [
         component: Home,
         meta: {
             title: '主页',
+        },
+    },
+    {
+        path: '/editUserInfo',
+        name: 'EditUserInfo',
+        component: EditUserInfo,
+        meta: {
+            title: '编辑个人信息',
         },
     },
     {

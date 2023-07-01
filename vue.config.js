@@ -2,7 +2,7 @@ module.exports = {
     devServer: {
         proxy: {
             '/api': {
-                target: 'http://10.135.0.69:9595',
+                target: 'http://10.135.0.9:9595',
                 pathRewrite: {
                     '^/api': ''
                 },
@@ -10,7 +10,7 @@ module.exports = {
                 ws: true,
             },
             '/flask': {
-                target: 'http://10.135.0.69:5000',
+                target: 'http://10.135.0.9:5000',
                 pathRewrite: {
                     '^/flask': ''
                 },
