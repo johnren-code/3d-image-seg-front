@@ -47,7 +47,7 @@
                             {
                                 id: 'Two',
                                 title: '为什么nnUnet比传统Unet性能更好？',
-                                description: 'nnUnet通过引入多尺度训练和预测、数据增强和预处理、强大的网络架构以及预训练和迁移学习等技术，能够在医学图像分割任务中获得更好的性能。这些改进使得NNUNet能够更好地处理不同尺度、形状和变化的医学图像，并提供更准确的分割结果。'
+                                description: 'nnUnet通过引入多尺度训练和预测、数据增强和预处理、强大的网络架构以及预训练和迁移学习等技术，能够在医学图像分割任务中获得更好的性能。这些改进使得nnUnet能够更好地处理不同尺度、形状和变化的医学图像，并提供更准确的分割结果。'
                             },
                             {
                                 id: 'Three',
@@ -70,8 +70,6 @@ import Separator from '../components/elements/separator/Separator.vue'
 import Tab from '../components/elements/tab/Tab.vue'
 import Tab1 from '../components/elements/tab/Tab1.vue'
 import Accordion from '../components/elements/accordion/Accordion.vue'
-// import UploadPic from "../components/function/UploadPic";
-// import MyDrawer from "../components/modal/MyDrawer";
 export default {
     name: 'Technical',
     components: { Layout, SectionTitle, Separator, Tab, Accordion, Tab1 },
@@ -125,7 +123,7 @@ export default {
                 tabContent1: [
                     {
                         id: 1,
-                        menu: '网络结构模块1',
+                        menu: '网络模型模块',
                         content:
                             `<p>
                                 vnet的网络结构是一种基于编码器-解码器结构的三维卷积神经网络，它由编码器部分和解码器部分组成，并包含跳跃连接来提高特征传递和分割准确性。
@@ -134,7 +132,7 @@ export default {
                     },
                     {
                         id: 2,
-                        menu: '数据预处理模块1',
+                        menu: '数据处理模块',
                         content:
                             `<p>
                                 数据归一化：为了将数据缩放到相同的尺度并提高训练的稳定性，可以对体积数据进行归一化。一种常见的方法是将数据线性缩放到0-1范围之间，即将体素值除以其最大值。
@@ -144,7 +142,7 @@ export default {
                     },
                     {
                         id: 3,
-                        menu: '预测模块1',
+                        menu: '推理模块',
                         content: `<p>
 							分割预测：通过逐层上采样和卷积操作，解码器将逐步恢复特征图的尺寸，并将其映射到与目标类别数相同的通道数。最终输出层将生成分割预测结果，每个像素位置的预测值表示其所属的类别或分割标签。
                             <br/><br/>后处理：根据需要，可以对生成的分割预测结果进行后处理。这可能包括阈值处理、形态学操作、去噪等步骤，以进一步改善预测结果的质量和准确性。
@@ -152,7 +150,7 @@ export default {
                     },
                     {
                         id: 4,
-                        menu: '性能1',
+                        menu: '效率',
                         content: `<p>
 							vnet在常见的医学图像分割任务中，如脑部肿瘤分割、心脏分割、肺部分割等，通常能够实现较高的分割准确性。此外能够有效地处理多模态医学图像分割任务，其中包括结构性医学图像（如CT扫描和MRI图像）以及其他模态的图像（如功能性图像、病理学图像等）。
                             <br/><br/>本平台使用vnet模型仅有编码器、解码器和跳跃连接组成，不涉及模型融合和后处理，因此在v100上推理单张图片所需时间仅为5s左右。

@@ -66,6 +66,7 @@ import PersonalPage from "../views/PersonalPage";
 import ShareTest from "../views/ShareEdit";
 import ShareEdit from "../views/ShareEdit";
 import Technical from "../views/Technical"
+import Patient from "../views/Patient"
 
 Vue.use(VueRouter)
 
@@ -146,6 +147,14 @@ const routes = [
         component: PersonalPage,
         meta: {
             title: '个人界面测试',
+        },
+    },
+    {
+        path: '/patient',
+        name: 'Patient',
+        component: Patient,
+        meta: {
+            title: '病人界面',
         },
     },
     {

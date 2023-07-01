@@ -66,11 +66,11 @@
         <div class="user_skills">
           <el-table :data="tableData" style="width: 100%" background-color="transparent"
             element-loading-background="rgba(0,0,0,0.5)" cell-style="color:white" width="400">
-            <el-table-column prop="id" label="编号" width="180">
+            <el-table-column prop="id" label="编号" width="380">
             </el-table-column>
-            <el-table-column prop="image" label="缩略图" width="180">
+            <el-table-column prop="image" label="缩略图" width="380">
             </el-table-column>
-            <el-table-column prop="desc_" label="简介" width="280">
+            <el-table-column prop="desc_" label="简介" width="480">
             </el-table-column>
             <el-table-column prop="date" label="上次修改时间" width="420">
             </el-table-column>
@@ -437,6 +437,7 @@ export default {
 
 ::v-deep .el-descriptions__body {
   color: wheat !important;
+  font-size: 20px;
 }
 
 .peopleDes {
@@ -465,6 +466,11 @@ export default {
 .historyTitle {
   color: #efca09;
   font-weight: bold
+}
+
+
+::v-deep .el-table .cell {
+  line-height: 40px !important
 }
 </style>
 
