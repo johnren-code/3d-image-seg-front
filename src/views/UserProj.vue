@@ -43,7 +43,7 @@
           </el-descriptions>
         </div>
         <div>
-          <SectionTitle text-align="center" title="这里可以放一个折线图" description="" data-aos="fade-up" />
+          <!-- <SectionTitle text-align="center" title="这里可以放一个折线图" description="" data-aos="fade-up" /> -->
         </div>
       </div>
       <el-row>
@@ -145,7 +145,7 @@ export default {
       dialogVisible: false,
       disabled: false,
       form: {
-        name: 'vivion',
+        name: '小明',
         description: '病人体态臃肿',
         birthday: '2000-07-09',
         height: "1.75",

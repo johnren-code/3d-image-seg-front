@@ -1,6 +1,6 @@
 <template>
     <!-- <body id="paper"> -->
-    <Layout header-class="header-transparent" :show-newsletter="true" :show-cta="false">
+    <Layout header-class="header-transparent" :show-cta="false" :footer-style="1">
         <!-- <p>历史记录！！！</p> -->
         <div class="container">
             <div class="mytable">

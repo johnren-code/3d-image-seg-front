@@ -66,6 +66,7 @@ import PersonalPage from "../views/PersonalPage";
 import ShareTest from "../views/ShareEdit";
 import ShareEdit from "../views/ShareEdit";
 import EditUserInfo from "../views/EditUserInfo";
+import Technical from "../views/Technical";
 
 Vue.use(VueRouter)
 
@@ -77,6 +78,14 @@ const routes = [
         meta: {
             title: '主页',
         },
+    },
+    {
+        path: '/technical',
+        name: 'technical',
+        component: Technical,
+        meta: {
+            title: '技术要点与介绍'
+        }
     },
     {
         path: '/home',
