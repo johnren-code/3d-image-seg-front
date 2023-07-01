@@ -19,8 +19,8 @@
               <div class="row">
                 <div class="col-lg-10 offset-lg-1" style="margin-top: -50px;">
                   <SectionTitle
-                      subtitle="Patient Condition"
-                      title="病人诊断情况"
+                      subtitle="Complete Condition"
+                      title="病人诊断完成情况"
                       data-aos="fade-up"
                   />
                 </div>
@@ -78,32 +78,7 @@ export default {
           description: '',
         }
       ],
-      progressOneData: [
-        {
-          id: 1,
-          title: '目标提取',
-          percentage: 0,
-          progressClass: 'bar-color-1',
-        },
-        {
-          id: 2,
-          title: '变化检测',
-          percentage: 0,
-          progressClass: 'bar-color-2',
-        },
-        {
-          id: 3,
-          title: '目标检测',
-          percentage: 0,
-          progressClass: 'bar-color-3',
-        },
-        {
-          id: 4,
-          title: "地物分类",
-          percentage: 0,
-          progressClass: 'bar-color-4',
-        },
-      ]
+      progressOneData: []
     };
   },
   mounted() {
@@ -118,6 +93,16 @@ export default {
       console.log(res.data)
       if(res.data.code === 400){
         this.$message.error(res.data.message)
+      }else {
+        const patientInfo = res.data.result
+        for(var i=0;i<patientInfo.length;i++){
+          this.progressOneData.push({
+            id:i,
+            title:patientInfo[i].name,
+            percentage: patientInfo[i].degreeOfCompletion,
+            progressClass: 'bar-color-1'
+          })
+        }
       }
     })
   },

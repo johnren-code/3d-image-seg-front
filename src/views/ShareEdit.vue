@@ -12,8 +12,9 @@
         <div class="content ql-editor" id="show-content"></div>
       </div>
     </div>
-    <el-button class="download-btn" type="primary" @click="convertToPDF">下载为pdf</el-button>
-    <el-button class="create-btn" type="primary" @click="createDoc">创建预置内容</el-button>
+    <el-button class="download-btn" type="primary" @click="convertToPDF">下载</el-button>
+    <el-button class="submit-btn" type="primary" @click="submitPDF">提交</el-button>
+    <el-button class="create-btn" type="primary" @click="createDoc">创建</el-button>
     <div>
       <el-aside class="side-menu" :width="isCollapse ? '65px' : '200px'">
         <i class="el-icon-search" style="font-size: 25px;cursor: pointer;margin-left: 20px" title="在线搜索"
@@ -127,7 +128,6 @@ export default {
         useCORS: true, //支持图片跨域
         allowTaint: true,
         scale: 1, //设置放大的倍数
-        scrollY: 0
       }).then((canvas) => {
         let pdf = new jsPDF('p', 'mm', 'a4')
         let imgData = canvas.toDataURL('image/png')
@@ -135,6 +135,38 @@ export default {
         pdf.save('download.pdf')
       })
     },
+    submitPDF() {
+      html2canvas(document.getElementById('show-content'), {
+        backgroundColor: 'white',
+        useCORS: true, //支持图片跨域
+        allowTaint: true,
+        scale: 1, //设置放大的倍数
+      }).then((canvas) => {
+        let pdf = new jsPDF('p', 'mm', 'a4')
+        let imgData = canvas.toDataURL('image/png')
+        pdf.addImage(imgData, 'PNG', 0, 0)
+
+        // 将PDF转换为Blob
+        pdf.output('blob').then(function(blob) {
+          // 创建FormData对象
+          var formData = new FormData();
+          formData.append("file", blob, "download.pdf");
+          formData.append("historyid",this.historyId)
+          // 使用fetch API发送到服务器
+          fetch("/your-server-endpoint", {
+            method: "POST",
+            body: formData
+          }).then(response => {
+            if (response.ok) {
+              this.$message.success('成功提交病例报告！')
+            } else {
+              this.$message.error('发生错误，请稍后再试')
+            }
+          });
+        });
+      });
+
+    }
   },
   mounted() {
     let authors = [
@@ -364,31 +396,39 @@ export default {
 .page .editor {
   position: relative;
   margin-top: 32px;
+  border-color: #868e96!important;
 }
 
 .editor-container {
   padding: 0 90px;
-  height: 400px;
+  height: 800px;
   overflow-y: scroll;
   overflow-x: hidden;
+  border-color: #868e96;
 }
 
 .page-show .content {
   margin-top: 10px;
-  height: 475px;
+  height: 870px;
   width: 650px;
   border-style: solid;
   border-width: 1px;
-  border-color: white;
+  border-color: #868e96;
   overflow-y: scroll;
 }
 
 .download-btn {
   position: absolute;
-  right: 220px;
+  top: 120px;
+  right: 310px;
 }
 
 .create-btn {
+  position: absolute;
+  top: 120px;
+  right: 400px;
+}
+.submit-btn {
   position: absolute;
   top: 120px;
   right: 220px;

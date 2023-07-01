@@ -427,13 +427,13 @@
               <el-dialog
                   :title="'上传后处理脚本'"
                   :visible="uploadScriptVisible"
+                  height="500px"
                   width="500px"
                   :before-close="handleUploadClose"
                   class="dialog"
                   top="23vh"
                   :close-on-press-escape="false"
                   :close-on-click-modal="false"
-                  v-dialogDrag
               >
                 <el-upload
                     class="upload-demo"
@@ -450,31 +450,33 @@
                   <el-button slot="trigger" size="small" type="primary">点击上传文件</el-button>
                   <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器
                   </el-button>
-<!--                  <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>-->
+                  <div id="imageContainer" style="height: 300px">
+                  </div>
+                  <!--                  <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>-->
                 </el-upload>
               </el-dialog>
 
-              <el-dialog
-                  :title="'Slices，共' + spliceList.length + '个（' + splicePrecent + '%）'"
-                  :visible="visable"
-                  width="1060px"
-                  :before-close="handleClose"
-                  class="dialog"
-                  top="7vh"
-                  :close-on-press-escape="false"
-                  :close-on-click-modal="false"
-                  v-dialogDrag
-              >
-                <div
-                    :style="{ height: Math.round(spliceList.length / 7) * 150 + 'px' }"
-                    class="g-dis s-scrollbar"
-                ></div>
-                <div class="g-main">
-                  <div class="d-dicom" v-for="(item, i) in spliceList" :key="i">
-                    <div :id="'d-dicom' + i" class="m-image"></div>
-                  </div>
-                </div>
-              </el-dialog>
+<!--              <el-dialog-->
+<!--                  :title="'Slices，共' + spliceList.length + '个（' + splicePrecent + '%）'"-->
+<!--                  :visible="visable"-->
+<!--                  width="1060px"-->
+<!--                  :before-close="handleClose"-->
+<!--                  class="dialog"-->
+<!--                  top="7vh"-->
+<!--                  :close-on-press-escape="false"-->
+<!--                  :close-on-click-modal="false"-->
+<!--                  v-dialogDrag-->
+<!--              >-->
+<!--                <div-->
+<!--                    :style="{ height: Math.round(spliceList.length / 7) * 150 + 'px' }"-->
+<!--                    class="g-dis s-scrollbar"-->
+<!--                ></div>-->
+<!--                <div class="g-main">-->
+<!--                  <div class="d-dicom" v-for="(item, i) in spliceList" :key="i">-->
+<!--                    <div :id="'d-dicom' + i" class="m-image"></div>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              </el-dialog>-->
             </div>
           </div>
         </el-main>
@@ -904,7 +906,8 @@ export default {
       uploadScriptVisible: false,
       scriptAdditionalData: {},
       currentRawImageUrl: '',
-      currentSegImageUrl: ''
+      currentSegImageUrl: '',
+      sliceUrlList:[]
     }
   },
   watch: {
@@ -974,6 +977,15 @@ export default {
     },
     scriptUploadSuccess(res, file) {
       console.log(res)
+      if(res.length>10){
+        var imageContainer = document.getElementById('imageContainer')
+        this.sliceUrlList = res
+        for(var i=0;i<this.sliceUrlList.length;i++){
+          var image = document.createElement("img");
+          image.src = this.sliceUrlList[i]
+          imageContainer.appendChild(image)
+        }
+      }
     },
     submitUpload() {
       this.$refs.upload.submit();
@@ -1366,7 +1378,18 @@ export default {
 }
 </script>
 <style lang="scss">
+#imageContainer {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 每行展示3个图片，可根据需求调整 */
+  gap: 10px; /* 图片之间的间距，可根据需求调整 */
+}
 
+/* 调整图片大小 */
+#imageContainer img {
+  max-width: 100%; /* 图片宽度最大不超过容器宽度 */
+  max-height: 100%; /* 图片高度最大不超过容器高度 */
+  object-fit: cover; /* 调整图片的填充方式，可根据需求调整 */
+}
 
 .el-button--primary {
   color: #f7f4f4 !important;
