@@ -213,6 +213,7 @@ export default {
       })
       this.$ls.clear()
       eventBus.$emit('userLogin',false)
+      this.$router.push('/')
     },
     toPersonalPage(){
       this.$router.push('/personal')

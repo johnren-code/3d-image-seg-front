@@ -3,11 +3,11 @@
     <SectionTitle text-align="center" :title="'病人' + form.name + '的项目'" description="" data-aos="fade-up" />
     <el-row>
       <el-col :offset="19" class="deleHistory">
-        <el-button v-if="edit" size="mini" type="success" @click="editPersonal">编辑基本信息
+        <el-button v-if="edit" size="mini" type="primary" @click="editPersonal">编辑基本信息
         </el-button>
-        <el-button v-else="edit" size="mini" type="success" @click="editPersonal">完成编辑
+        <el-button v-else="edit" size="mini" type="primary" @click="editPersonal">完成编辑
         </el-button>
-        <el-button size="mini" type="primary" @click="dialogVisibleRule = true">修改权限
+        <el-button size="mini" type="success" @click="dialogVisibleRule = true">修改权限
         </el-button>
         <el-button size="mini" type="danger" @click="delProj">删除项目
         </el-button>
@@ -52,14 +52,15 @@
           <el-input v-model="searchInfo" prefix-icon="el-icon-search" style="width: 90%;margin-right: 10px" clearable
             @clear="search" @keydown.enter.native="search"></el-input>
         </el-col>
-        <el-col :span="2">
-          <el-button icon="el-icon-search" type="primary" @click="search" size="mini" style="width: 90%;">
+        <el-col :span="4">
+          <el-button type="primary" @click="search" size="mini">
             搜索记录
+          </el-button>
+          <el-button size="mini" type="success" class="addHistory" @click="addHistory">添加记录
           </el-button>
         </el-col>
         <el-col :span="3">
-          <el-button size="mini" type="success" class="addHistory" @click="addHistory">添加历史记录
-          </el-button>
+
         </el-col>
       </el-row>
       <el-form-item>
@@ -70,15 +71,15 @@
             </el-table-column>
             <el-table-column prop="image" label="缩略图" width="380">
             </el-table-column>
-            <el-table-column prop="desc_" label="简介" width="480">
+            <el-table-column prop="desc_" label="简介" width="360">
             </el-table-column>
-            <el-table-column prop="date" label="上次修改时间" width="420">
+            <el-table-column prop="date" label="上次修改时间" width="330">
             </el-table-column>
-            <el-table-column label="操作" fixed="right" width="300">
+            <el-table-column label="操作" width="500">
               <template slot-scope="scope">
                 <el-button size="mini" type="primary" @click="generateReport(scope.row.id)">生成报告</el-button>
-                <el-button size="mini" @click="checkHistory(scope.row.id)">查看</el-button>
-                <el-button size="mini" type="danger" @click="open">删除</el-button>
+                <el-button size="mini" type="success" @click="checkHistory(scope.row.id)">查看记录</el-button>
+                <el-button size="mini" type="danger" @click="open">删除记录</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -168,7 +169,7 @@ export default {
       dialogVisibleRule: false,
       rule: '',
       generateReportVisible: false,
-      edit: false,
+      edit: true,
     }
   },
   methods: {
@@ -176,7 +177,8 @@ export default {
       axios.post('/api/createhistory', {
         pid: this.$route.params.id,
         Date: this.formNewhistory.date,
-        Description: this.formNewhistory.introduction
+        Description: this.formNewhistory.introduction,
+        patient_id: this.form.patientId
       }).then(res => {
         console.log(res.data);
         // this.$router.push('/segmentation')
@@ -185,7 +187,7 @@ export default {
         this.dialogFormVisible = false
         this.$message({
           type: 'success',
-          message: '创建成功!'
+          message: '添加成功!'
         });
       }, err => {
         console.log(err);
@@ -234,21 +236,6 @@ export default {
     },
     addHistory() {
       this.dialogFormVisible = true
-      axios.post('/createhistory', {
-        Date: this.formNewhistory.date,
-        Description: this.formNewhistory.introduction,
-        patient_id: this.form.patientId,
-        pid: this.$route.params.id
-      }).then(res => {
-        this.form = res.data.result
-        console.log(res.data);
-        this.$message({
-          type: 'success',
-          message: '添加成功!'
-        });
-      }, err => {
-        console.log(err);
-      })
     },
 
     // 删除项目

@@ -128,11 +128,19 @@ export default {
             projectId: res.data.result.id
           }).then(res1 => {
             console.log(res1.data);
-            this.$message({
-              message: '绑定数据成功',
-              type: 'success'
-            });
-            this.$router.push(`/history/${res.data.result.id}`)
+            if (res1.data.code === 400) {
+              this.$message({
+                message: '请先去注册病人',
+                type: 'warning'
+              });
+            }
+            else {
+              this.$message({
+                message: '绑定数据成功',
+                type: 'success'
+              });
+              this.$router.push(`/history/${res.data.result.id}`)
+            }
           }, err => {
             console.log(err);
           })

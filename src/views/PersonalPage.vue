@@ -19,8 +19,8 @@
               <div class="row">
                 <div class="col-lg-10 offset-lg-1" style="margin-top: -50px;">
                   <SectionTitle
-                      subtitle="function frequency"
-                      title="功能使用频率"
+                      subtitle="Complete Condition"
+                      title="病人诊断完成情况"
                       data-aos="fade-up"
                   />
                 </div>
@@ -62,6 +62,7 @@ import Portfolio from '../components/elements/portfolio/Portfolio.vue'
 import PortfolioItemMixin from '../mixins/PortfolioItemMixin.js'
 import Progressbar from '../components/elements/progressbar/Progressbar.vue'
 import Button from '../components/elements/button/Button.vue'
+import axios from "axios";
 
 export default {
   name: 'PersonalPage',
@@ -69,134 +70,64 @@ export default {
   data() {
     return {
       // avatarUrl:this.$global.apiUrl+'file/uploadAvatar/'+this.$ls.get('userInfo').id,
-      userData: {
-        avatarUrl: '',
-        username: '',
-        phone: '',
-        password: '',
-        content: '',
-      },
       teamData: [
         {
-          image: '22',
-          name: '22',
-          phone: '22',
-          description: '22',
+          image: '',
+          name: '',
+          email: '',
+          description: '',
         }
       ],
-      progressOneData: [
-        {
-          id: 1,
-          title: '目标提取',
-          percentage: 0,
-          progressClass: 'bar-color-1',
-        },
-        {
-          id: 2,
-          title: '变化检测',
-          percentage: 0,
-          progressClass: 'bar-color-2',
-        },
-        {
-          id: 3,
-          title: '目标检测',
-          percentage: 0,
-          progressClass: 'bar-color-3',
-        },
-        {
-          id: 4,
-          title: "地物分类",
-          percentage: 0,
-          progressClass: 'bar-color-4',
-        },
-      ]
+      progressOneData: []
     };
   },
   mounted() {
+    console.log(this.$ls.get('userInfo'))
     if(this.$ls.get('userInfo')!==null){
       this.getPercentage()
-      this.getUserInfo()
+      this.setUserInfo()
       // this.$refs.portfolio.portfolioData=this.portfolioItems
     }
+    axios.post('/api/processStatus')
+    .then(res=>{
+      console.log(res.data)
+      if(res.data.code === 400){
+        this.$message.error(res.data.message)
+      }else {
+        const patientInfo = res.data.result
+        for(var i=0;i<patientInfo.length;i++){
+          this.progressOneData.push({
+            id:i,
+            title:patientInfo[i].name,
+            percentage: patientInfo[i].degreeOfCompletion,
+            progressClass: 'bar-color-1'
+          })
+        }
+      }
+    })
   },
   methods: {
-    getUserInfo(){
-      var that = this;
-      /* var token =this.$ls.get('userInfo').token */
-      that.$axios.get(this.$global.apiUrl+'user/'+this.$ls.get('userInfo').id,{
-        headers:{
-          'token':this.$ls.get('userInfo').token
-        }
-      })
-          .then(res=>{
-            var userInfo=res.data.data;
-            that.teamData[0].image=userInfo.avatar
-            that.teamData[0].name=userInfo.name
-            that.teamData[0].phone=userInfo.phone
-            that.teamData[0].description=userInfo.content || "这家伙很懒，什么都没有留下"
-          })
-          .catch(function(error) {
-            console.log(error);
-          });
+    setUserInfo(){
+      this.teamData[0].image = this.$ls.get('userInfo').avatar
+      this.teamData[0].name = this.$ls.get('userInfo').username
+      this.teamData[0].email = this.$ls.get('userInfo').email
+      this.teamData[0].description = this.$ls.get('userInfo').description || '这家伙很懒，什么都没有留下'
     },
     getPercentage(){
-      var that = this;
-      that.$axios.get(this.$global.apiUrl+'record/statistics?userId='+this.$ls.get('userInfo').id)
-          .then(res=>{
-            // console.log(this.$global.apiUrl+'record/statistics?userId='+this.$ls.get('userInfo').id)
-            var percentageArray = res.data.data;
-            that.progressOneData[0].percentage = Math.round(100*percentageArray.目标提取)
-            that.progressOneData[1].percentage = Math.round(100*percentageArray.变化检测)
-            that.progressOneData[2].percentage = Math.round(100*percentageArray.目标检测)
-            that.progressOneData[3].percentage = Math.round(100*percentageArray.地物分类)
-          })
-          .catch(function(error) {
-            console.log(error);
-          });
+      // var that = this;
+      // that.$axios.get(this.$global.apiUrl+'record/statistics?userId='+this.$ls.get('userInfo').id)
+      //     .then(res=>{
+      //       // console.log(this.$global.apiUrl+'record/statistics?userId='+this.$ls.get('userInfo').id)
+      //       var percentageArray = res.data.data;
+      //       that.progressOneData[0].percentage = Math.round(100*percentageArray.目标提取)
+      //       that.progressOneData[1].percentage = Math.round(100*percentageArray.变化检测)
+      //       that.progressOneData[2].percentage = Math.round(100*percentageArray.目标检测)
+      //       that.progressOneData[3].percentage = Math.round(100*percentageArray.地物分类)
+      //     })
+      //     .catch(function(error) {
+      //       console.log(error);
+      //     });
     }
   }
 }
 </script>
-
-<style>
-.edit_form {
-  width: 750px;
-
-}
-
-.form-title {
-  font-size: 20px;
-  font-weight: 600;
-  font-family: "Times New Roman", Times, serif;
-  margin-bottom: 5px;
-  margin-left: -650px;
-}
-
-.avatar-uploader .el-upload {
-  border: 2px dashed #d9d9d9;
-  border-radius: 90px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-}
-
-.avatar-uploader .el-upload:hover {
-  border-color: #409EFF;
-}
-
-.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 178px;
-  height: 103px;
-  line-height: 178px;
-  text-align: center;
-  margin-top: 75px;
-}
-
-.avatar {
-  width: 178px;
-  height: 178px;
-  display: block;
-}
-</style>

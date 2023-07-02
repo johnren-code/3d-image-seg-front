@@ -50,7 +50,7 @@
                   <el-upload
                       action="/api/upload"
                       :show-file-list="false"
-                      :on-success="handleAvatarSuccess"
+                      :on-success="handleUploadRawSuccess"
                       :before-upload="addData"
                       :data="additionalData"
                   >
@@ -62,7 +62,7 @@
                   <el-upload
                       action="/api/uploadlabel"
                       :show-file-list="false"
-                      :on-success="handleAvatarSuccess"
+                      :on-success="handleUploadSegSuccess"
                       :before-upload="addData"
                       :data="additionalData"
                   >
@@ -323,7 +323,7 @@
                     </div>
                   </div>
 
-                  <Button :read-more-button="true" >
+                  <Button :read-more-button="true">
                     <span style="color: grey;margin-left: 40px" v-if="!isReportSubmit" @click="moveToReport(historyId)">点击编辑病例报告</span>
                     <span style="color: grey;margin-left: 40px" v-if="isReportSubmit" @click="moveToReport(historyId)">提交成功，点击修改</span>
                   </Button>
@@ -380,9 +380,10 @@
                   </el-select>
                   <el-button type="primary" @click="doSegmentation" round style="margin-left:10px">点击进行分割</el-button>
                   <el-button type="primary" @click="getDrawBitMap" round style="margin-left:10px">getBitmap</el-button>
-                  <el-button type="primary" @click="saveCurrentState" round style="position: absolute;right:100px">保存</el-button>
+                  <el-button type="primary" @click="saveCurrentState" round style="position: absolute;right:100px">保存
+                  </el-button>
 
-<!--                  <el-button type="primary" @click="clickVisible">测试数据可视化</el-button>-->
+                  <!--                  <el-button type="primary" @click="clickVisible">测试数据可视化</el-button>-->
                   <el-dialog title="label Editor" :visible.sync="dialogTableVisible" center :append-to-body='true'
                              :lock-scroll="false" width="30%">
                     <Table @update-parent-var="onUpdateParentVar" :drawTableDataFromParent="drawTableData"></Table>
@@ -396,8 +397,6 @@
                     <span>X：{{ imagX }}</span>
                     <span>Y：{{ imagY }}</span>
                     <span>Z：{{ imagZ }}</span>
-                    <span class="w90">Val：{{ imgVal }}</span>
-                    <span>Img：{{ currentThanLayers }}</span>
                   </div>
                 </div>
               </div>
@@ -421,20 +420,20 @@
                 <!--                ></div>-->
 
                 <div v-for="(item,index) in organDataList" :key="index">
-                  <span style="color: #9ccef9;font-size: 14px;font-weight: bold;">{{ item.name }}:{{item.data}}</span>
+                  <span style="color: #9ccef9;font-size: 14px;font-weight: bold;">{{ item.name }}:{{ item.data }}</span>
                 </div>
               </el-dialog>
 
               <el-dialog
                   :title="'上传后处理脚本'"
                   :visible="uploadScriptVisible"
+                  height="500px"
                   width="500px"
                   :before-close="handleUploadClose"
                   class="dialog"
                   top="23vh"
                   :close-on-press-escape="false"
                   :close-on-click-modal="false"
-                  v-dialogDrag
               >
                 <el-upload
                     class="upload-demo"
@@ -449,32 +448,35 @@
                     :on-success="scriptUploadSuccess"
                     :auto-upload="false">
                   <el-button slot="trigger" size="small" type="primary">点击上传文件</el-button>
-                  <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>
-                  <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+                  <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器
+                  </el-button>
+                  <div id="imageContainer" style="height: 300px">
+                  </div>
+                  <!--                  <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>-->
                 </el-upload>
               </el-dialog>
 
-              <el-dialog
-                  :title="'Slices，共' + spliceList.length + '个（' + splicePrecent + '%）'"
-                  :visible="visable"
-                  width="1060px"
-                  :before-close="handleClose"
-                  class="dialog"
-                  top="7vh"
-                  :close-on-press-escape="false"
-                  :close-on-click-modal="false"
-                  v-dialogDrag
-              >
-                <div
-                    :style="{ height: Math.round(spliceList.length / 7) * 150 + 'px' }"
-                    class="g-dis s-scrollbar"
-                ></div>
-                <div class="g-main">
-                  <div class="d-dicom" v-for="(item, i) in spliceList" :key="i">
-                    <div :id="'d-dicom' + i" class="m-image"></div>
-                  </div>
-                </div>
-              </el-dialog>
+<!--              <el-dialog-->
+<!--                  :title="'Slices，共' + spliceList.length + '个（' + splicePrecent + '%）'"-->
+<!--                  :visible="visable"-->
+<!--                  width="1060px"-->
+<!--                  :before-close="handleClose"-->
+<!--                  class="dialog"-->
+<!--                  top="7vh"-->
+<!--                  :close-on-press-escape="false"-->
+<!--                  :close-on-click-modal="false"-->
+<!--                  v-dialogDrag-->
+<!--              >-->
+<!--                <div-->
+<!--                    :style="{ height: Math.round(spliceList.length / 7) * 150 + 'px' }"-->
+<!--                    class="g-dis s-scrollbar"-->
+<!--                ></div>-->
+<!--                <div class="g-main">-->
+<!--                  <div class="d-dicom" v-for="(item, i) in spliceList" :key="i">-->
+<!--                    <div :id="'d-dicom' + i" class="m-image"></div>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              </el-dialog>-->
             </div>
           </div>
         </el-main>
@@ -512,14 +514,15 @@ export default {
   name: 'Segmentation',
   components: {
     ShareEdit,
-    Menu, Table, Team, Brand, Counter, Timeline, ServiceOne, AboutFour, SectionTitle, Separator, Layout, Button},
+    Menu, Table, Team, Brand, Counter, Timeline, ServiceOne, AboutFour, SectionTitle, Separator, Layout, Button
+  },
   data() {
     return {
       components: {
         Table
       },
-      historyId:this.$route.params.id,
-      isReportSubmit:false,
+      historyId: this.$route.params.id,
+      isReportSubmit: false,
       penColor: 'rgb(102,205,170)',
       dialogTableVisible: false,
       fontColor: "",
@@ -573,7 +576,7 @@ export default {
         value: '2',
         label: 'nnUnet'
       }],
-      modelValue:'',
+      modelValue: '',
       penValue: '',
       eraserValue: '',
       selectValue: '',
@@ -783,12 +786,12 @@ export default {
       ],
       organDataList: [
         {
-          name:'心脏',
-          data:1111
+          name: '心脏',
+          data: 1111
         },
         {
-          name:'肠道',
-          data:222
+          name: '肠道',
+          data: 222
         }
       ],
       imageList: {}, // 存取所有图片集合
@@ -877,7 +880,6 @@ export default {
         }
       ],
       imageMarkCopy: [],
-      currentRawImageUrl: '',
       volumeList: [
         {
           url: "/file/image/202302/0b2be9e0-886b-4144-99f0-8bb4c6eaa848.nii.gz",
@@ -901,8 +903,11 @@ export default {
       drawTableData: '',
       additionalData: {},
       organMeasurementVisible: false,
-      uploadScriptVisible:false,
-      scriptAdditionalData:{}
+      uploadScriptVisible: false,
+      scriptAdditionalData: {},
+      currentRawImageUrl: '',
+      currentSegImageUrl: '',
+      sliceUrlList:[]
     }
   },
   watch: {
@@ -962,16 +967,25 @@ export default {
     }
   },
   methods: {
-    moveToReport(id){
+    moveToReport(id) {
       alert(id)
-      let text= this.$router.resolve({
+      let text = this.$router.resolve({
         path: `/shareedit/${id}`
       });
       // 打开一个新的页面
       window.open(text.href, '_blank')
     },
-    scriptUploadSuccess(res,file){
+    scriptUploadSuccess(res, file) {
       console.log(res)
+      if(res.length>10){
+        var imageContainer = document.getElementById('imageContainer')
+        this.sliceUrlList = res
+        for(var i=0;i<this.sliceUrlList.length;i++){
+          var image = document.createElement("img");
+          image.src = this.sliceUrlList[i]
+          imageContainer.appendChild(image)
+        }
+      }
     },
     submitUpload() {
       this.$refs.upload.submit();
@@ -982,36 +996,46 @@ export default {
     handlePreview(file) {
       console.log(file);
     },
-    getDrawBitMap(){
+    getDrawBitMap() {
       console.log(nv.drawBitmap)
     },
-    saveCurrentState(){
-      this.saveImageToServer('/api/uploadlabel','new.nii.gz',true,{'historyid':'2'})
-      this.saveSceneToServer('/api/uploadavatar','screenshot.png',{'historyid':'2'})
+    saveCurrentState() {
+      this.saveImageToServer('/api/uploadlabel', 'new.nii.gz', true, {'historyid': '2'})
+      this.saveSceneToServer('/api/uploadavatar', 'screenshot.png', {'historyid': '2'})
     },
     handleOrganClose() {
       this.organMeasurementVisible = false
     },
-    handleUploadClose(){
+    handleUploadClose() {
       this.uploadScriptVisible = false
     },
     showDetails(item, index) {
       if (item.name === '器官测量') {
+        axios.post('/api/measurement', {
+          historyid: this.historyId
+        }).then(res => {
+          console.log(res.data)
+          if (res.data.code === 400) {
+            this.$message.error(res.data.message)
+          }
+        }).catch(error => {
+          this.$message.error('发生错误，请稍后再试')
+        })
         this.organMeasurementVisible = true
       }
-      if(item.name === '上传后处理脚本'){
+      if (item.name === '上传后处理脚本') {
         this.uploadScriptVisible = true
       }
     },
     clickVisible() {
       this.visable = true
     },
-    scriptAddData(){
-      this.scriptAdditionalData.input_path = 'http://10.135.1.120:9595/UploadOriginFile/0b2be9e0-886b-4144-99f0-8bb4c6eaa848_iazzmk.nii.gz'
+    scriptAddData() {
+      this.scriptAdditionalData.input_path = this.currentRawImageUrl
       return true
     },
     addData() {
-      this.additionalData.historyid = '2'
+      this.additionalData.historyid = this.historyId
       return true
     },
     updateDrawTableData() {
@@ -1147,14 +1171,16 @@ export default {
       }
     },
     doSegmentation() {
-      if(this.modelValue === '1' || this.modelValue === '2') {
+      if (this.modelValue === '1' || this.modelValue === '2') {
         axios.post('/api/seg', {
           // uploadFileUrl: this.currentRawImageUrl,
-          modelname:this.modelValue,
-          historyid:'2'
+          modelname: this.modelValue,
+          historyid: this.historyId
         }).then(response => {
           if (response.data.code === 200) {
             console.log(response)
+            this.currentRawImageUrl = response.data.result.OriginFileUrl
+            this.currentSegImageUrl = response.data.result.PredictFileUrl
             nv.loadVolumes([{url: response.data.result.OriginFileUrl}]).then(() => {
               nv.loadDrawingFromUrl(response.data.result.PredictFileUrl);
             })
@@ -1165,19 +1191,19 @@ export default {
         }).catch(failResponse => {
           console.log(failResponse)
         })
-      }else {
+      } else {
         this.$message.error('请选择分割要使用的模型！')
       }
     },
-    handleAvatarSuccess(res, file) {
+    handleUploadRawSuccess(res, file) {
       console.log(res)
       this.currentRawImageUrl = res.result;
       nv.loadVolumes([{url: res.result}])
-
     },
-    getUploadFile(file) {
-      console.log(file.name)
-      nv.loadVolumes([{url: file.name}])
+    handleUploadSegSuccess(res, file) {
+      console.log(res)
+      this.currentSegImageUrl = res.result;
+      nv.loadDrawingFromUrl(res.result)
     },
     changeView(meas, index) {
       if (meas.titleEng === 'Axial') {
@@ -1306,12 +1332,40 @@ export default {
     nv.setRadiologicalConvention(false)
     nv.opts.multiplanarForceRender = true
     nv.attachTo('gl')
-    // nv.loadVolumes(this.volumeList).then(() => {
-    //   nv.loadDrawingFromUrl("/file/image/202302/0b2be9e0-886b-4144-99f0-8bb4c6eaa848-label.nii.gz");
-    // })
-    //     .catch(err => {
-    //       console.error(err);
-    //     });
+    axios.post('/api/getalreadyseg', {
+      historyid: this.historyId
+    }).then(res => {
+      console.log(res.data)
+      if (res.data.code === 200) {
+        let rawFileUrl = res.data.result.OriginFileUrl
+        let segFileUrl = res.data.result.PredictFileUrl
+        if (rawFileUrl && segFileUrl) {
+          this.currentRawImageUrl = rawFileUrl
+          this.currentSegImageUrl = segFileUrl
+          nv.loadVolumes([{
+            url: rawFileUrl, colorMap: "gray",
+            opacity: 1,
+            visible: true
+          }]).then(() => {
+            nv.loadDrawingFromUrl(segFileUrl);
+          }).catch(err => {
+            console.error(err);
+          });
+        }
+        if (rawFileUrl && !segFileUrl) {
+          this.currentRawImageUrl = rawFileUrl
+          nv.loadVolumes([{
+            url: rawFileUrl, colorMap: "gray",
+            opacity: 1,
+            visible: true
+          }])
+        }
+        if (!rawFileUrl && segFileUrl) {
+          this.currentSegImageUrl = segFileUrl
+          nv.loadDrawingFromUrl(segFileUrl)
+        }
+      }
+    })
     nv.setSliceType(nv.sliceTypeMultiplanar)
     nv.setClipPlane([0.3, 270, 0]);
     nv.setRenderAzimuthElevation(120, 10);
@@ -1324,13 +1378,25 @@ export default {
 }
 </script>
 <style lang="scss">
+#imageContainer {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 每行展示3个图片，可根据需求调整 */
+  gap: 10px; /* 图片之间的间距，可根据需求调整 */
+}
 
+/* 调整图片大小 */
+#imageContainer img {
+  max-width: 100%; /* 图片宽度最大不超过容器宽度 */
+  max-height: 100%; /* 图片高度最大不超过容器高度 */
+  object-fit: cover; /* 调整图片的填充方式，可根据需求调整 */
+}
 
 .el-button--primary {
-  color: #f7f4f4!important;
-  background-color: #067df5!important;
-  border-color: #1E90FF!important;
+  color: #f7f4f4 !important;
+  background-color: #067df5 !important;
+  border-color: #1E90FF !important;
 }
+
 .el-main {
   padding: 0px !important;
 }
