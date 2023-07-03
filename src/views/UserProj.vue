@@ -1,84 +1,121 @@
 <template>
   <div>
-    <SectionTitle text-align="center" :title="'病人' + form.name + '的项目'" description="" data-aos="fade-up" />
+    <SectionTitle text-align="center" :title="'病人' + form.name + '的项目'" description="" data-aos="fade-up"/>
     <el-row>
       <el-col :offset="19" class="deleHistory">
-        <el-button v-if="edit" size="mini" type="success" @click="editPersonal">编辑基本信息
+        <Button :read-more-button="true" v-if="edit">
+          <span style="color: grey;" @click="editPersonal">修改病人信息</span>
+        </Button>
+        <el-button v-else="edit" size="mini" type="success" @click="completeEditPersonal">完成编辑
         </el-button>
-        <el-button v-else="edit" size="mini" type="success" @click="editPersonal">完成编辑
-        </el-button>
-        <el-button size="mini" type="primary" @click="dialogVisibleRule = true">修改权限
-        </el-button>
-        <el-button size="mini" type="danger" @click="delProj">删除项目
+        <!--        <el-button size="mini" type="primary" @click="dialogVisibleRule = true">修改权限-->
+        <!--        </el-button>-->
+        <el-button size="mini" type="danger" @click="delProj" style="margin-left: 20px">删除病人项目
         </el-button>
       </el-col>
     </el-row>
     <el-form :label-position="labelPosition" label-width="80px" :model="formLabelAlign">
       <div class="peopleDes">
         <div class="desc">
-          <el-descriptions title="用户信息">
-            <el-descriptions-item v-if="edit" label="生日">{{ form.birthday }}</el-descriptions-item>
-            <el-descriptions-item v-else="edit" label="生日"><el-input
-                v-model="form.birthday"></el-input></el-descriptions-item>
+          <span style="font-size: 20px;color:#9ccef9;font-weight: bold">用户信息</span>
+          <el-descriptions title="">
+            <el-descriptions-item v-if="edit" label="生日">{{ formatDate(form.birthday) }}</el-descriptions-item>
+            <el-descriptions-item v-else="edit" label="生日">
+              <el-date-picker type="date" placeholder="选择日期" v-model="form.birthday"
+                              style="width: 100%;"></el-date-picker>
+            </el-descriptions-item>
             <el-descriptions-item v-if="edit" label="年龄">{{ form.age }}</el-descriptions-item>
-            <el-descriptions-item v-else="edit" label="年龄"><el-input v-model="form.age"></el-input></el-descriptions-item>
+            <el-descriptions-item v-else="edit" label="年龄">
+              <el-input v-model="form.age"></el-input>
+            </el-descriptions-item>
             <el-descriptions-item v-if="edit" label="联系方式">{{ form.phone }}</el-descriptions-item>
-            <el-descriptions-item v-else="edit" label="联系方式"><el-input
-                v-model="form.phone"></el-input></el-descriptions-item>
+            <el-descriptions-item v-else="edit" label="联系方式">
+              <el-input
+                  v-model="form.phone"></el-input>
+            </el-descriptions-item>
             <el-descriptions-item v-if="edit" label="身高(m)">{{ form.height }}</el-descriptions-item>
-            <el-descriptions-item v-else="edit" label="身高(m)"><el-input
-                v-model="form.height"></el-input></el-descriptions-item>
+            <el-descriptions-item v-else="edit" label="身高(m)">
+              <el-input
+                  v-model="form.height"></el-input>
+            </el-descriptions-item>
             <el-descriptions-item v-if="edit" label="体重(kg)">{{ form.weight }}</el-descriptions-item>
-            <el-descriptions-item v-else="edit" label="体重(kg)"><el-input
-                v-model="form.weight"></el-input></el-descriptions-item>
+            <el-descriptions-item v-else="edit" label="体重(kg)">
+              <el-input
+                  v-model="form.weight"></el-input>
+            </el-descriptions-item>
             <el-descriptions-item v-if="edit" label="血型">{{ form.bloodType }}</el-descriptions-item>
-            <el-descriptions-item v-else="edit" label="血型"><el-input
-                v-model="form.bloodType"></el-input></el-descriptions-item>
+            <el-descriptions-item v-else="edit" label="血型">
+              <el-input
+                  v-model="form.bloodType"></el-input>
+            </el-descriptions-item>
             <el-descriptions-item v-if="edit" label="居住地">{{ form.location }}</el-descriptions-item>
-            <el-descriptions-item v-else="edit" label="居住地"><el-input
-                v-model="form.location"></el-input></el-descriptions-item>
+            <el-descriptions-item v-else="edit" label="居住地">
+              <el-input
+                  v-model="form.location"></el-input>
+            </el-descriptions-item>
             <el-descriptions-item v-if="edit" label="情况描述">{{ form.description }}</el-descriptions-item>
-            <el-descriptions-item v-else="edit" label="情况描述"><el-input
-                v-model="form.description"></el-input></el-descriptions-item>
+            <el-descriptions-item v-else="edit" label="情况描述">
+              <el-input
+                  v-model="form.description"></el-input>
+            </el-descriptions-item>
           </el-descriptions>
         </div>
-        <div>
-          <!-- <SectionTitle text-align="center" title="这里可以放一个折线图" description="" data-aos="fade-up" /> -->
-        </div>
+        <div ref="chart" class="echarts-chart"></div>
+        <!--                     <SectionTitle text-align="center" title="这里可以放一个折线图" description="" data-aos="fade-up" />-->
       </div>
-      <el-row>
-        <el-col :span="16" class="historyTitle">历史记录</el-col>
-        <el-col :span="3">
-          <el-input v-model="searchInfo" prefix-icon="el-icon-search" style="width: 90%;margin-right: 10px" clearable
-            @clear="search" @keydown.enter.native="search"></el-input>
-        </el-col>
-        <el-col :span="2">
-          <el-button icon="el-icon-search" type="primary" @click="search" size="mini" style="width: 90%;">
-            搜索记录
-          </el-button>
-        </el-col>
-        <el-col :span="3">
-          <el-button size="mini" type="success" class="addHistory" @click="addHistory">添加历史记录
-          </el-button>
-        </el-col>
-      </el-row>
+      <div>
+        <span style="font-size: 20px;color:#9ccef9;font-weight: bold">历史记录</span>
+        <el-date-picker type="date" placeholder="选择起始日期" v-model="queryStartDate" style="margin-left: 20px;width: 180px"></el-date-picker>
+        <el-date-picker type="date" placeholder="选择结束日期" v-model="queryEndDate"  style="margin-left: 20px;width: 180px"></el-date-picker>
+        <el-button icon="el-icon-search" type="primary" @click="search" size="mini" style="margin-left: 20px">
+          搜索记录
+        </el-button>
+        <el-button size="mini" type="success" class="addHistory" @click="addHistory">添加病例
+        </el-button>
+      </div>
+<!--      <el-row>-->
+<!--        <el-col :span="16" class="historyTitle">历史记录</el-col>-->
+<!--        <el-col :span="3">-->
+<!--          <el-input v-model="searchInfo" prefix-icon="el-icon-search" style="width: 90%;margin-right: 10px" clearable-->
+<!--                    @clear="search" @keydown.enter.native="search"></el-input>-->
+<!--        </el-col>-->
+<!--        <el-col :span="2">-->
+<!--          <el-button icon="el-icon-search" type="primary" @click="search" size="mini" style="width: 90%;">-->
+<!--            搜索记录-->
+<!--          </el-button>-->
+<!--        </el-col>-->
+<!--        <el-col :span="3">-->
+<!--          <el-button size="mini" type="success" class="addHistory" @click="addHistory">添加病例-->
+<!--          </el-button>-->
+<!--        </el-col>-->
+<!--      </el-row>-->
       <el-form-item>
         <div class="user_skills">
-          <el-table :data="tableData" style="width: 100%" background-color="transparent"
-            element-loading-background="rgba(0,0,0,0.5)" cell-style="color:white" width="400">
-            <el-table-column prop="id" label="编号" width="180">
+          <el-table :data="tableData" style="width: 100%;background-color:transparent"
+                    element-loading-background="rgba(0,0,0,0.5)" cell-style="color:white;text-align:center" width="400">
+            <el-table-column prop="id" label="编号" width="50" header-align="center">
             </el-table-column>
-            <el-table-column prop="image" label="缩略图" width="180">
-            </el-table-column>
-            <el-table-column prop="desc_" label="简介" width="280">
-            </el-table-column>
-            <el-table-column prop="date" label="上次修改时间" width="420">
-            </el-table-column>
-            <el-table-column label="操作" fixed="right" width="300">
+            <el-table-column prop="avatarFileUrl" label="快照" width="350" header-align="center">
               <template slot-scope="scope">
-                <el-button size="mini" type="primary" @click="generateReport(scope.row.id)">生成报告</el-button>
+                <img v-if="scope.row.avatarFileUrl" :src="scope.row.avatarFileUrl" alt="">
+                <span v-else>暂无快照</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="desc_" label="描述" width="200" header-align="center">
+            </el-table-column>
+            <el-table-column prop="date" label="时间" width="150" header-align="center" :formatter="dateFormatter">
+            </el-table-column>
+            <el-table-column label="操作" width="300" header-align="center">
+              <template slot-scope="scope">
+                <el-button size="mini" type="primary" @click="generateReport(scope.row.id)">下载报告</el-button>
                 <el-button size="mini" @click="checkHistory(scope.row.id)">查看</el-button>
-                <el-button size="mini" type="danger" @click="open">删除</el-button>
+                <el-button size="mini" type="danger" @click="deleteHistory(scope.row.id)">删除</el-button>
+              </template>
+            </el-table-column>
+            <el-table-column prop="status" label="完成状态" width="280" header-align="center">
+              <template slot-scope="scope">
+                <i v-if="scope.row.status" class="el-icon-circle-check" style="color:#67C23A"></i>
+                <i v-if="!scope.row.status" class="el-icon-circle-close" style="color:#F56C6C;"></i>
               </template>
             </el-table-column>
           </el-table>
@@ -87,10 +124,10 @@
     </el-form>
     <el-dialog title="新建历史记录" :visible.sync="dialogFormVisible">
       <el-form :model="formNewhistory">
-        <el-form-item label="日期：" :label-width="formLabelWidth">
-          <el-date-picker type="date" placeholder="选择日期" v-model="formNewhistory.date"
-            style="width: 100%;"></el-date-picker>
-        </el-form-item>
+        <!--        <el-form-item label="日期：" :label-width="formLabelWidth">-->
+        <!--          <el-date-picker type="date" placeholder="选择日期" v-model="formNewhistory.date"-->
+        <!--                          style="width: 100%;"></el-date-picker>-->
+        <!--        </el-form-item>-->
         <el-form-item label="病人描述：" :label-width="formLabelWidth">
           <el-input v-model="formNewhistory.introduction" autocomplete="off"></el-input>
         </el-form-item>
@@ -101,17 +138,17 @@
       </div>
     </el-dialog>
     <!-- <img alt="slime" src="{{ url_for('static', filename='images/002.png') }}"> -->
-    <el-dialog title="修改用户权限" :visible.sync="dialogVisibleRule" width="30%" :before-close="handleClose">
-      <el-select v-model="rule" placeholder="请选择权限" style="{width:100%}">
-        <el-option label="admin" value="admin"></el-option>
-        <el-option label="owner" value="owner"></el-option>
-        <el-option label="not" value="not"></el-option>
-      </el-select>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisibleRule = false">取 消</el-button>
-        <el-button type="primary" @click="changeRule">确 定</el-button>
-      </span>
-    </el-dialog>
+    <!--    <el-dialog title="修改用户权限" :visible.sync="dialogVisibleRule" width="30%" :before-close="handleClose">-->
+    <!--      <el-select v-model="rule" placeholder="请选择权限" style="{width:100%}">-->
+    <!--        <el-option label="admin" value="admin"></el-option>-->
+    <!--        <el-option label="owner" value="owner"></el-option>-->
+    <!--        <el-option label="not" value="not"></el-option>-->
+    <!--      </el-select>-->
+    <!--      <span slot="footer" class="dialog-footer">-->
+    <!--        <el-button @click="dialogVisibleRule = false">取 消</el-button>-->
+    <!--        <el-button type="primary" @click="changeRule">确 定</el-button>-->
+    <!--      </span>-->
+    <!--    </el-dialog>-->
 
   </div>
 </template>
@@ -124,11 +161,14 @@ import VueRouter from 'vue-router'
 // Vue.use(VueRouter)
 import axios from "axios";
 // import Storage from 'vue-ls';
-
+import Button from "../components/elements/button/Button";
+import moment from 'moment';
 // this.sendFormValue()
+import * as echarts from 'echarts';
+
 export default {
   name: 'UserProj',
-  components: { SectionTitle },
+  components: {SectionTitle, Button},
   data() {
     return {
       searchInfo: '',
@@ -144,18 +184,6 @@ export default {
       dialogFormVisible: false,
       dialogVisible: false,
       disabled: false,
-      form: {
-        name: '小明',
-        description: '病人体态臃肿',
-        birthday: '2000-07-09',
-        height: "1.75",
-        weight: "75",
-        age: "23",
-        location: '河南郑州',
-        phone: '14543567658',
-        bloodType: 'A型',
-        patientId: ''
-      },
       formLabelWidth: '120px',
       contentStyle: {
         'width': '300px',
@@ -165,17 +193,113 @@ export default {
         date: '',
         introduction: ''
       },
-      dialogVisibleRule: false,
+      form: {
+        name: '',
+        description: '',
+        birthday: '',
+        height: '',
+        weight: '',
+        age: '',
+        location: '',
+        phone: '',
+        bloodType: '',
+      },
+      // dialogVisibleRule: false,
       rule: '',
       generateReportVisible: false,
-      edit: false,
+      edit: true,
+      projId: this.$route.params.id,
+      option: {
+        title: {
+          textStyle: {
+            color: '#333',
+            fontSize: 24,
+            fontWeight: 'bold'
+          }
+        },
+        xAxis: {
+          type: 'category',
+          data: ['2019-01-01', '2019-01-02', '2019-01-03', '2019-01-04', '2019-01-05', '2019-01-06'],
+          axisLabel: {
+            rotate: 45,
+            color: '#666'
+          },
+          axisLine: {
+            lineStyle: {
+              color: '#999'
+            }
+          }
+        },
+        yAxis: {
+          type: 'value',
+          name: '评分',
+          nameTextStyle: {
+            color: '#666',
+            fontSize: 14
+          },
+          axisLine: {
+            lineStyle: {
+              color: '#999'
+            }
+          },
+          splitLine: {
+            lineStyle: {
+              type: 'dashed'
+            }
+          }
+        },
+        series: [
+          {
+            type: 'line',
+            data: [1, 2, 3, 4, 5, 6],
+            symbol: 'circle',
+            symbolSize: 8,
+            lineStyle: {
+              color: '#009688',
+              width: 2
+            },
+            itemStyle: {
+              color: '#009688'
+            }
+          }
+        ]
+      },
+      chart: '',
+      queryStartDate:'',
+      queryEndDate:''
     }
   },
   methods: {
+    dateFormatter(row, column, cellValue) {
+      // 使用你想要的日期格式
+      return moment(cellValue).format('YYYY-MM-DD');
+    },
+    formatDate(dateStr) {
+      return moment(dateStr).format('YYYY-MM-DD');
+    },
+    deleteHistory(id) {
+      this.$confirm('此操作将永久删除该病例记录, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        axios.post('/api/proj/deleteHistory', {
+          historyid: id
+        }).then(res => {
+          if (res.data.code === 400) {
+            this.$message.error(res.data.message)
+          } else {
+            this.$message.success('删除成功')
+          }
+        }).catch(error => {
+          this.$message.error('删除失败，请稍后再试')
+        })
+      })
+    },
     sendFormValue() {
       axios.post('/api/createhistory', {
-        pid: this.$route.params.id,
-        Date: this.formNewhistory.date,
+        pid: this.projId,
+        patient_id: this.form.patientId,
         Description: this.formNewhistory.introduction
       }).then(res => {
         console.log(res.data);
@@ -197,29 +321,28 @@ export default {
       this.$router.push(`/segmentation/${id}`)
       // sessionStorage.setItem('historyId', JSON.stringify('1'))
     },
-    open() {
-      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        axios.post('/api/submitFile').then(res => {
-          Info
-          console.log(res.data);
-        }, err => {
-          console.log(err);
-        })
-        this.$message({
-          type: 'success',
-          message: '删除成功!'
-        });
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        });
-      });
-    },
+    // open() {
+    //   this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+    //     confirmButtonText: '确定',
+    //     cancelButtonText: '取消',
+    //     type: 'warning'
+    //   }).then(() => {
+    //     axios.post('/api/submitFile').then(res => {
+    //       console.log(res.data);
+    //     }, err => {
+    //       console.log(err);
+    //     })
+    //     this.$message({
+    //       type: 'success',
+    //       message: '删除成功!'
+    //     });
+    //   }).catch(() => {
+    //     this.$message({
+    //       type: 'info',
+    //       message: '已取消删除'
+    //     });
+    //   });
+    // },
     generateReport() {
       // alert('生成报告')
       // this.generateReportVisible = true
@@ -234,21 +357,20 @@ export default {
     },
     addHistory() {
       this.dialogFormVisible = true
-      axios.post('/createhistory', {
-        Date: this.formNewhistory.date,
-        Description: this.formNewhistory.introduction,
-        patient_id: this.form.patientId,
-        pid: this.$route.params.id
-      }).then(res => {
-        this.form = res.data.result
-        console.log(res.data);
-        this.$message({
-          type: 'success',
-          message: '添加成功!'
-        });
-      }, err => {
-        console.log(err);
-      })
+      // axios.post('/createhistory', {
+      //   Description: this.formNewhistory.introduction,
+      //   patient_id: this.form.patientId,
+      //   pid: this.$route.params.id
+      // }).then(res => {
+      //   this.form = res.data.result
+      //   console.log(res.data);
+      //   this.$message({
+      //     type: 'success',
+      //     message: '添加成功!'
+      //   });
+      // }, err => {
+      //   console.log(err);
+      // })
     },
 
     // 删除项目
@@ -258,7 +380,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        axios.put(`/api/proj/delete`, { projectId: this.$route.params.id }).then(res => {
+        axios.put(`/api/proj/delete`, {projectId: this.$route.params.id}).then(res => {
           console.log(res.data);
           this.$message({
             type: 'success',
@@ -277,27 +399,53 @@ export default {
       });
     },
     // 修改权限
-    changeRule() {
-      axios.post(`/api/proj/editPermission`, {
-        uid: 4, pid: this.$route.params.id, permission: 'admin'
-      }).then(res => {
-        // console.log(res.data);
-        this.$message({
-          type: 'success',
-          message: '修改权限成功!'
-        });
-        this.dialogVisibleRule = false
-      }, err => {
-        console.log(err);
-      })
-    },
+    // changeRule() {
+    //   axios.post(`/api/proj/editPermission`, {
+    //     uid: 4, pid: this.$route.params.id, permission: 'admin'
+    //   }).then(res => {
+    //     // console.log(res.data);
+    //     this.$message({
+    //       type: 'success',
+    //       message: '修改权限成功!'
+    //     });
+    //     this.dialogVisibleRule = false
+    //   }, err => {
+    //     console.log(err);
+    //   })
+    // },
     // 修改权限的handleclose
-    handleClose(done) {
-      this.$confirm('确认关闭？')
-        .then(_ => {
-          done();
+    // handleClose(done) {
+    //   this.$confirm('确认关闭？')
+    //     .then(_ => {
+    //       done();
+    //     })
+    //     .catch(_ => { });
+    // },
+    completeEditPersonal() {
+      if (!this.form.name || !this.form.location || !this.form.phone || !this.form.description || !this.form.height
+          || !this.form.weight || !this.form.age || !this.form.bloodType || !this.form.birthday) {
+        this.$message.error('请填写完整的信息')
+      } else {
+        axios.post('/api/proj/edit', {
+          id: this.projId,
+          name: this.form.name,
+          location: this.form.location,
+          phone: this.form.phone,
+          description: this.form.description,
+          height: this.form.height,
+          weight: this.form.weight,
+          age: this.form.age,
+          bloodType: this.form.bloodType,
+          birthday: this.form.birthday
+        }).then(res => {
+          if (res.data.code === 400) {
+            this.$message.error(res.data.message)
+          } else {
+            this.$message.success('修改成功')
+            this.edit = !this.edit
+          }
         })
-        .catch(_ => { });
+      }
     },
     editPersonal() {
       this.edit = !this.edit
@@ -332,10 +480,23 @@ export default {
     }, err => {
       console.log(err);
     })
+    const chartContainer = this.$refs.chart
+    this.chart = echarts.init(chartContainer)
+    this.chart.setOption(this.option)
   }
 }
 </script>
 <style scoped lang="scss">
+
+::v-deep th.el-table__cell.is-leaf {
+  border-bottom: 2px solid grey !important;
+}
+
+.el-table::before {
+  border: 1px solid grey !important;
+  // color: #043cbd;
+}
+
 .projname {
   width: 400px;
 }
@@ -370,7 +531,6 @@ export default {
 
 }
 
-
 ::v-deep .el-table,
 .el-table__expanded-cell {
   background-color: transparent !important;
@@ -380,7 +540,7 @@ export default {
   background-color: transparent !important;
 }
 
-::v-deep .el-table tbody tr:hover>td {
+::v-deep .el-table tbody tr:hover > td {
   background-color: transparent !important
 }
 
@@ -436,7 +596,8 @@ export default {
 }
 
 ::v-deep .el-descriptions__body {
-  color: wheat !important;
+  color: white !important;
+  font-size: 15px;
 }
 
 .peopleDes {
@@ -459,12 +620,26 @@ export default {
 }
 
 ::v-deep .el-descriptions {
-  color: #efca09;
+  color: #9ccef9;
+  font-size: 20px;
 }
 
 .historyTitle {
-  color: #efca09;
-  font-weight: bold
+  color: #9ccef9;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+
+::v-deep .el-table .cell {
+  line-height: 40px !important
+}
+
+.echarts-chart {
+  width: 400px;
+  height: 250px;
+  right: 50px;
+  top: 90px
 }
 </style>
 

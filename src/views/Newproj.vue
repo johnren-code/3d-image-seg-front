@@ -37,11 +37,11 @@
           </el-descriptions-item>
           <el-descriptions-item label="血型">
             <el-select v-model="form.bloodType" placeholder="请选择血型" style="{width:100%}">
-              <el-option label="A型" value="A型"></el-option>
-              <el-option label="B型" value="B型"></el-option>
-              <el-option label="AB型" value="AB型"></el-option>
-              <el-option label="O型" value="O型"></el-option>
-              <el-option label="其他" value="其他"></el-option>
+              <el-option label="A型" value="A"></el-option>
+              <el-option label="B型" value="B"></el-option>
+              <el-option label="AB型" value="AB"></el-option>
+              <el-option label="O型" value="O"></el-option>
+              <el-option label="其他" value="other"></el-option>
             </el-select>
           </el-descriptions-item>
           <el-descriptions-item label="就诊人描述">
@@ -103,43 +103,56 @@ export default {
       console.log(file);
     },
     onSubmit() {
-      // console.log(typeof (7.5))
-      axios.post('/api/proj/creat', {
-        name: this.form.name,
-        location: this.form.location,
-        phone: this.form.phone,
-        description: this.form.description,
-        height: this.form.height,
-        weight: this.form.weight,
-        age: this.form.age,
-        bloodType: this.form.bloodType,
-        birthday: this.form.birthday
-      }).then(res => {
-        if (res.data.code === 400) {
-          this.$message.error(res.data.message)
-        } else {
-          console.log(res.data);
-          this.$message({
-            message: '创建成功',
-            type: 'success'
-          });
-          axios.post('/api/proj/findPatient', {
-            patientId: this.form.patientId,
-            projectId: res.data.result.id
-          }).then(res1 => {
-            console.log(res1.data);
-            this.$message({
-              message: '绑定数据成功',
-              type: 'success'
-            });
-            this.$router.push(`/history/${res.data.result.id}`)
-          }, err => {
-            console.log(err);
-          })
-        }
-      }, err => {
-        console.log(err);
-      })
+      if(!this.form.patientId||!this.form.name||!this.form.location||!this.form.phone||!this.form.description||!this.form.height
+          ||!this.form.weight ||!this.form.age||!this.form.bloodType||!this.form.birthday){
+        this.$message.error('请输入所有的信息')
+      }else {
+        axios.post('/api/proj/findPatient',{
+          patientId:this.form.patientId
+        }).then(res=>{
+          if(res.data.code===400){
+            this.$message.error(res.data.message)
+          }else {
+            axios.post('/api/proj/creat', {
+              patientId:this.form.patientId,
+              name: this.form.name,
+              location: this.form.location,
+              phone: this.form.phone,
+              description: this.form.description,
+              height: this.form.height,
+              weight: this.form.weight,
+              age: this.form.age,
+              bloodType: this.form.bloodType,
+              birthday: this.form.birthday
+            }).then(res => {
+              if (res.data.code === 400) {
+                this.$message.error(res.data.message)
+              } else {
+                console.log(res.data);
+                this.$message({
+                  message: '创建成功',
+                  type: 'success'
+                });
+                axios.post('/api/proj/findPatient', {
+                  patientId: this.form.patientId,
+                  projectId: res.data.result.id
+                }).then(res1 => {
+                  console.log(res1.data);
+                  this.$message({
+                    message: '绑定数据成功',
+                    type: 'success'
+                  });
+                  this.$router.push(`/history/${res.data.result.id}`)
+                }, err => {
+                  console.log(err);
+                })
+              }
+            }, err => {
+              console.log(err);
+            })
+          }
+        })
+      }
     },
     reset() {
       this.form = []
