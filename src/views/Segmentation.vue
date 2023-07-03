@@ -370,7 +370,7 @@
                   <div class="n-echarts" v-if="echartStatus">
                     <div id="echarts"></div>
                   </div>
-                  <el-select v-model="modelValue" placeholder="请选择模型" style="width: 150px;">
+                  <el-select v-model="modelValue" placeholder="请选择模型" style="width: 150px;margin-left: 850px">
                     <el-option
                         v-for="item in modelType"
                         :key="item.value"
@@ -379,7 +379,6 @@
                     </el-option>
                   </el-select>
                   <el-button type="primary" @click="doSegmentation" round style="margin-left:10px">点击进行分割</el-button>
-                  <el-button type="primary" @click="getDrawBitMap" round style="margin-left:10px">getBitmap</el-button>
                   <el-button type="primary" @click="saveCurrentState" round style="position: absolute;right:100px">保存
                   </el-button>
 
@@ -418,9 +417,52 @@
                 <!--                    :style="{ height: Math.round(spliceList.length / 7) * 150 + 'px' }"-->
                 <!--                    class="g-dis s-scrollbar"-->
                 <!--                ></div>-->
+                <div style="height: 400px">
+                  <div v-for="(item,index) in organDataList" :key="index">
+                    <span style="color: #9ccef9;font-size: 20px;font-weight: bold">{{ item.organName }}</span>
+                    <br>
+                    <span style="color: #9ccef9;font-size: 14px">x切面的直径：{{ item.diameterX }}mm， </span>
+                    <span style="color: #9ccef9;font-size: 14px">y切面的直径：{{ item.diameterY }}mm， </span>
+                    <span style="color: #9ccef9;font-size: 14px">z切面的直径：{{ item.diameterZ }}mm， </span>
+                    <span style="color: #9ccef9;font-size: 14px">表面积：{{ item.area }}mm<sup>2</sup>， </span>
+                    <span style="color: #9ccef9;font-size: 14px">体积：{{ item.volume }}mm<sup>3</sup>， </span>
+                    <span style="color: #9ccef9;font-size: 14px">平整度：{{ item.flatness }}， </span>
+                    <span style="color: #9ccef9;font-size: 14px">延展性：{{ item.elongation }}， </span>
+                  </div>
+                </div>
+              </el-dialog>
 
-                <div v-for="(item,index) in organDataList" :key="index">
-                  <span style="color: #9ccef9;font-size: 14px;font-weight: bold;">{{ item.name }}:{{ item.data }}</span>
+              <el-dialog
+                  :title="'器官距离计算'"
+                  :visible="organDistanceVisible"
+                  width="500px"
+                  :before-close="handleOrganDistanceClose"
+                  class="dialog"
+                  top="23vh"
+                  :close-on-press-escape="false"
+                  :close-on-click-modal="false"
+                  v-dialogDrag
+              >
+                <div style="height: 400px">
+                  <el-select v-model="firstOrganValue" placeholder="请选择器官A" style="width: 30%;margin: 10px">
+                    <el-option
+                        v-for="item in organOptions"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                    </el-option>
+                  </el-select>
+                  <el-select v-model="secondOrganValue" placeholder="请选择器官B" style="width: 30%;margin: 10px">
+                    <el-option
+                        v-for="item in organOptions"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                    </el-option>
+                  </el-select>
+                  <el-button type="primary" @click="calculateDistance" round>计算器官距离</el-button>
+                  <br>
+                  <span v-if="organDistance" style="color: #9ccef9;font-size: 14px;font-weight: bold;margin: 20px">{{firstOrganValue}}和{{secondOrganValue}}的距离为{{organDistance}}mm</span>
                 </div>
               </el-dialog>
 
@@ -455,28 +497,6 @@
                   <!--                  <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>-->
                 </el-upload>
               </el-dialog>
-
-<!--              <el-dialog-->
-<!--                  :title="'Slices，共' + spliceList.length + '个（' + splicePrecent + '%）'"-->
-<!--                  :visible="visable"-->
-<!--                  width="1060px"-->
-<!--                  :before-close="handleClose"-->
-<!--                  class="dialog"-->
-<!--                  top="7vh"-->
-<!--                  :close-on-press-escape="false"-->
-<!--                  :close-on-click-modal="false"-->
-<!--                  v-dialogDrag-->
-<!--              >-->
-<!--                <div-->
-<!--                    :style="{ height: Math.round(spliceList.length / 7) * 150 + 'px' }"-->
-<!--                    class="g-dis s-scrollbar"-->
-<!--                ></div>-->
-<!--                <div class="g-main">-->
-<!--                  <div class="d-dicom" v-for="(item, i) in spliceList" :key="i">-->
-<!--                    <div :id="'d-dicom' + i" class="m-image"></div>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--              </el-dialog>-->
             </div>
           </div>
         </el-main>
@@ -528,6 +548,40 @@ export default {
       fontColor: "",
       fileList: [],
       sliderValue: 80,
+      organOptions: [{
+        value: '脾脏',
+        label: '脾脏'
+      }, {
+        value: '右肾',
+        label: '右肾'
+      }, {
+        value: '左肾',
+        label: '左肾'
+      }, {
+        value: '胆囊',
+        label: '胆囊'
+      }, {
+        value: '食管',
+        label: '食管'
+      }, {
+        value: '肝脏',
+        label: '肝脏'
+      }, {
+        value: '胃',
+        label: '胃'
+      }, {
+        value: '主动脉',
+        label: '主动脉'
+      }, {
+        value: '下腔静脉',
+        label: '下腔静脉'
+      }, {
+        value: '胰腺',
+        label: '胰腺'
+      }, {
+        value: '膀胱',
+        label: '膀胱'
+      }],
       viewOptions: [{
         value: 'Axial',
         label: 'Axial'
@@ -784,16 +838,7 @@ export default {
           value: 'back',
         },
       ],
-      organDataList: [
-        {
-          name: '心脏',
-          data: 1111
-        },
-        {
-          name: '肠道',
-          data: 222
-        }
-      ],
+      organDataList: [],
       imageList: {}, // 存取所有图片集合
       percentage: 0, // 进度
       selectView: null,
@@ -873,6 +918,9 @@ export default {
           name: '器官测量'
         },
         {
+          name: '器官距离计算'
+        },
+        {
           name: '病灶计数'
         },
         {
@@ -907,7 +955,11 @@ export default {
       scriptAdditionalData: {},
       currentRawImageUrl: '',
       currentSegImageUrl: '',
-      sliceUrlList:[]
+      sliceUrlList: [],
+      organDistanceVisible: false,
+      firstOrganValue:'',
+      secondOrganValue:'',
+      organDistance:''
     }
   },
   watch: {
@@ -967,20 +1019,40 @@ export default {
     }
   },
   methods: {
+    calculateDistance(){
+      if(!this.firstOrganValue|| !this.secondOrganValue){
+        this.$message.error('请选择器官！')
+      }else {
+        axios.post('/api/calculateDistance',{
+          historyid:this.historyId,
+          Label_one:this.firstOrganValue,
+          Label_two:this.secondOrganValue
+        }).then(res=>{
+          console.log(res.data)
+          if(res.data.code === 400){
+            this.$message.error(res.data.message)
+          }else {
+            this.organDistance = res.data.result
+            this.$message.success('两器官距离计算成功')
+          }
+        }).catch(error=>{
+          this.$message.error('发生错误，请稍后再试')
+        })
+      }
+    },
     moveToReport(id) {
-      alert(id)
       let text = this.$router.resolve({
-        path: `/shareedit/${id}`
+        path: `/shareEdit/${id}`
       });
       // 打开一个新的页面
       window.open(text.href, '_blank')
     },
     scriptUploadSuccess(res, file) {
       console.log(res)
-      if(res.length>10){
+      if (res.length > 10) {
         var imageContainer = document.getElementById('imageContainer')
         this.sliceUrlList = res
-        for(var i=0;i<this.sliceUrlList.length;i++){
+        for (var i = 0; i < this.sliceUrlList.length; i++) {
           var image = document.createElement("img");
           image.src = this.sliceUrlList[i]
           imageContainer.appendChild(image)
@@ -996,12 +1068,18 @@ export default {
     handlePreview(file) {
       console.log(file);
     },
-    getDrawBitMap() {
-      console.log(nv.drawBitmap)
-    },
     saveCurrentState() {
-      this.saveImageToServer('/api/uploadlabel', 'new.nii.gz', true, {'historyid': '2'})
-      this.saveSceneToServer('/api/uploadavatar', 'screenshot.png', {'historyid': '2'})
+      if(!this.currentRawImageUrl||!this.currentSegImageUrl){
+        this.$message.error('请先上传文件或进行分割')
+      }else {
+        console.log('进行到这一步了')
+        nv.saveImageToServer('/api/uploadlabel', 'save.nii.gz', true, {'historyid': this.historyId})
+        nv.saveSceneToServer('/api/uploadavatar', 'save.png', {'historyid': this.historyId})
+        this.$message.success('保存成功')
+      }
+    },
+    handleOrganDistanceClose() {
+      this.organDistanceVisible = false
     },
     handleOrganClose() {
       this.organMeasurementVisible = false
@@ -1017,6 +1095,22 @@ export default {
           console.log(res.data)
           if (res.data.code === 400) {
             this.$message.error(res.data.message)
+          } else {
+            this.organDataList = []
+            const organData = res.data.result
+            for (var i = 0; i < organData.length; i++) {
+              this.organDataList.push({
+                id: i,
+                organName: organData[i].organName,
+                diameterX: organData[i].diameterX,
+                diameterY: organData[i].diameterY,
+                diameterZ: organData[i].diameterZ,
+                area: organData[i].area,
+                elongation: organData[i].elongation,
+                flatness: organData[i].flatness,
+                volume: organData[i].volume
+              })
+            }
           }
         }).catch(error => {
           this.$message.error('发生错误，请稍后再试')
@@ -1026,6 +1120,10 @@ export default {
       if (item.name === '上传后处理脚本') {
         this.uploadScriptVisible = true
       }
+      if (item.name === '器官距离计算') {
+        this.organDistanceVisible = true
+      }
+
     },
     clickVisible() {
       this.visable = true

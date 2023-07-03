@@ -65,10 +65,9 @@ import Newproj from "../views/Newproj"
 import PersonalPage from "../views/PersonalPage";
 import ShareTest from "../views/ShareEdit";
 import ShareEdit from "../views/ShareEdit";
-import EditUserInfo from "../views/EditUserInfo";
-import Technical from "../views/Technical";
-// import Technical from "../views/Technical"
+import Technical from "../views/Technical"
 import Patient from "../views/Patient"
+import EditUserInfo from "../views/EditUserInfo";
 
 Vue.use(VueRouter)
 
@@ -106,7 +105,7 @@ const routes = [
         },
     },
     {
-        path: '/shareedit',
+        path: '/shareEdit',
         name: 'ShareEdit',
         component: ShareEdit,
         meta: {
