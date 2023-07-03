@@ -31,25 +31,6 @@
         </el-row>
       </div>
     </div>
-
-<!--    <Separator/>-->
-
-<!--    <div class="rwt-portfolio-area rn-section-gap">-->
-<!--      <div class="container">-->
-<!--        <div class="row">-->
-<!--          <div class="col-lg-12">-->
-<!--            <SectionTitle-->
-<!--                text-align="center"-->
-<!--                subtitle="Image History"-->
-<!--                title="图片历史记录"-->
-<!--                data-aos="fade-up"-->
-<!--                data-aos-delay="60"-->
-<!--            />-->
-<!--          </div>-->
-<!--        </div>-->
-<!--        <Portfolio class="mt&#45;&#45;20" ref="portfolio" column="col-lg-3 col-md-6 mt&#45;&#45;30"/>-->
-<!--      </div>-->
-<!--    </div>-->
   </Layout>
 </template>
 
@@ -69,7 +50,6 @@ export default {
   components: {Layout, Team, SectionTitle, Separator, Portfolio, Progressbar, Button},
   data() {
     return {
-      // avatarUrl:this.$global.apiUrl+'file/uploadAvatar/'+this.$ls.get('userInfo').id,
       teamData: [
         {
           image: '',

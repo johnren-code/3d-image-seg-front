@@ -99,7 +99,11 @@ export default {
           this.$message.success('修改成功')
           this.$ls.set('userInfo',res.data.result)
           eventBus.$emit('userLogin',true)
-          this.$router.push('/personal')
+          if(this.$ls.get('userInfo').role === 'doctor') {
+            this.$router.push('/personal')
+          }else {
+            this.$router.push('/')
+          }
         }
       }).catch(error=>{
         this.$message.error('发生错误，请稍后再试')

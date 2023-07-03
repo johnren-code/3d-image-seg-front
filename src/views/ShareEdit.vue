@@ -68,7 +68,7 @@ import axios from 'axios'
 
 // const axios = require('axios');
 const FormData = require('form-data');
-const base_url = '127.0.0.1:8080';
+const base_url = '10.135.1.65:8080';
 // The current user's info, must contain both id and name field.
 
 export default {
@@ -145,24 +145,21 @@ export default {
         let pdf = new jsPDF('p', 'mm', 'a4')
         let imgData = canvas.toDataURL('image/png')
         pdf.addImage(imgData, 'PNG', 0, 0)
-
-        // 将PDF转换为Blob
-        pdf.output('blob').then(function(blob) {
-          // 创建FormData对象
-          var formData = new FormData();
-          formData.append("file", blob, "download.pdf");
-          formData.append("historyid",this.historyId)
-          // 使用fetch API发送到服务器
-          fetch("/your-server-endpoint", {
-            method: "POST",
-            body: formData
-          }).then(response => {
-            if (response.ok) {
-              this.$message.success('成功提交病例报告！')
-            } else {
-              this.$message.error('发生错误，请稍后再试')
-            }
-          });
+        let blob = pdf.output('blob');
+        var formData = new FormData();
+        formData.append("file", blob, "download.pdf");
+        formData.append("historyid",this.historyId);
+        formData.append("score",8)
+        // 使用fetch API发送到服务器
+        fetch("/api/saveReport", {
+          method: "POST",
+          body: formData
+        }).then(response => {
+          if (response.ok) {
+            this.$message.success('成功提交病例报告！')
+          } else {
+            this.$message.error('发生错误，请稍后再试')
+          }
         });
       });
 
@@ -314,14 +311,14 @@ export default {
     });
     let websocketEndpoint = "ws://" + base_url;
 
-    // editor.syncThroughWebsocket(websocketEndpoint, this.historyId.padStart(8, "0"), this.historyId.padStart(8, "0"));
-    editor.syncThroughWebsocket(websocketEndpoint, "00", "00");
+    editor.syncThroughWebsocket(websocketEndpoint, this.historyId.padStart(8, "0"), this.historyId.padStart(8, "0"));
+    // editor.syncThroughWebsocket(websocketEndpoint, "00", "00");
     let socket = new ReconnectingWebSocket(websocketEndpoint);
 
     let connection = new ShareDB.Connection(socket);
 
-    // let doc = connection.get(this.historyId.padStart(8, "0"), this.historyId.padStart(8, "0"));
-    let doc = connection.get("00", "00");
+    let doc = connection.get(this.historyId.padStart(8, "0"), this.historyId.padStart(8, "0"));
+    // let doc = connection.get("00", "00");
 
 // Create a hidden quill editor to parse delta to html
 

@@ -4,7 +4,7 @@
     <div class="rn-service-area rn-section-gap">
       <!-- 侧边栏 -->
       <el-container>
-        <Menu></Menu>
+        <Menuseg></Menuseg>
         <el-main>
           <div class="dicom-main">
             <div class="l-bottom">
@@ -551,6 +551,7 @@ import {Niivue} from '@niivue/niivue'
 import axios from 'axios'
 import Menu from "../components/history/menu";
 import ShareEdit from "./ShareEdit";
+import Menuseg from "../components/history/menuseg";
 
 const nv = new Niivue({
   logging: true,
@@ -562,6 +563,7 @@ const nv = new Niivue({
 export default {
   name: 'Segmentation',
   components: {
+    Menuseg,
     ShareEdit,
     Menu, Table, Team, Brand, Counter, Timeline, ServiceOne, AboutFour, SectionTitle, Separator, Layout, Button
   },
@@ -978,6 +980,7 @@ export default {
       scriptAdditionalData: {},
       currentRawImageUrl: '',
       currentSegImageUrl: '',
+      currentNewSegImageUrl:'',
       sliceUrlList: [],
       organDistanceVisible: false,
       firstOrganValue: '',
