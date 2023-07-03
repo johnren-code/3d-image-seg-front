@@ -149,23 +149,23 @@
                   </div>
 
                   <!-- 度量 -->
-                  <div
-                      :class="['s-other t-dialog1', measureStatus ? 's-select' : '']"
-                      title="工具"
-                  >
-                    <i class="t-active iconfont iconremark-measure"></i>
-                    <div class="r-tools">
-                      <div
-                          v-for="(meas, index) in measureList"
-                          :key="meas.iconfont"
-                          @click="clickInstros(meas, index)"
-                          :class="[meas.status ? 's-select' : '']"
-                      >
-                        <i :class="'iconfont ' + meas.iconfont"></i
-                        ><span>{{ meas.title }}</span>
-                      </div>
-                    </div>
-                  </div>
+                  <!--                  <div-->
+                  <!--                      :class="['s-other t-dialog1', measureStatus ? 's-select' : '']"-->
+                  <!--                      title="工具"-->
+                  <!--                  >-->
+                  <!--                    <i class="t-active iconfont iconremark-measure"></i>-->
+                  <!--                    <div class="r-tools">-->
+                  <!--                      <div-->
+                  <!--                          v-for="(meas, index) in measureList"-->
+                  <!--                          :key="meas.iconfont"-->
+                  <!--                          @click="clickInstros(meas, index)"-->
+                  <!--                          :class="[meas.status ? 's-select' : '']"-->
+                  <!--                      >-->
+                  <!--                        <i :class="'iconfont ' + meas.iconfont"></i-->
+                  <!--                        ><span>{{ meas.title }}</span>-->
+                  <!--                      </div>-->
+                  <!--                    </div>-->
+                  <!--                  </div>-->
                   <div
                       v-for="(item, index) in originalList"
                       :key="item.iconfont"
@@ -337,7 +337,7 @@
                           class="e-card"
                           v-for="(item, index) in dataAnalysisList"
                           :key="item.id"
-                          v-show="dataAnalysisList.length !== 0"
+                          v-show="dataAnalysisList.length !== 0 && currentSegImageUrl"
                       >
                         <div class="e-title">
                         <span class="e-e">
@@ -346,7 +346,6 @@
                               v-model="item.name"
                               maxlength="20"
                               :placeholder="'' + item.name "
-                              @blur="blurTitle(item, index)"
                           >
                           </el-input>
                         </span>
@@ -362,8 +361,36 @@
                           {{ item.value }}
                         </div>
                       </div>
-                      <div v-show="dataAnalysisList.length === 0" class="e-none">
-                        暂无数据
+                      <div
+                          class="e-card"
+                          v-for="(item, index) in scriptAnalysisList"
+                          :key="item.id"
+                          v-show="scriptAnalysisList.length !== 0 && currentRawImageUrl"
+                      >
+                        <div class="e-title">
+                        <span class="e-e">
+                          <el-input
+                              size="mini"
+                              v-model="item.name"
+                              maxlength="20"
+                              :placeholder="'' + item.name "
+                          >
+                          </el-input>
+                        </span>
+                          <span class="e-icon">
+                          <i
+                              class="el-icon-more"
+                              @click.stop="showDetails(item, index)"
+                              title="查看详细信息"
+                          ></i>
+                        </span>
+                        </div>
+                        <div class="e-result">
+                          {{ item.value }}
+                        </div>
+                      </div>
+                      <div v-show="!currentRawImageUrl&&!currentSegImageUrl" class="e-none">
+                        请先上传文件或进行分割
                       </div>
                     </div>
                   </div>
@@ -462,7 +489,10 @@
                   </el-select>
                   <el-button type="primary" @click="calculateDistance" round>计算器官距离</el-button>
                   <br>
-                  <span v-if="organDistance" style="color: #9ccef9;font-size: 14px;font-weight: bold;margin: 20px">{{firstOrganValue}}和{{secondOrganValue}}的距离为{{organDistance}}mm</span>
+                  <span v-if="organDistance"
+                        style="color: #9ccef9;font-size: 14px;font-weight: bold;margin: 20px">{{
+                      firstOrganValue
+                    }}和{{ secondOrganValue }}的距离为{{ organDistance }}mm</span>
                 </div>
               </el-dialog>
 
@@ -922,20 +952,14 @@ export default {
         },
         {
           name: '病灶计数'
-        },
+        }
+      ],
+      scriptAnalysisList: [
         {
           name: '上传后处理脚本'
         }
       ],
       imageMarkCopy: [],
-      volumeList: [
-        {
-          url: "/file/image/202302/0b2be9e0-886b-4144-99f0-8bb4c6eaa848.nii.gz",
-          colorMap: "gray",
-          opacity: 1,
-          visible: true
-        },
-      ],
       isCollapse: true,
       crosshairSlider: 10,
       opacitySlider: 100,
@@ -957,9 +981,9 @@ export default {
       currentSegImageUrl: '',
       sliceUrlList: [],
       organDistanceVisible: false,
-      firstOrganValue:'',
-      secondOrganValue:'',
-      organDistance:''
+      firstOrganValue: '',
+      secondOrganValue: '',
+      organDistance: ''
     }
   },
   watch: {
@@ -1019,23 +1043,23 @@ export default {
     }
   },
   methods: {
-    calculateDistance(){
-      if(!this.firstOrganValue|| !this.secondOrganValue){
+    calculateDistance() {
+      if (!this.firstOrganValue || !this.secondOrganValue) {
         this.$message.error('请选择器官！')
-      }else {
-        axios.post('/api/calculateDistance',{
-          historyid:this.historyId,
-          Label_one:this.firstOrganValue,
-          Label_two:this.secondOrganValue
-        }).then(res=>{
+      } else {
+        axios.post('/api/calculateDistance', {
+          historyid: this.historyId,
+          Label_one: this.firstOrganValue,
+          Label_two: this.secondOrganValue
+        }).then(res => {
           console.log(res.data)
-          if(res.data.code === 400){
+          if (res.data.code === 400) {
             this.$message.error(res.data.message)
-          }else {
+          } else {
             this.organDistance = res.data.result
             this.$message.success('两器官距离计算成功')
           }
-        }).catch(error=>{
+        }).catch(error => {
           this.$message.error('发生错误，请稍后再试')
         })
       }
@@ -1069,9 +1093,9 @@ export default {
       console.log(file);
     },
     saveCurrentState() {
-      if(!this.currentRawImageUrl||!this.currentSegImageUrl){
+      if (!this.currentRawImageUrl || !this.currentSegImageUrl) {
         this.$message.error('请先上传文件或进行分割')
-      }else {
+      } else {
         console.log('进行到这一步了')
         nv.saveImageToServer('/api/uploadlabel', 'save.nii.gz', true, {'historyid': this.historyId})
         nv.saveSceneToServer('/api/uploadavatar', 'save.png', {'historyid': this.historyId})
@@ -1301,7 +1325,9 @@ export default {
     handleUploadSegSuccess(res, file) {
       console.log(res)
       this.currentSegImageUrl = res.result;
-      nv.loadDrawingFromUrl(res.result)
+      nv.loadVolumes(this.currentRawImageUrl).then(res => {
+        nv.loadDrawingFromUrl(res.result)
+      })
     },
     changeView(meas, index) {
       if (meas.titleEng === 'Axial') {

@@ -8,8 +8,6 @@
         </Button>
         <el-button v-else="edit" size="mini" type="success" @click="completeEditPersonal">完成编辑
         </el-button>
-        <!--        <el-button size="mini" type="primary" @click="dialogVisibleRule = true">修改权限-->
-        <!--        </el-button>-->
         <el-button size="mini" type="danger" @click="delProj" style="margin-left: 20px">删除病人项目
         </el-button>
       </el-col>
@@ -70,25 +68,18 @@
         <el-button icon="el-icon-search" type="primary" @click="search" size="mini" style="margin-left: 20px">
           搜索记录
         </el-button>
+        <el-button icon="el-icon-search" type="primary" @click="searchAll" size="mini" style="margin-left: 20px">
+          查询全部
+        </el-button>
         <el-button size="mini" type="success" class="addHistory" @click="addHistory">添加病例
         </el-button>
+        <el-radio-group v-model="selectStatus" style="margin-left: 150px;color: white">
+          <el-radio :label="2">全部</el-radio>
+          <el-radio :label="1">已完成</el-radio>
+          <el-radio :label="0">未完成</el-radio>
+        </el-radio-group>
       </div>
-<!--      <el-row>-->
-<!--        <el-col :span="16" class="historyTitle">历史记录</el-col>-->
-<!--        <el-col :span="3">-->
-<!--          <el-input v-model="searchInfo" prefix-icon="el-icon-search" style="width: 90%;margin-right: 10px" clearable-->
-<!--                    @clear="search" @keydown.enter.native="search"></el-input>-->
-<!--        </el-col>-->
-<!--        <el-col :span="2">-->
-<!--          <el-button icon="el-icon-search" type="primary" @click="search" size="mini" style="width: 90%;">-->
-<!--            搜索记录-->
-<!--          </el-button>-->
-<!--        </el-col>-->
-<!--        <el-col :span="3">-->
-<!--          <el-button size="mini" type="success" class="addHistory" @click="addHistory">添加病例-->
-<!--          </el-button>-->
-<!--        </el-col>-->
-<!--      </el-row>-->
+
       <el-form-item>
         <div class="user_skills">
           <el-table :data="tableData" style="width: 100%;background-color:transparent"
@@ -122,12 +113,8 @@
         </div>
       </el-form-item>
     </el-form>
-    <el-dialog title="新建历史记录" :visible.sync="dialogFormVisible">
+    <el-dialog title="新建病例" :visible.sync="dialogFormVisible">
       <el-form :model="formNewhistory">
-        <!--        <el-form-item label="日期：" :label-width="formLabelWidth">-->
-        <!--          <el-date-picker type="date" placeholder="选择日期" v-model="formNewhistory.date"-->
-        <!--                          style="width: 100%;"></el-date-picker>-->
-        <!--        </el-form-item>-->
         <el-form-item label="病人描述：" :label-width="formLabelWidth">
           <el-input v-model="formNewhistory.introduction" autocomplete="off"></el-input>
         </el-form-item>
@@ -137,19 +124,6 @@
         <el-button type="primary" @click="sendFormValue">确 定</el-button>
       </div>
     </el-dialog>
-    <!-- <img alt="slime" src="{{ url_for('static', filename='images/002.png') }}"> -->
-    <!--    <el-dialog title="修改用户权限" :visible.sync="dialogVisibleRule" width="30%" :before-close="handleClose">-->
-    <!--      <el-select v-model="rule" placeholder="请选择权限" style="{width:100%}">-->
-    <!--        <el-option label="admin" value="admin"></el-option>-->
-    <!--        <el-option label="owner" value="owner"></el-option>-->
-    <!--        <el-option label="not" value="not"></el-option>-->
-    <!--      </el-select>-->
-    <!--      <span slot="footer" class="dialog-footer">-->
-    <!--        <el-button @click="dialogVisibleRule = false">取 消</el-button>-->
-    <!--        <el-button type="primary" @click="changeRule">确 定</el-button>-->
-    <!--      </span>-->
-    <!--    </el-dialog>-->
-
   </div>
 </template>
 
@@ -266,7 +240,8 @@ export default {
       },
       chart: '',
       queryStartDate:'',
-      queryEndDate:''
+      queryEndDate:'',
+      selectStatus:2
     }
   },
   methods: {
@@ -303,14 +278,17 @@ export default {
         Description: this.formNewhistory.introduction
       }).then(res => {
         console.log(res.data);
-        // this.$router.push('/segmentation')
-        this.$router.push(`/segmentation/${res.data.result}`)
-        sessionStorage.setItem('historyId', JSON.stringify(res.data.result))
-        this.dialogFormVisible = false
-        this.$message({
-          type: 'success',
-          message: '创建成功!'
-        });
+        if(res.data.code === 400){
+          this.$message.error(res.data.message)
+        }else {
+          sessionStorage.setItem('historyId', JSON.stringify(res.data.result))
+          this.dialogFormVisible = false
+          this.$message({
+            type: 'success',
+            message: '创建成功!'
+          });
+          location.reload()
+        }
       }, err => {
         console.log(err);
       })
@@ -352,25 +330,41 @@ export default {
 
     // 搜索历史记录
     search() {
-      // alert(`查找项目名为${this.$route.params.id},搜索内容为${this.searchInfo}`)
-
+      if(!this.queryStartDate || !this.queryEndDate){
+        this.$message.error('请选择起止日期')
+      }else {
+        axios.post('/api/proj/getFilesBetweenDates',{
+          startDate:this.queryStartDate,
+          endDate:this.queryEndDate,
+          projectId:this.projId
+        }).then(res=>{
+          if(res.data.code===400){
+            this.$message.error(res.data.message)
+          }else {
+            this.tableData = res.data.result
+            this.$message.success('查询成功！')
+          }
+        }).catch(error=>{
+          this.$message.error('发生错误，请稍后错误')
+        })
+      }
+    },
+    searchAll(){
+      axios.get(`/api/proj/Info/${this.$route.params.id}`).then(res => {
+        if(res.data.code===400){
+          this.$message.error(res.data.message)
+        }else {
+          this.tableData = res.data.result.upLoadFiles
+          this.queryStartDate = ''
+          this.queryEndDate = ''
+          console.log(res.data);
+        }
+      }, err => {
+        console.log(err);
+      })
     },
     addHistory() {
       this.dialogFormVisible = true
-      // axios.post('/createhistory', {
-      //   Description: this.formNewhistory.introduction,
-      //   patient_id: this.form.patientId,
-      //   pid: this.$route.params.id
-      // }).then(res => {
-      //   this.form = res.data.result
-      //   console.log(res.data);
-      //   this.$message({
-      //     type: 'success',
-      //     message: '添加成功!'
-      //   });
-      // }, err => {
-      //   console.log(err);
-      // })
     },
 
     // 删除项目
@@ -471,12 +465,43 @@ export default {
     handlePreview(file) {
       console.log(file);
     },
+    selectStatus(newVal,oldVal){
+      console.log(newVal)
+      if(newVal === 2){
+        axios.get(`/api/proj/Info/${this.$route.params.id}`).then(res => {
+          if(res.data.code===400){
+            this.$message.error(res.data.message)
+          }else {
+            this.tableData = res.data.result.upLoadFiles
+            console.log(res.data);
+          }
+        }, err => {
+          console.log(err);
+        })
+      }else {
+        axios.post('/api/proj/indexForCompletion',{
+          projectid:this.projId,
+          status:newVal ? '处理完成':'处理未完成'
+        }).then(res=>{
+          if(res.data.code===400){
+            this.$message.error(res.data.message)
+          }else {
+            console.log(res.data)
+            this.tableData = res.data.result
+          }
+        })
+      }
+    }
   },
   mounted() {
     axios.get(`/api/proj/Info/${this.$route.params.id}`).then(res => {
-      this.form = res.data.result
-      this.tableData = res.data.result.upLoadFiles
-      console.log(res.data);
+      if(res.data.code===400){
+        this.$message.error(res.data.message)
+      }else {
+        this.form = res.data.result
+        this.tableData = res.data.result.upLoadFiles
+        console.log(res.data);
+      }
     }, err => {
       console.log(err);
     })
@@ -487,6 +512,28 @@ export default {
 }
 </script>
 <style scoped lang="scss">
+
+:deep(.el-radio__inner) {
+  border-radius: 2px;
+}
+
+:deep(.el-radio__input.is-checked) .el-radio__inner::after {
+  content: "";
+  width: 10px;
+  height: 5px;
+  border: 1px solid white;
+  border-top: transparent;
+  border-right: transparent;
+  text-align: center;
+  display: block;
+  position: absolute;
+  top: 2px;
+  left: 0px;
+  vertical-align: middle;
+  transform: rotate(-45deg);
+  border-radius: 0px;
+  background: none;
+}
 
 ::v-deep th.el-table__cell.is-leaf {
   border-bottom: 2px solid grey !important;
