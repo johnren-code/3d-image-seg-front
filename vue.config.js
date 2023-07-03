@@ -4,6 +4,7 @@ module.exports = {
             '/api': {
                 target: 'http://10.134.48.94:9595',
                 target: 'http://10.134.49.130:9595',
+                target: 'http://10.135.0.107:9595',
                 pathRewrite: {
                     '^/api': ''
                 },
@@ -11,7 +12,7 @@ module.exports = {
                 ws: true,
             },
             '/flask': {
-                target: 'http://10.134.49.130:5000',
+                target: 'http://10.135.0.107:5000',
                 pathRewrite: {
                     '^/flask': ''
                 },

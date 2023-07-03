@@ -25,7 +25,7 @@
 import axios from "axios";
 
 export default {
-    name: "Menu",
+    name: "Menuseg",
     data() {
         return {
             isCollapse: false,
@@ -62,8 +62,8 @@ export default {
             console.log(res.data);
         }, err => {
             console.log(err);
-        })
-        this.defaultActive = sessionStorage.getItem('path') || '/history/1'
+        }),
+            this.defaultActive = sessionStorage.getItem('path') || '/history/1'
     }
 }
 </script>
