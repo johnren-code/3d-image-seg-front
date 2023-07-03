@@ -216,7 +216,11 @@ export default {
       this.$router.push('/')
     },
     toPersonalPage(){
-      this.$router.push('/personal')
+      if(this.$ls.get('userInfo').role === 'doctor'){
+        this.$router.push('/personal')
+      }else {
+        this.$router.push('/editUserInfo')
+      }
     },
     showDialog() {
       this.$refs.loginPage.show()

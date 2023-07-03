@@ -250,8 +250,6 @@ export default {
       } else if (!this.email && this.loginData.writeCode !== this.identifyCode) {
         this.$message.error('验证码错误')
       } else {
-        // var loginInfo
-        // var urlInfo
         if (this.email) { //邮箱验证码
           axios.post('/api/loginWithEmail',{
             email:this.loginData.email,
@@ -271,11 +269,7 @@ export default {
             this.fullscreenLoading=false
             this.$message.error('登录错误，请稍后再试')
           })
-          // urlInfo = 'login2'
-          // loginInfo = JSON.stringify({email: this.loginData.email, verity: this.loginData.writeCode})
         } else { //账号密码
-          // urlInfo = 'login'
-          // loginInfo = JSON.stringify({name: this.loginData.username, password: this.loginData.password})
           axios.post('/api/login', {
             username: this.loginData.username,
             password: this.loginData.password
@@ -286,6 +280,7 @@ export default {
             } else {
               this.$message.success('登录成功')
               this.hide()
+              console.log(res.data.result)
               this.$ls.set('userInfo', res.data.result)
               eventBus.$emit('userLogin', true)
             }
@@ -294,34 +289,6 @@ export default {
             this.$message.error('登录错误，请稍后再试')
           })
         }
-        // this.$axios({
-        //   headers: {
-        //     'Content-Type': 'application/json'
-        //   },
-        //   method: 'post',
-        //   url: this.$global.apiUrl + urlInfo,
-        //   data: loginInfo
-        // }).then(res => {
-        //   that.fullscreenLoading = false
-        //   // console.log('登录成功')
-        //   if (res.data.code === 0) {
-        //     that.$message({
-        //       message: '登录成功！',
-        //       type: 'success'
-        //     });
-        //     this.hide()
-        //     this.$ls.set('userInfo', res.data.data)
-        //     // location.reload()
-        //     eventBus.$emit('userLogin', true)
-        //   } else {
-        //     that.$message.error(res.data.message);
-        //   }
-        //
-        // }).catch(function (error) {
-        //   that.fullscreenLoading = false
-        //   console.log(error);
-        //   that.$message.error('网络错误，稍后再试');
-        // });
       }
 
     },
@@ -366,49 +333,6 @@ export default {
         }).catch(error => {
           this.$message.error('注册失败')
         })
-        // this.$axios({
-        //   headers: {
-        //     'Content-Type': 'application/json'
-        //   },
-        //   method: 'post',
-        //   url: this.$global.apiUrl + 'register?code=' + that.registerData.verifyCode,
-        //   data: JSON.stringify({
-        //     name: that.registerData.username,
-        //     email: that.registerData.email,
-        //     password: that.registerData.password
-        //   })
-        // }).then(res => {
-        //   that.fullscreenLoading = false
-        //   // console.log('注册成功')
-        //   that.$message({
-        //     message: '注册成功！',
-        //     type: 'success'
-        //   });
-        //   this.hide()
-        //
-        //   //注册后直接登录
-        //   let urlInfo = 'login'
-        //   let loginInfo = JSON.stringify({name: this.registerData.username, password: this.registerData.password})
-        //   this.$axios({
-        //     headers: {
-        //       'Content-Type': 'application/json'
-        //     },
-        //     method: 'post',
-        //     url: this.$global.apiUrl + urlInfo,
-        //     data: loginInfo
-        //   }).then(res => {
-        //     that.fullscreenLoading = false
-        //     if (res.data.code === 0) {
-        //       this.$ls.set('userInfo', res.data.data)
-        //       eventBus.$emit('userLogin', true)
-        //     }
-        //   })
-        //
-        // }).catch(function (error) {
-        //   that.fullscreenLoading = false
-        //   console.log(error);
-        //   that.$message.error('注册失败');
-        // });
       }
     },
     // 切换登录、注册
@@ -443,27 +367,6 @@ export default {
           console.error(error)
           this.$message.error('发送失败，请稍后再试')
         })
-        // var url = this.login ? 'sendCode' : 'sendRegister'
-        // this.$axios.get(this.$global.apiUrl + 'code/' + url, {
-        //   params: {memPhone: email}
-        // }).then(res => {
-        //   // console.log(res.data)
-        //   if (res.data.message === '手机号未注册！') {
-        //     that.$message.error('手机号未注册');
-        //   } else {
-        //     that.$message({message: '发送成功！', type: 'success'});
-        //     //开始倒计时
-        //     that.countDown = 60
-        //     var interval = setInterval(function () {
-        //       that.countDown--
-        //       if (that.countDown == 0) {
-        //         clearInterval(interval)
-        //       }
-        //     }, 1000)
-        //   }
-        // }).catch(function (error) {
-        //   that.$message.error('发送失败，请稍后再试');
-        // });
       }
     },
     // 验证码相关方法

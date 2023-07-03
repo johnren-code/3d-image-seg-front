@@ -325,7 +325,6 @@
 
                   <Button :read-more-button="true">
                     <span style="color: grey;margin-left: 40px" v-if="!isReportSubmit" @click="moveToReport(historyId)">点击编辑病例报告</span>
-                    <span style="color: grey;margin-left: 40px" v-if="isReportSubmit" @click="moveToReport(historyId)">提交成功，点击修改</span>
                   </Button>
                 </div>
                 <!-- dicom 图 -->
