@@ -1,6 +1,6 @@
 <template>
   <div>
-    <SectionTitle text-align="center" :title="'病人' + form.name + '的项目'" description="" data-aos="fade-up" />
+    <SectionTitle text-align="center" :title="'病人' + form.name + '的项目'" description="" data-aos="fade-up"/>
     <el-row>
       <el-col :offset="19" class="deleHistory">
         <Button :read-more-button="true" v-if="edit">
@@ -20,7 +20,7 @@
             <el-descriptions-item v-if="edit" label="生日">{{ formatDate(form.birthday) }}</el-descriptions-item>
             <el-descriptions-item v-else="edit" label="生日">
               <el-date-picker type="date" placeholder="选择日期" v-model="form.birthday"
-                style="width: 100%;"></el-date-picker>
+                              style="width: 100%;"></el-date-picker>
             </el-descriptions-item>
             <el-descriptions-item v-if="edit" label="年龄">{{ form.age }}</el-descriptions-item>
             <el-descriptions-item v-else="edit" label="年龄">
@@ -53,14 +53,13 @@
           </el-descriptions>
         </div>
         <div ref="chart" class="echarts-chart"></div>
-        <!--                     <SectionTitle text-align="center" title="这里可以放一个折线图" description="" data-aos="fade-up" />-->
       </div>
       <div>
         <span style="font-size: 20px;color:#9ccef9;font-weight: bold">历史记录</span>
         <el-date-picker type="date" placeholder="选择起始日期" v-model="queryStartDate"
-          style="margin-left: 20px;width: 180px"></el-date-picker>
+                        style="margin-left: 20px;width: 180px"></el-date-picker>
         <el-date-picker type="date" placeholder="选择结束日期" v-model="queryEndDate"
-          style="margin-left: 20px;width: 180px"></el-date-picker>
+                        style="margin-left: 20px;width: 180px"></el-date-picker>
         <el-button icon="el-icon-search" type="primary" @click="search" size="mini" style="margin-left: 20px">
           搜索记录
         </el-button>
@@ -78,7 +77,7 @@
       <el-form-item>
         <div class="user_skills">
           <el-table :data="tableData" style="width: 100%;background-color:transparent"
-            element-loading-background="rgba(0,0,0,0.5)" cell-style="color:white;text-align:center" width="400">
+                    element-loading-background="rgba(0,0,0,0.5)" cell-style="color:white;text-align:center" width="400">
             <el-table-column prop="id" label="编号" width="50" header-align="center">
             </el-table-column>
             <el-table-column prop="avatarFileUrl" label="快照" width="350" header-align="center">
@@ -94,7 +93,8 @@
             <el-table-column label="操作" width="300" header-align="center">
               <template slot-scope="scope">
                 <el-button size="mini" type="primary"
-                  @click="generateReport(scope.row.id, scope.row.status, scope.row.reportUrl)">下载报告</el-button>
+                           @click="generateReport(scope.row.id, scope.row.status, scope.row.reportUrl)">下载报告
+                </el-button>
                 <el-button size="mini" @click="checkHistory(scope.row.id)">查看</el-button>
                 <el-button size="mini" type="danger" @click="deleteHistory(scope.row.id)">删除</el-button>
               </template>
@@ -138,7 +138,7 @@ import * as echarts from 'echarts';
 
 export default {
   name: 'UserProj',
-  components: { SectionTitle, Button },
+  components: {SectionTitle, Button},
   data() {
     return {
       searchInfo: '',
@@ -149,7 +149,7 @@ export default {
         region: '',
         type: ''
       },
-      tableData: [{ id: 1 }, { id: 1 }, { id: 1 }, { id: 1 }, { id: 1 },],
+      tableData: [{id: 1}, {id: 1}, {id: 1}, {id: 1}, {id: 1},],
       fileList: [],
       dialogFormVisible: false,
       dialogVisible: false,
@@ -179,65 +179,10 @@ export default {
       generateReportVisible: false,
       edit: true,
       projId: this.$route.params.id,
-      scoreChart: {
-        title: {
-          textStyle: {
-            color: '#333',
-            fontSize: 24,
-            fontWeight: 'bold'
-          }
-        },
-        xAxis: {
-          type: 'category',
-          data: ['2019-01-01', '2019-01-02', '2019-01-03', '2019-01-04', '2019-01-05', '2019-01-06'],
-          axisLabel: {
-            rotate: 45,
-            color: '#666'
-          },
-          axisLine: {
-            lineStyle: {
-              color: '#999'
-            }
-          }
-        },
-        yAxis: {
-          type: 'value',
-          name: '评分',
-          nameTextStyle: {
-            color: '#666',
-            fontSize: 14
-          },
-          axisLine: {
-            lineStyle: {
-              color: '#999'
-            }
-          },
-          splitLine: {
-            lineStyle: {
-              type: 'dashed'
-            }
-          }
-        },
-        series: [
-          {
-            type: 'line',
-            data: [1, 2, 3, 4, 5, 6],
-            symbol: 'circle',
-            symbolSize: 8,
-            lineStyle: {
-              color: '#009688',
-              width: 2
-            },
-            itemStyle: {
-              color: '#009688'
-            }
-          }
-        ]
-      },
       chart: '',
       queryStartDate: '',
       queryEndDate: '',
-      selectStatus: 2
+      selectStatus: 2,
     }
   },
   methods: {
@@ -298,28 +243,6 @@ export default {
       this.$router.push(`/segmentation/${id}`)
       // sessionStorage.setItem('historyId', JSON.stringify('1'))
     },
-    // open() {
-    //   this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
-    //     confirmButtonText: '确定',
-    //     cancelButtonText: '取消',
-    //     type: 'warning'
-    //   }).then(() => {
-    //     axios.post('/api/submitFile').then(res => {
-    //       console.log(res.data);
-    //     }, err => {
-    //       console.log(err);
-    //     })
-    //     this.$message({
-    //       type: 'success',
-    //       message: '删除成功!'
-    //     });
-    //   }).catch(() => {
-    //     this.$message({
-    //       type: 'info',
-    //       message: '已取消删除'
-    //     });
-    //   });
-    // },
     generateReport(id, status, url) {
       if (!status || !url) {
         this.$message.error('病例还未分析完毕，无法下载')
@@ -376,7 +299,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        axios.put(`/api/proj/delete`, { projectId: this.$route.params.id }).then(res => {
+        axios.put(`/api/proj/delete`, {projectId: this.$route.params.id}).then(res => {
           console.log(res.data);
           this.$message({
             type: 'success',
@@ -394,32 +317,9 @@ export default {
         });
       });
     },
-    // 修改权限
-    // changeRule() {
-    //   axios.post(`/api/proj/editPermission`, {
-    //     uid: 4, pid: this.$route.params.id, permission: 'admin'
-    //   }).then(res => {
-    //     // console.log(res.data);
-    //     this.$message({
-    //       type: 'success',
-    //       message: '修改权限成功!'
-    //     });
-    //     this.dialogVisibleRule = false
-    //   }, err => {
-    //     console.log(err);
-    //   })
-    // },
-    // 修改权限的handleclose
-    // handleClose(done) {
-    //   this.$confirm('确认关闭？')
-    //     .then(_ => {
-    //       done();
-    //     })
-    //     .catch(_ => { });
-    // },
     completeEditPersonal() {
       if (!this.form.name || !this.form.location || !this.form.phone || !this.form.description || !this.form.height
-        || !this.form.weight || !this.form.age || !this.form.bloodType || !this.form.birthday) {
+          || !this.form.weight || !this.form.age || !this.form.bloodType || !this.form.birthday) {
         this.$message.error('请填写完整的信息')
       } else {
         axios.post('/api/proj/edit', {
@@ -445,6 +345,112 @@ export default {
     },
     editPersonal() {
       this.edit = !this.edit
+    },
+    async initChart() {
+      let scoreChart = {
+        title: {
+          textStyle: {
+            color: '#333',
+            fontSize: 24,
+            fontWeight: 'bold'
+          }
+        },
+        xAxis: {
+          type: 'category',
+          data: ['2019-01-01', '2019-01-02', '2019-01-03', '2019-01-04', '2019-01-05', '2019-01-06'],
+          axisLabel: {
+            rotate: 45,
+            color: '#666'
+          },
+          axisLine: {
+            lineStyle: {
+              color: '#999'
+            }
+          }
+        },
+        yAxis: {
+          type: 'value',
+          name: '评分',
+          nameTextStyle: {
+            color: '#666',
+            fontSize: 14
+          },
+          axisLine: {
+            lineStyle: {
+              color: '#999'
+            }
+          },
+          splitLine: {
+            lineStyle: {
+              type: 'dashed'
+            }
+          }
+        },
+        series: [
+          {
+            type: 'line',
+            data: [1, 2, 3, 4, 5, 6],
+            symbol: 'circle',
+            symbolSize: 8,
+            lineStyle: {
+              color: '#009688',
+              width: 2
+            },
+            itemStyle: {
+              color: '#009688'
+            }
+          }
+        ]
+      }
+      scoreChart.xAxis.data = []
+      scoreChart.series[0].data = []
+      const tempDateData = []
+      const tempScoreData = []
+      let res = await axios.get(`/api/proj/Info/${this.$route.params.id}`)
+      console.log('res===', res)
+      if (res.data.code === 400) {
+        this.$message.error(res.data.message)
+      } else {
+        console.log('res.data', res.data)
+        this.form = res.data.result
+        this.tableData = res.data.result.upLoadFiles
+        const tempData = res.data.result.upLoadFiles
+        for (var i = 0; i < tempData.length; i++) {
+          if (tempData[i].status === 1) {
+            tempDateData.push(this.formatDate(tempData[i].date))
+            tempScoreData.push(tempData[i].score)
+          }
+        }
+      }
+      console.log('tempDateData', tempDateData)
+      console.log('tempScoreData', tempScoreData)
+      scoreChart.xAxis.data = tempDateData
+      scoreChart.series[0].data = tempScoreData
+      console.log('this.scoreChart.xAxis.data', scoreChart.xAxis.data)
+      console.log('this.scoreChart.series[0].data', scoreChart.series[0].data)
+      console.log('this.scoreChart.xAxis.data.length', scoreChart.xAxis.data.length)
+      const chartContainer = this.$refs.chart
+
+      if (scoreChart.xAxis.data.length > 0) {
+        this.chart = echarts.init(chartContainer)
+        console.log(scoreChart)
+        this.chart.setOption(scoreChart)
+        // scoreChart = {
+        //   title: {
+        //     text: '暂无评分数据',
+        //     x: 'center',
+        //     y: 'center',
+        //     textStyle: {
+        //       color: '#333',
+        //       fontSize: 24,
+        //       fontWeight: 'bold'
+        //     }
+        //   }
+        // }
+      } else {
+        this.chart.dispose()
+      }
+
     }
   },
   watch: {
@@ -453,10 +459,12 @@ export default {
       this.titleName = '用户' + this.$route.params.id + '的项目'
       // this.form.name = this.$route.params.id
       // this.form = ''
+
       axios.get(`/api/proj/Info/${this.$route.params.id}`).then(res => {
         this.form = res.data.result
         this.tableData = res.data.result.upLoadFiles
         console.log(this.tableData);
+        this.initChart()
       }, err => {
         console.log(err);
       })
@@ -495,49 +503,9 @@ export default {
       }
     }
   },
+  //走在这里吗是的
   mounted() {
-    console.log(this.projId)
-    this.scoreChart.xAxis.data = []
-    this.scoreChart.series[0].data = []
-    axios.get(`/api/proj/Info/${this.$route.params.id}`).then(res => {
-      if (res.data.code === 400) {
-        this.$message.error(res.data.message)
-      } else {
-        console.log(res.data.result)
-        this.form = res.data.result
-        this.tableData = res.data.result.upLoadFiles
-        const tempData = res.data.result.upLoadFiles
-        for (var i = 0; i < tempData.length; i++) {
-          if (tempData[i].status === 1) {
-            this.scoreChart.xAxis.data.push(this.formatDate(tempData[i].date))
-            this.scoreChart.series[0].data.push(tempData[i].score)
-          }
-        }
-        console.log('x轴的数据')
-        console.log(this.scoreChart.xAxis.data)
-        console.log(res.data);
-      }
-    }, err => {
-      console.log(err);
-    })
-    const chartContainer = this.$refs.chart
-    this.chart = echarts.init(chartContainer)
-    if (this.scoreChart.xAxis.data.length === 0) {
-      this.scoreChart = {
-        title: {
-          text: '暂无评分数据',
-          x: 'center',
-          y: 'center',
-          textStyle: {
-            color: '#333',
-            fontSize: 24,
-            fontWeight: 'bold'
-          }
-        }
-      }
-    }
-    console.log(this.scoreChart)
-    this.chart.setOption(this.scoreChart)
+    this.initChart()
   }
 }
 </script>
@@ -618,7 +586,7 @@ export default {
   background-color: transparent !important;
 }
 
-::v-deep .el-table tbody tr:hover>td {
+::v-deep .el-table tbody tr:hover > td {
   background-color: transparent !important
 }
 

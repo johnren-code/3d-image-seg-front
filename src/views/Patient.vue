@@ -204,6 +204,104 @@ export default {
       }, err => {
         console.log(err);
       })
+    },
+    async initChart(){
+      let scoreChart = {
+        title: {
+          textStyle: {
+            color: '#333',
+            fontSize: 24,
+            fontWeight: 'bold'
+          }
+        },
+        xAxis: {
+          type: 'category',
+          data: ['2019-01-01', '2019-01-02', '2019-01-03', '2019-01-04', '2019-01-05', '2019-01-06'],
+          axisLabel: {
+            rotate: 45,
+            color: '#666'
+          },
+          axisLine: {
+            lineStyle: {
+              color: '#999'
+            }
+          }
+        },
+        yAxis: {
+          type: 'value',
+          name: '评分',
+          nameTextStyle: {
+            color: '#666',
+            fontSize: 14
+          },
+          axisLine: {
+            lineStyle: {
+              color: '#999'
+            }
+          },
+          splitLine: {
+            lineStyle: {
+              type: 'dashed'
+            }
+          }
+        },
+        series: [
+          {
+            type: 'line',
+            data: [1, 2, 3, 4, 5, 6],
+            symbol: 'circle',
+            symbolSize: 8,
+            lineStyle: {
+              color: '#009688',
+              width: 2
+            },
+            itemStyle: {
+              color: '#009688'
+            }
+          }
+        ]
+      }
+      scoreChart.xAxis.data = []
+      scoreChart.series[0].data = []
+      const tempDateData = []
+      const tempScoreData = []
+      axios.post('/api/report/info').then(res=>{
+        if(res.data.code===400){
+          this.$message.error(res.data.message)
+        }else {
+          this.form = res.data.result
+        }
+        console.log(res.data)
+      }).catch(error=>{
+        this.$message.error('获取信息错误，请稍后再试')
+      })
+      let res = await axios.post('/api/report/getAll').then(res=>{
+        if(res.data.code === 400){
+          this.$message.error(res.data.message)
+        }else {
+          console.log(res.data)
+          this.tableData = res.data.result
+          const tempData = res.data.result
+          for(var i=0;i<tempData.length;i++){
+            if(tempData[i].status){
+              tempDateData.push(this.formatDate(tempData[i].date))
+              tempScoreData.push(tempData[i].score)
+            }
+          }
+        }
+      }).catch(error=>{
+        this.$message.error('获取信息错误，请稍后再试')
+      })
+      scoreChart.xAxis.data = tempDateData
+      scoreChart.series[0].data = tempScoreData
+      const chartContainer = this.$refs.chart
+      if (scoreChart.xAxis.data.length > 0) {
+        this.chart = echarts.init(chartContainer)
+        console.log(scoreChart)
+        this.chart.setOption(scoreChart)
+      } else {
+        this.chart.dispose()
+      }
     }
   },
   watch: {
@@ -228,53 +326,7 @@ export default {
     },
   },
   mounted() {
-    this.option.xAxis.data = []
-    this.option.series.data = []
-    console.log(this.option)
-    axios.post('/api/report/info').then(res=>{
-      if(res.data.code===400){
-        this.$message.error(res.data.message)
-      }else {
-        this.form = res.data.result
-      }
-      console.log(res.data)
-    }).catch(error=>{
-      this.$message.error('获取信息错误，请稍后再试')
-    })
-    axios.post('/api/report/getAll').then(res=>{
-      if(res.data.code === 400){
-        this.$message.error(res.data.message)
-      }else {
-        console.log(res.data)
-        this.tableData = res.data.result
-        const tempData = res.data.result
-        for(var i=0;i<tempData.length;i++){
-          if(tempData[i].status){
-            this.option.xAxis.data.push(this.formatDate(tempData[i].date))
-            this.option.series.data.push(tempData[i].score)
-          }
-        }
-      }
-    }).catch(error=>{
-      this.$message.error('获取信息错误，请稍后再试')
-    })
-    const chartContainer = this.$refs.chart
-    this.chart = echarts.init(chartContainer)
-    if(this.option.xAxis.data.length === 0){
-      this.option={
-        title: {
-          text:'暂无评分数据',
-          x: 'center',
-          y: 'center',
-          textStyle: {
-            color: '#333',
-            fontSize: 24,
-            fontWeight: 'bold'
-          }
-        }
-      }
-    }
-    this.chart.setOption(this.option)
+    this.initChart()
   }
 }
 </script>

@@ -3,7 +3,6 @@ import VueRouter from 'vue-router'
 import ErrorPage from '../views/404'
 import Home from "../views/Home";
 import Segmentation from "../views/Segmentation";
-import Login from "../views/Login";
 import History from "../views/History";
 import UserProj from "../views/UserProj"
 import Projcreate from "../views/Projcreate"
@@ -78,14 +77,6 @@ const routes = [
                 title: '病人分割案例',
             }
         }]
-    },
-    {
-        path: '/login',
-        name: 'Login',
-        component: Login,
-        meta: {
-            title: '登录/注册',
-        },
     },
     {
         path: '/personal',

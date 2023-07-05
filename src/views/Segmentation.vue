@@ -372,19 +372,18 @@
                   <!--                  <div class="n-echarts" v-if="echartStatus">-->
                   <!--                    <div id="echarts"></div>-->
                   <!--                  </div>-->
-                  <el-radio
-                      v-model="selectSegValue"
-                      label="1"
-                      style="margin-left: 250px"
-                      :style="{ visibility: currentSegImageUrl && currentLesionImageUrl ? 'visible' : 'hidden' }">
-                    查看分割
-                  </el-radio>
-                  <el-radio
-                      v-model="selectSegValue"
-                      label="2"
-                      :style="{ visibility: currentSegImageUrl && currentLesionImageUrl ? 'visible' : 'hidden' }">
-                    查看病灶
-                  </el-radio>
+                  <el-radio-group v-model="selectSegValue" style="margin-left: 250px"
+                                  :style="{ visibility: currentSegImageUrl && currentLesionImageUrl ? 'visible' : 'hidden' }">
+                    <el-radio
+                        :label="1">
+                      查看分割
+                    </el-radio>
+                    <el-radio
+                        :label="2">
+                      查看病灶
+                    </el-radio>
+                  </el-radio-group>
+
                   <el-select v-model="modelValue" placeholder="请选择模型" style="width: 150px;margin-left: 250px">
                     <el-option
                         v-for="item in modelType"
@@ -406,15 +405,15 @@
                     <Table @update-parent-var="onUpdateParentVar" :drawTableDataFromParent="drawTableData"></Table>
                   </el-dialog>
                   <br>
-                  <div style="margin: 50px;">
+                  <div style="margin: 30px;">
                     <canvas id="gl" height="480" width="640"></canvas>
                   </div>
                   <!-- 底部坐标 -->
-                  <div class="n-xyz">
-                    <span>X：{{ imagX }}</span>
-                    <span>Y：{{ imagY }}</span>
-                    <span>Z：{{ imagZ }}</span>
-                  </div>
+<!--                  <div class="n-xyz">-->
+<!--                    <span>X：{{ imagX }}</span>-->
+<!--                    <span>Y：{{ imagY }}</span>-->
+<!--                    <span>Z：{{ imagZ }}</span>-->
+<!--                  </div>-->
                 </div>
               </div>
               <!--          </div>-->
@@ -1005,10 +1004,29 @@ export default {
       currentLesionImageUrl: '',
       lesionSegVisible: false,
       lesionCount: '',
-      selectSegValue:''
+      selectSegValue:2,
+      currentLesionRawImageUrl:'',
+      fullscreenLoading: false
     }
   },
   watch: {
+    selectSegValue(newVal,oldVal){
+      if(newVal === 1){
+        nv.loadVolumes([{url: this.currentRawImageUrl}]).then(() => {
+          nv.loadDrawingFromUrl(this.currentSegImageUrl);
+        })
+            .catch(err => {
+              console.error(err);
+            });
+      }else {
+        nv.loadVolumes([{url: this.currentLesionRawImageUrl}]).then(() => {
+          nv.loadDrawingFromUrl(this.currentLesionImageUrl);
+        })
+            .catch(err => {
+              console.error(err);
+            });
+      }
+    },
     crosshairSlider(newVal, oldVal) {
       nv.setCrosshairWidth(newVal / 10)
     },
@@ -1066,14 +1084,23 @@ export default {
   },
   methods: {
     getLesion() {
+      const loading = this.$loading({
+        lock: true,
+        text: '病灶分割中，请稍等',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      });
       axios.post('/api/segLesion', {
         historyid: this.historyId
       }).then(res => {
         if (res.data.code === 400) {
           this.$message.error(res.data.message)
         } else {
+          loading.close()
+          console.log('病灶分割的结果')
+          console.log(res.data)
           this.currentLesionImageUrl = res.data.result.LesionFileUrl;
-          this.currentRawImageUrl = res.data.result.OriginFileUrl;
+          this.currentLesionRawImageUrl = res.data.result.OriginFileUrl;
           this.lesionCount = res.data.result.labelnum;
           nv.loadVolumes([{url: res.data.result.OriginFileUrl}]).then(() => {
             nv.loadDrawingFromUrl(res.data.result.LesionFileUrl);
@@ -1089,6 +1116,8 @@ export default {
     doMaxConnect() {
       if (!this.currentSegImageUrl) {
         this.$message.error('没有标签文件，无法提取最大连通域！')
+      } else if(this.selectSegValue === 2 && this.currentLesionImageUrl){
+        this.$message.error('无法对分割的病灶提取最大连通域')
       } else {
         axios.post('/api/maxConnect', {
           historyid: this.historyId
@@ -1141,6 +1170,18 @@ export default {
           image.src = this.sliceUrlList[i]
           imageContainer.appendChild(image)
         }
+      }else {
+        var downloadLink = document.createElement("a");
+        downloadLink.href = res[0]; // 下载 URL
+        downloadLink.innerHTML = "点击下载"; // 作为链接的文本显示
+        downloadLink.style.color = "blue"; // 设置链接颜色为蓝色
+        downloadLink.style.textDecoration = "underline"; // 添加下划线
+        var imageContainer = document.getElementById('imageContainer')
+        downloadLink.style.display = "inline-block"; // 设置为 inline-block 以接受宽度和高度
+        downloadLink.style.width = "70px"; // 设置宽度
+        downloadLink.style.height = "30px"; // 设置高度
+        downloadLink.style.margin = "20px";
+        imageContainer.appendChild(downloadLink)
       }
     },
     submitUpload() {
@@ -1157,7 +1198,10 @@ export default {
         this.$message.error('请先上传文件或进行分割')
       } else {
         console.log('进行到这一步了')
-        nv.saveImageToServer('/api/uploadlabel', 'save.nii.gz', true, {'historyid': this.historyId})
+        nv.saveImageToServer('/api/uploadlabel', 'save.nii.gz', true, {'historyid': this.historyId}).then(data=>{
+          console.log('得到的data',JSON.parse(data))
+          this.currentSegImageUrl = JSON.parse(data).result.LabelFileUrl
+        })
         nv.saveSceneToServer('/api/uploadavatar', 'save.png', {'historyid': this.historyId})
         this.$message.success('保存成功')
       }
@@ -1176,6 +1220,12 @@ export default {
     },
     showDetails(item, index) {
       if (item.name === '器官测量') {
+        const loading = this.$loading({
+          lock: true,
+          text: '器官测量中,请稍等',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        });
         axios.post('/api/measurement', {
           historyid: this.historyId
         }).then(res => {
@@ -1183,6 +1233,8 @@ export default {
           if (res.data.code === 400) {
             this.$message.error(res.data.message)
           } else {
+            loading.close();
+            this.organMeasurementVisible = true
             this.organDataList = []
             const organData = res.data.result
             for (var i = 0; i < organData.length; i++) {
@@ -1202,7 +1254,6 @@ export default {
         }).catch(error => {
           this.$message.error('发生错误，请稍后再试')
         })
-        this.organMeasurementVisible = true
       }
       if (item.name === '上传后处理脚本') {
         this.uploadScriptVisible = true
@@ -1368,12 +1419,19 @@ export default {
     },
     doSegmentation() {
       if (this.modelValue === '1' || this.modelValue === '2') {
+        const loading = this.$loading({
+          lock: true,
+          text: '分割中，请稍等',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        });
         axios.post('/api/seg', {
           // uploadFileUrl: this.currentRawImageUrl,
           modelname: this.modelValue,
           historyid: this.historyId
         }).then(response => {
           if (response.data.code === 200) {
+            loading.close();
             console.log(response)
             this.currentRawImageUrl = response.data.result.OriginFileUrl
             this.currentSegImageUrl = response.data.result.PredictFileUrl
@@ -1394,6 +1452,10 @@ export default {
     handleUploadRawSuccess(res, file) {
       console.log(res)
       this.currentRawImageUrl = res.result;
+      this.currentSegImageUrl = ''
+      this.currentLesionImageUrl = ''
+      this.currentLesionRawImageUrl = ''
+      nv.closeDrawing()
       nv.loadVolumes([{url: res.result}])
     },
     handleUploadSegSuccess(res, file) {
@@ -1535,6 +1597,10 @@ export default {
       if (res.data.code === 200) {
         let rawFileUrl = res.data.result.OriginFileUrl
         let segFileUrl = res.data.result.PredictFileUrl
+        console.log('rawFileUrl')
+        console.log(rawFileUrl)
+        console.log('segFileUrl')
+        console.log(segFileUrl)
         if (rawFileUrl && segFileUrl) {
           this.currentRawImageUrl = rawFileUrl
           this.currentSegImageUrl = segFileUrl
@@ -1574,27 +1640,6 @@ export default {
 }
 </script>
 <style lang="scss">
-:deep(.el-radio__inner) {
-  border-radius: 2px;
-}
-
-:deep(.el-radio__input.is-checked) .el-radio__inner::after {
-  content: "";
-  width: 10px;
-  height: 5px;
-  border: 1px solid white;
-  border-top: transparent;
-  border-right: transparent;
-  text-align: center;
-  display: block;
-  position: absolute;
-  top: 2px;
-  left: 0px;
-  vertical-align: middle;
-  transform: rotate(-45deg);
-  border-radius: 0px;
-  background: none;
-}
 
 #imageContainer {
   display: grid;

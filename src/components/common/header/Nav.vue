@@ -21,19 +21,19 @@ import Icon from "../../icon/Icon";
 export default {
   name: 'Nav',
   components: {Icon},
-  data(){
+  data() {
     return {
-      userInfo:'',
-      isDoctor:false,
-      isPatient:false,
+      userInfo: '',
+      isDoctor: false,
+      isPatient: false,
     }
   },
   mounted() {
     this.userInfo = this.$ls.get('userInfo')
-    if(this.userInfo.role === 'doctor'){
+    if (this.userInfo.role === 'doctor') {
       this.isDoctor = true
       this.isPatient = false
-    }else {
+    } else {
       this.isPatient = true
       this.isDoctor = false
     }

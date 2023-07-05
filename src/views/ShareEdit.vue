@@ -149,40 +149,30 @@ export default {
       }
     },
     convertToPDF() {
-      // html2canvas(document.getElementById('show-content'), {
-      //   backgroundColor: 'white',
-      //   useCORS: true, //支持图片跨域
-      //   allowTaint: true,
-      //   scale: 1, //设置放大的倍数
-      // }).then((canvas) => {
-      //   let pdf = new jsPDF('p', 'mm', 'a4')
-      //   let imgData = canvas.toDataURL('image/png')
-      //   pdf.addImage(imgData, 'PNG', 0, 0)
-      //   pdf.save('download.pdf')
-      // })
       html2canvas(document.getElementById('show-content'), {
         backgroundColor: 'white',
-        useCORS: true,
+        useCORS: true, //支持图片跨域
         allowTaint: true,
-        scale: 1,
+        scale: 1, //设置放大的倍数
       }).then((canvas) => {
-        let pdf = new jsPDF('p', 'mm', 'a4');
-        let imgData = canvas.toDataURL('image/png');
+        var imgData = canvas.toDataURL('image/png');
+        var imgWidth = 210; //图片导出的宽度
+        var pageHeight = 320; //pdf一页的高度，一般是a4纸
+        var imgHeight = canvas.height * imgWidth / canvas.width;
+        var heightLeft = imgHeight;
 
-        let canvasWidth = canvas.width;
-        let canvasHeight = canvas.height;
+        var pdf = new jsPDF('p', 'mm', 'a4');
+        var position = 0;
 
-        // A4的尺寸是210 x 297毫米
-        let a4Width = 210;
-        let a4Height = 297;
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
 
-        // 计算比例，使图像适应A4纸尺寸，但仍保持原来的宽高比
-        let ratio = Math.min(a4Width / canvasWidth, a4Height / canvasHeight);
-
-        let imgWidth = canvasWidth * ratio;
-        let imgHeight = canvasHeight * ratio;
-
-        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+        while (heightLeft >= 0) {
+          position = heightLeft - imgHeight;
+          pdf.addPage();
+          pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+          heightLeft -= pageHeight;
+        }
         pdf.save('download.pdf');
       });
     },
@@ -196,9 +186,24 @@ export default {
           allowTaint: true,
           scale: 1, //设置放大的倍数
         }).then((canvas) => {
-          let pdf = new jsPDF('p', 'mm', 'a4')
-          let imgData = canvas.toDataURL('image/png')
-          pdf.addImage(imgData, 'PNG', 0, 0)
+          var imgData = canvas.toDataURL('image/png');
+          var imgWidth = 210; //图片导出的宽度
+          var pageHeight = 320; //pdf一页的高度，一般是a4纸
+          var imgHeight = canvas.height * imgWidth / canvas.width;
+          var heightLeft = imgHeight;
+
+          var pdf = new jsPDF('p', 'mm', 'a4');
+          var position = 0;
+
+          pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+          heightLeft -= pageHeight;
+
+          while (heightLeft >= 0) {
+            position = heightLeft - imgHeight;
+            pdf.addPage();
+            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+          }
           let blob = pdf.output('blob');
           var formData = new FormData();
           formData.append("file", blob, "download.pdf");
@@ -459,7 +464,7 @@ export default {
 
 .editor-container {
   padding: 0 90px;
-  height: 800px;
+  height: 775px;
   overflow-y: scroll;
   overflow-x: hidden;
   border-color: #868e96;
@@ -467,8 +472,8 @@ export default {
 
 .page-show .content {
   margin-top: 10px;
-  height: 870px;
-  width: 650px;
+  height: 842px;
+  width: 595px;
   border-style: solid;
   border-width: 1px;
   border-color: #868e96;
