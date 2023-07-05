@@ -63,7 +63,7 @@ export default {
         }, err => {
             console.log(err);
         }),
-            this.defaultActive = sessionStorage.getItem('path') || '/history/1'
+            this.defaultActive = sessionStorage.getItem('path')
     }
 }
 </script>
