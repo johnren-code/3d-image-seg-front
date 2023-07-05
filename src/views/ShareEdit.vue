@@ -1,50 +1,63 @@
 <template>
   <Layout>
-    <div class="total-page" v-bind:key="refresh">
-      <div class="page">
-        <div class="title">编辑区域</div>
-        <div class="editor">
-          <div class="editor-container" id="container"></div>
-        </div>
-      </div>
-      <div class="page-show">
-        <div class="subtitle">显示区域</div>
-        <div class="content ql-editor" id="show-content"></div>
-      </div>
-    </div>
-    <el-button class="download-btn" type="primary" @click="convertToPDF">下载</el-button>
-    <el-button class="submit-btn" type="primary" @click="submitPDF">提交</el-button>
-    <el-button class="create-btn" type="primary" @click="createDoc">创建</el-button>
-    <div>
-      <el-aside class="side-menu" :width="isCollapse ? '65px' : '200px'">
-        <i class="el-icon-search" style="font-size: 25px;cursor: pointer;margin-left: 20px" title="在线搜索"
-           @click="switchToSearch"></i>
-        <i class="el-icon-document-checked" style="font-size: 25px;cursor: pointer;margin-left: 15px" title="智能纠错"
-           @click="switchToCorrect"></i>
-        <el-menu default-active="1" class="el-menu-vertical-demo" :collapse="isCollapse"
-                 background-color="rgb(192,192,192,0.1)" text-color="#EBEEF5" router
-                 :collapse-transition="false" style="border: none;margin-top: 10px">
-          <div v-if="showSearch">
-            <el-input v-model="searchInput" placeholder="请输入关键词" style="margin: 5px"></el-input>
-            <el-button icon="el-icon-search" type="primary" @click="search" size="mini" style="width: 90%;">
-              在线搜索
-            </el-button>
-            <br>
-            <textarea style="margin: 5px;height: 300px" placeholder="搜索的内容" readonly>{{searchContent}}</textarea>
+    <el-container>
+      <el-main>
+        <div class="total-page" v-bind:key="refresh">
+          <div class="page">
+            <div class="title">编辑区域</div>
+            <div class="editor">
+              <div class="editor-container" id="container"></div>
+            </div>
           </div>
-          <div v-if="showCorrect">
-            <textarea style="margin: 5px;height: 180px" placeholder="请输入要纠错的内容">{{beforeCorrectContent}}</textarea>
-            <el-button type="primary" @click="correct" size="mini" style="width: 50%;">
-              点击智能纠错
-            </el-button>
-            <textarea style="margin: 5px;height: 170px" placeholder="纠错后的内容" readonly>{{afterCorrectContent}}</textarea>
-          </div>
-        </el-menu>
-      </el-aside>
-    </div>
-    <div>
+          <div class="page-show">
+            <div class="subtitle">
+              <el-button class="create-btn" type="primary" @click="createDoc">创建</el-button>
+              <el-button class="download-btn" type="primary" @click="convertToPDF" style="margin-right: 100px">下载
+              </el-button>
+              <span style="font-size: 15px;">病人情况打分：</span>
+              <el-rate
+                  class="inline-rate"
+                  v-model="scoreValue"
+                  :colors="colors"
+                  allow-half="true"
+                  style="margin-left: 5px">
+              </el-rate>
+              <el-button class="submit-btn" type="primary" @click="submitPDF" style="margin-left: 20px">提交</el-button>
+            </div>
 
-    </div>
+            <div class="content ql-editor" id="show-content"></div>
+          </div>
+
+        </div>
+      </el-main>
+        <el-aside class="side-menu" :width="isCollapse ? '65px' : '200px'">
+          <i class="el-icon-search" style="font-size: 25px;cursor: pointer;margin-left: 20px" title="在线搜索"
+             @click="switchToSearch"></i>
+          <i class="el-icon-document-checked" style="font-size: 25px;cursor: pointer;margin-left: 15px" title="智能纠错"
+             @click="switchToCorrect"></i>
+          <el-menu default-active="1" class="el-menu-vertical-demo" :collapse="isCollapse"
+                   background-color="rgb(192,192,192,0.1)" text-color="#EBEEF5" router
+                   :collapse-transition="false" style="border: none;margin-top: 10px">
+            <div v-if="showSearch">
+              <el-input v-model="searchInput" placeholder="请输入关键词" style="margin: 5px"></el-input>
+              <el-button icon="el-icon-search" type="primary" @click="search" size="mini" style="width: 90%;">
+                在线搜索
+              </el-button>
+              <br>
+              <textarea style="margin: 5px;height: 300px" placeholder="搜索的内容" readonly>{{searchContent}}</textarea>
+            </div>
+            <div v-if="showCorrect">
+            <textarea style="margin: 5px;height: 180px" placeholder="请输入要纠错的内容"
+                      v-model="beforeCorrectContent"></textarea>
+              <el-button type="primary" @click="correct" size="mini" style="width: 50%;">
+                点击智能纠错
+              </el-button>
+              <textarea style="margin: 5px;height: 170px" placeholder="纠错后的内容" readonly
+                        v-model="afterCorrectContent"></textarea>
+            </div>
+          </el-menu>
+        </el-aside>
+    </el-container>
   </Layout>
 </template>
 
@@ -68,7 +81,7 @@ import axios from 'axios'
 
 // const axios = require('axios');
 const FormData = require('form-data');
-const base_url = '10.135.1.65:8080';
+const base_url = '127.0.0.1:8080';
 // The current user's info, must contain both id and name field.
 
 export default {
@@ -83,7 +96,14 @@ export default {
       beforeCorrectContent: '',
       afterCorrectContent: '',
       historyId: this.$route.params.id,
-      refresh: 0
+      refresh: 0,
+      scoreValue: '',
+      colors: ['#99A9BF', '#F7BA2A', '#FF9900']
+    }
+  },
+  watch: {
+    scoreValue(newVal, oldVal) {
+      console.log(newVal)
     }
   },
   methods: {
@@ -101,68 +121,102 @@ export default {
     correct() {
       if (!this.beforeCorrectContent) {
         this.$message.error('请先输入要纠错的内容！')
+      } else {
+        console.log(this.beforeCorrectContent)
+        axios.post('/text/correct_text', {
+          data: this.beforeCorrectContent
+        }).then(res => {
+          console.log(res.data)
+          this.afterCorrectContent = res.data.correct
+        }).catch(error => {
+          this.$message.error('发生错误，请稍后再试')
+        })
       }
-      axios.post('/flask/correct_text', {
-        data: this.beforeCorrectContent
-      }).then(res => {
-        this.afterCorrectContent = res.correct
-      }).catch(error => {
-        this.$message.error('发生错误，请稍后再试')
-      })
     },
     search() {
       if (!this.searchInput) {
         this.$message.error('请先输入关键词！')
+      } else {
+        console.log(this.searchInput)
+        axios.post('/text/search_info', {
+          keyword: this.searchInput
+        }).then(res => {
+          console.log(res.data)
+          this.searchContent = res.data.summary
+        }).catch(error => {
+          this.$message.error('搜索错误，请稍后再试')
+        })
       }
-      axios.post('/flask/search_info', {
-        keyword: this.searchInput
-      }).then(res => {
-        this.searchContent = res.summary
-      }).catch(error => {
-        this.$message.error('搜索错误，请稍后再试')
-      })
     },
     convertToPDF() {
+      // html2canvas(document.getElementById('show-content'), {
+      //   backgroundColor: 'white',
+      //   useCORS: true, //支持图片跨域
+      //   allowTaint: true,
+      //   scale: 1, //设置放大的倍数
+      // }).then((canvas) => {
+      //   let pdf = new jsPDF('p', 'mm', 'a4')
+      //   let imgData = canvas.toDataURL('image/png')
+      //   pdf.addImage(imgData, 'PNG', 0, 0)
+      //   pdf.save('download.pdf')
+      // })
       html2canvas(document.getElementById('show-content'), {
         backgroundColor: 'white',
-        useCORS: true, //支持图片跨域
+        useCORS: true,
         allowTaint: true,
-        scale: 1, //设置放大的倍数
+        scale: 1,
       }).then((canvas) => {
-        let pdf = new jsPDF('p', 'mm', 'a4')
-        let imgData = canvas.toDataURL('image/png')
-        pdf.addImage(imgData, 'PNG', 0, 0)
-        pdf.save('download.pdf')
-      })
+        let pdf = new jsPDF('p', 'mm', 'a4');
+        let imgData = canvas.toDataURL('image/png');
+
+        let canvasWidth = canvas.width;
+        let canvasHeight = canvas.height;
+
+        // A4的尺寸是210 x 297毫米
+        let a4Width = 210;
+        let a4Height = 297;
+
+        // 计算比例，使图像适应A4纸尺寸，但仍保持原来的宽高比
+        let ratio = Math.min(a4Width / canvasWidth, a4Height / canvasHeight);
+
+        let imgWidth = canvasWidth * ratio;
+        let imgHeight = canvasHeight * ratio;
+
+        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+        pdf.save('download.pdf');
+      });
     },
     submitPDF() {
-      html2canvas(document.getElementById('show-content'), {
-        backgroundColor: 'white',
-        useCORS: true, //支持图片跨域
-        allowTaint: true,
-        scale: 1, //设置放大的倍数
-      }).then((canvas) => {
-        let pdf = new jsPDF('p', 'mm', 'a4')
-        let imgData = canvas.toDataURL('image/png')
-        pdf.addImage(imgData, 'PNG', 0, 0)
-        let blob = pdf.output('blob');
-        var formData = new FormData();
-        formData.append("file", blob, "download.pdf");
-        formData.append("historyid",this.historyId);
-        formData.append("score",8)
-        // 使用fetch API发送到服务器
-        fetch("/api/saveReport", {
-          method: "POST",
-          body: formData
-        }).then(response => {
-          if (response.ok) {
-            this.$message.success('成功提交病例报告！')
-          } else {
-            this.$message.error('发生错误，请稍后再试')
-          }
+      if (!this.scoreValue) {
+        this.$message.error('请对病人的情况进行打分')
+      } else {
+        html2canvas(document.getElementById('show-content'), {
+          backgroundColor: 'white',
+          useCORS: true, //支持图片跨域
+          allowTaint: true,
+          scale: 1, //设置放大的倍数
+        }).then((canvas) => {
+          let pdf = new jsPDF('p', 'mm', 'a4')
+          let imgData = canvas.toDataURL('image/png')
+          pdf.addImage(imgData, 'PNG', 0, 0)
+          let blob = pdf.output('blob');
+          var formData = new FormData();
+          formData.append("file", blob, "download.pdf");
+          formData.append("historyid", this.historyId);
+          formData.append("score", this.scoreValue * 2)
+          // 使用fetch API发送到服务器
+          fetch("/api/saveReport", {
+            method: "POST",
+            body: formData
+          }).then(response => {
+            if (response.ok) {
+              this.$message.success('成功提交病例报告！')
+            } else {
+              this.$message.error('发生错误，请稍后再试')
+            }
+          });
         });
-      });
-
+      }
     }
   },
   mounted() {
@@ -355,15 +409,21 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
 .side-menu {
-  position: absolute;
-  left: 1280px;
-  top: 135px;
-  width: 200px;
+  left: 0;
+  margin-top: 100px;
+  height: 800px;
   overflow: auto;
   z-index: 2000;
   border: none;
 }
+
+.inline-rate {
+  display: inline-block;
+  vertical-align: middle; /* 如果需要和其他元素对齐 */
+}
+
 
 .total-page {
   display: flex;
@@ -388,12 +448,13 @@ export default {
   padding: 10px;
   text-align: center;
   font-size: 24px;
+  width: 650px;
 }
 
 .page .editor {
   position: relative;
   margin-top: 32px;
-  border-color: #868e96!important;
+  border-color: #868e96 !important;
 }
 
 .editor-container {
@@ -412,22 +473,5 @@ export default {
   border-width: 1px;
   border-color: #868e96;
   overflow-y: scroll;
-}
-
-.download-btn {
-  position: absolute;
-  top: 120px;
-  right: 310px;
-}
-
-.create-btn {
-  position: absolute;
-  top: 120px;
-  right: 400px;
-}
-.submit-btn {
-  position: absolute;
-  top: 120px;
-  right: 220px;
 }
 </style>

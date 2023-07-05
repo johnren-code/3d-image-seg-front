@@ -1,8 +1,8 @@
 <template>
     <div>
         <div class="col-lg-12">
-            <SectionTitle text-align="center" title="欢迎来到项目管理页面，快去创建新项目吧！" description="" data-aos="fade-up" />
-            <div class="mybutton"><router-link to="new"><el-button type="primary" round>创建一个新项目</el-button></router-link>
+            <SectionTitle text-align="center" title="欢迎来到病人项目管理页面，快去创建新项目吧！" description="" data-aos="fade-up" />
+            <div class="mybutton"><router-link to="new"><el-button type="primary" round>创建一个病人项目</el-button></router-link>
             </div>
         </div>
     </div>

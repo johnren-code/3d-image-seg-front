@@ -32,20 +32,7 @@
                   <div class="s-percent" v-show="percentage < 100 && percentage != 0">
                     <span>正在加载：{{ percentage + '%' }}</span>
                   </div>
-                  <!-- volume -->
-                  <!--              <div class="s-volume">-->
-                  <!--                <span class="e-span">volume：</span>-->
-                  <!--                <el-input-number-->
-                  <!--                    v-model="num"-->
-                  <!--                    controls-position="right"-->
-                  <!--                    @change="changeVolume"-->
-                  <!--                    :min="1"-->
-                  <!--                    :max="timeSlices"-->
-                  <!--                    size="small"-->
-                  <!--                    :disabled="timeSlices == 1"-->
-                  <!--                ></el-input-number>-->
-                  <!--              </div>-->
-                  <!-- 其他工具 -->
+
                   <!--上传文件-->
                   <el-upload
                       action="/api/upload"
@@ -88,17 +75,6 @@
                       </div>
                     </div>
                   </div>
-
-                  <!--移动-->
-                  <!--                  <div-->
-                  <!--                      v-for="(item, index) in moveList"-->
-                  <!--                      :key="item.iconfont"-->
-                  <!--                      :class="['s-other', item.status ? 's-select' : '']"-->
-                  <!--                      :title="item.title"-->
-                  <!--                      @click="clickMoves(item, index)"-->
-                  <!--                  >-->
-                  <!--                    <i :class="'t-active iconfont ' + item.iconfont" style="font-size:28px;margin-top: 15px"></i>-->
-                  <!--                  </div>-->
 
                   <div
                       v-for="(item, index) in toolList"
@@ -393,10 +369,23 @@
                       </div>
                     </div>
                   </div>
-                  <div class="n-echarts" v-if="echartStatus">
-                    <div id="echarts"></div>
-                  </div>
-                  <el-select v-model="modelValue" placeholder="请选择模型" style="width: 150px;margin-left: 850px">
+                  <!--                  <div class="n-echarts" v-if="echartStatus">-->
+                  <!--                    <div id="echarts"></div>-->
+                  <!--                  </div>-->
+                  <el-radio
+                      v-model="selectSegValue"
+                      label="1"
+                      style="margin-left: 250px"
+                      :style="{ visibility: currentSegImageUrl && currentLesionImageUrl ? 'visible' : 'hidden' }">
+                    查看分割
+                  </el-radio>
+                  <el-radio
+                      v-model="selectSegValue"
+                      label="2"
+                      :style="{ visibility: currentSegImageUrl && currentLesionImageUrl ? 'visible' : 'hidden' }">
+                    查看病灶
+                  </el-radio>
+                  <el-select v-model="modelValue" placeholder="请选择模型" style="width: 150px;margin-left: 250px">
                     <el-option
                         v-for="item in modelType"
                         :key="item.value"
@@ -405,7 +394,10 @@
                     </el-option>
                   </el-select>
                   <el-button type="primary" @click="doSegmentation" round style="margin-left:10px">点击进行分割</el-button>
-                  <el-button type="primary" @click="saveCurrentState" round style="position: absolute;right:100px">保存
+
+                  <el-button type="primary" @click="doMaxConnect" round style="margin-left:40px">提取最大连通域</el-button>
+
+                  <el-button type="primary" @click="saveCurrentState" round style="margin-left:40px">保存
                   </el-button>
 
                   <!--                  <el-button type="primary" @click="clickVisible">测试数据可视化</el-button>-->
@@ -525,6 +517,31 @@
                   </div>
                   <!--                  <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>-->
                 </el-upload>
+              </el-dialog>
+
+              <el-dialog
+                  :title="'器官测量'"
+                  :visible="lesionSegVisible"
+                  width="500px"
+                  :before-close="handleLesionClose"
+                  class="dialog"
+                  top="23vh"
+                  :close-on-press-escape="false"
+                  :close-on-click-modal="false"
+                  v-dialogDrag
+              >
+                <!--                <div-->
+                <!--                    :style="{ height: Math.round(spliceList.length / 7) * 150 + 'px' }"-->
+                <!--                    class="g-dis s-scrollbar"-->
+                <!--                ></div>-->
+                <div style="height: 400px">
+                  <el-button type="primary" @click="getLesion" round style="margin-top: 10px;margin-left: 30px">病灶分割计数
+                  </el-button>
+                  <br>
+                  <span v-if="lesionCount" style="color: #9ccef9;font-size: 14px;font-weight: bold;margin: 30px">
+                    病灶的个数为{{ lesionCount }}
+                  </span>
+                </div>
               </el-dialog>
             </div>
           </div>
@@ -950,14 +967,14 @@ export default {
         },
         {
           name: '器官距离计算'
-        },
-        {
-          name: '病灶计数'
         }
       ],
       scriptAnalysisList: [
         {
           name: '上传后处理脚本'
+        },
+        {
+          name: '病灶分割计数'
         }
       ],
       imageMarkCopy: [],
@@ -980,12 +997,15 @@ export default {
       scriptAdditionalData: {},
       currentRawImageUrl: '',
       currentSegImageUrl: '',
-      currentNewSegImageUrl:'',
       sliceUrlList: [],
       organDistanceVisible: false,
       firstOrganValue: '',
       secondOrganValue: '',
-      organDistance: ''
+      organDistance: '',
+      currentLesionImageUrl: '',
+      lesionSegVisible: false,
+      lesionCount: '',
+      selectSegValue:''
     }
   },
   watch: {
@@ -1045,6 +1065,44 @@ export default {
     }
   },
   methods: {
+    getLesion() {
+      axios.post('/api/segLesion', {
+        historyid: this.historyId
+      }).then(res => {
+        if (res.data.code === 400) {
+          this.$message.error(res.data.message)
+        } else {
+          this.currentLesionImageUrl = res.data.result.LesionFileUrl;
+          this.currentRawImageUrl = res.data.result.OriginFileUrl;
+          this.lesionCount = res.data.result.labelnum;
+          nv.loadVolumes([{url: res.data.result.OriginFileUrl}]).then(() => {
+            nv.loadDrawingFromUrl(res.data.result.LesionFileUrl);
+          })
+              .catch(err => {
+                console.error(err);
+              });
+          this.$message.success('病灶分割成功！')
+        }
+        console.log(res.data)
+      })
+    },
+    doMaxConnect() {
+      if (!this.currentSegImageUrl) {
+        this.$message.error('没有标签文件，无法提取最大连通域！')
+      } else {
+        axios.post('/api/maxConnect', {
+          historyid: this.historyId
+        }).then(res => {
+          if (res.data.code === 400) {
+            this.$message.error(res.data.message)
+          } else {
+            this.currentSegImageUrl = res.data.result.LabelFileUrl
+            nv.loadDrawingFromUrl(res.data.result.LabelFileUrl)
+            this.$message.success('提取最大连通域成功')
+          }
+        })
+      }
+    },
     calculateDistance() {
       if (!this.firstOrganValue || !this.secondOrganValue) {
         this.$message.error('请选择器官！')
@@ -1113,6 +1171,9 @@ export default {
     handleUploadClose() {
       this.uploadScriptVisible = false
     },
+    handleLesionClose() {
+      this.lesionSegVisible = false
+    },
     showDetails(item, index) {
       if (item.name === '器官测量') {
         axios.post('/api/measurement', {
@@ -1148,6 +1209,9 @@ export default {
       }
       if (item.name === '器官距离计算') {
         this.organDistanceVisible = true
+      }
+      if (item.name === '病灶分割计数') {
+        this.lesionSegVisible = true
       }
 
     },
@@ -1245,7 +1309,15 @@ export default {
         nv.setPenValue(15)
       }
       if (item.value === 'save') {
-        nv.saveImage("draw.nii.gz", true)
+        if (!this.currentSegImageUrl) {
+          this.$message.error('没有标签文件，无法下载！')
+        } else {
+          if (this.currentRawImageUrl.endsWith('.nii.gz')) {
+            nv.saveImage("draw.nii.gz", true)
+          } else {
+            nv.saveImage("draw.nii", true)
+          }
+        }
         // nv.saveImageToServer('/api/uploadlabel','test.nii.gz',true,{'historyid':'2'})
       }
       if (item.value === 'back') {
@@ -1253,8 +1325,8 @@ export default {
       }
     },
     clickCamera(item, index) {
-      // nv.saveScene("ScreenShot.png")
-      nv.saveSceneToServer('/api/uploadavatar', 'test.png', {'historyid': '2'})
+      nv.saveScene("ScreenShot.png")
+      // nv.saveSceneToServer('/api/uploadavatar', 'test.png', {'historyid': '2'})
     },
     clickTools(item, index) {
       if (item.value === 'pan') {
@@ -1326,10 +1398,8 @@ export default {
     },
     handleUploadSegSuccess(res, file) {
       console.log(res)
-      this.currentSegImageUrl = res.result;
-      nv.loadVolumes(this.currentRawImageUrl).then(res => {
-        nv.loadDrawingFromUrl(res.result)
-      })
+      this.currentSegImageUrl = res.result.LabelFileUrl;
+      nv.loadDrawingFromUrl(res.result.LabelFileUrl)
     },
     changeView(meas, index) {
       if (meas.titleEng === 'Axial') {
@@ -1504,6 +1574,28 @@ export default {
 }
 </script>
 <style lang="scss">
+:deep(.el-radio__inner) {
+  border-radius: 2px;
+}
+
+:deep(.el-radio__input.is-checked) .el-radio__inner::after {
+  content: "";
+  width: 10px;
+  height: 5px;
+  border: 1px solid white;
+  border-top: transparent;
+  border-right: transparent;
+  text-align: center;
+  display: block;
+  position: absolute;
+  top: 2px;
+  left: 0px;
+  vertical-align: middle;
+  transform: rotate(-45deg);
+  border-radius: 0px;
+  background: none;
+}
+
 #imageContainer {
   display: grid;
   grid-template-columns: repeat(3, 1fr); /* 每行展示3个图片，可根据需求调整 */
@@ -1527,14 +1619,14 @@ export default {
   padding: 0px !important;
 }
 
-.side-menu {
-  left: 0;
-  top: 85px;
-  width: 200px;
-  overflow: auto;
-  z-index: 2000;
-  border: none;
-}
+//.side-menu {
+//  left: 0;
+//  margin-top: 100px;
+//  height: 800px;
+//  overflow: auto;
+//  z-index: 2000;
+//  border: none;
+//}
 
 /* flex 居中3 */
 @import "../assets/icon/iconfont.css";

@@ -79,7 +79,6 @@
           <el-radio :label="0">未完成</el-radio>
         </el-radio-group>
       </div>
-
       <el-form-item>
         <div class="user_skills">
           <el-table :data="tableData" style="width: 100%;background-color:transparent"
@@ -98,7 +97,7 @@
             </el-table-column>
             <el-table-column label="操作" width="300" header-align="center">
               <template slot-scope="scope">
-                <el-button size="mini" type="primary" @click="generateReport(scope.row.id)">下载报告</el-button>
+                <el-button size="mini" type="primary" @click="generateReport(scope.row.id, scope.row.status, scope.row.reportUrl)">下载报告</el-button>
                 <el-button size="mini" @click="checkHistory(scope.row.id)">查看</el-button>
                 <el-button size="mini" type="danger" @click="deleteHistory(scope.row.id)">删除</el-button>
               </template>
@@ -183,7 +182,7 @@ export default {
       generateReportVisible: false,
       edit: true,
       projId: this.$route.params.id,
-      option: {
+      scoreChart: {
         title: {
           textStyle: {
             color: '#333',
@@ -265,6 +264,7 @@ export default {
             this.$message.error(res.data.message)
           } else {
             this.$message.success('删除成功')
+            location.reload()
           }
         }).catch(error => {
           this.$message.error('删除失败，请稍后再试')
@@ -272,8 +272,10 @@ export default {
       })
     },
     sendFormValue() {
+      console.log('当前的projectId为：')
+      console.log(this.projId)
       axios.post('/api/createhistory', {
-        pid: this.projId,
+        pid: this.$route.params.id,
         patient_id: this.form.patientId,
         Description: this.formNewhistory.introduction
       }).then(res => {
@@ -321,11 +323,14 @@ export default {
     //     });
     //   });
     // },
-    generateReport() {
-      // alert('生成报告')
-      // this.generateReportVisible = true
-      this.$router.push(`${this.$route.params.id}/report`)
-
+    generateReport(id,status,url) {
+      if(!status || !url){
+        this.$message.error('病例还未分析完毕，无法下载')
+      }else {
+        let a = document.createElement('a')
+        a.href = url
+        a.click();
+      }
     },
 
     // 搜索历史记录
@@ -336,7 +341,7 @@ export default {
         axios.post('/api/proj/getFilesBetweenDates',{
           startDate:this.queryStartDate,
           endDate:this.queryEndDate,
-          projectId:this.projId
+          projectId:this.$route.params.id
         }).then(res=>{
           if(res.data.code===400){
             this.$message.error(res.data.message)
@@ -421,7 +426,7 @@ export default {
         this.$message.error('请填写完整的信息')
       } else {
         axios.post('/api/proj/edit', {
-          id: this.projId,
+          id: this.$route.params.id,
           name: this.form.name,
           location: this.form.location,
           phone: this.form.phone,
@@ -480,7 +485,7 @@ export default {
         })
       }else {
         axios.post('/api/proj/indexForCompletion',{
-          projectid:this.projId,
+          projectid:this.$route.params.id,
           status:newVal ? '处理完成':'处理未完成'
         }).then(res=>{
           if(res.data.code===400){
@@ -494,12 +499,25 @@ export default {
     }
   },
   mounted() {
+    console.log(this.projId)
+    this.scoreChart.xAxis.data = []
+    this.scoreChart.series[0].data = []
     axios.get(`/api/proj/Info/${this.$route.params.id}`).then(res => {
       if(res.data.code===400){
         this.$message.error(res.data.message)
       }else {
+        console.log(res.data.result)
         this.form = res.data.result
         this.tableData = res.data.result.upLoadFiles
+        const tempData = res.data.result.upLoadFiles
+        for(var i=0;i<tempData.length;i++){
+          if(tempData[i].status === 1){
+            this.scoreChart.xAxis.data.push(this.formatDate(tempData[i].date))
+            this.scoreChart.series[0].data.push(tempData[i].score)
+          }
+        }
+        console.log('x轴的数据')
+        console.log(this.scoreChart.xAxis.data)
         console.log(res.data);
       }
     }, err => {
@@ -507,7 +525,22 @@ export default {
     })
     const chartContainer = this.$refs.chart
     this.chart = echarts.init(chartContainer)
-    this.chart.setOption(this.option)
+    if(this.scoreChart.xAxis.data.length === 0){
+      this.scoreChart={
+        title: {
+          text:'暂无评分数据',
+          x: 'center',
+          y: 'center',
+          textStyle: {
+            color: '#333',
+            fontSize: 24,
+            fontWeight: 'bold'
+          }
+        }
+      }
+    }
+    console.log(this.scoreChart)
+    this.chart.setOption(this.scoreChart)
   }
 }
 </script>
@@ -536,12 +569,13 @@ export default {
 }
 
 ::v-deep th.el-table__cell.is-leaf {
-  border-bottom: 2px solid grey !important;
+  border-bottom: 1px solid grey !important;
 }
 
 .el-table::before {
-  border: 1px solid grey !important;
+  //border: 1px solid grey !important;
   // color: #043cbd;
+  height: 0px;
 }
 
 .projname {
@@ -559,6 +593,7 @@ export default {
 
 .user_skills {
   margin: auto;
+  height: auto;
 }
 
 .el-table,
