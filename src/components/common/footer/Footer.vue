@@ -29,7 +29,7 @@
                     <div class="row">
                         <div class="col-lg-2 col-md-6 col-sm-6 col-12">
                             <div class="rn-footer-widget">
-                                <h4 class="title">3d医疗图像分割</h4>
+                                <h4 class="title">3D医疗图像分割</h4>
                                 <div class="inner">
                                     <ul class="footer-link link-hover">
                                         <li>
@@ -47,30 +47,18 @@
                         <div class="col-lg-2 col-md-6 col-sm-6 col-12">
                             <div class="rn-footer-widget">
                                 <div class="widget-menu-top">
-                                    <h4 class="title">智能文本纠错</h4>
+                                    <h4 class="title">医疗图像展示解析</h4>
                                     <div class="inner">
                                         <ul class="footer-link link-hover">
                                             <li>
-                                                <a href="https://github.com/shibing624/pycorrector" target="_blank">实现参考</a>
+                                                <a href="https://github.com/niivue/niivue" target="_blank">实现参考</a>
                                             </li>
-                                            <li>
+                                            <!-- <li>
                                                 <a href="https://huggingface.co/datasets/shibing624/CSC"
                                                     target="_blank">数据集</a>
-                                            </li>
+                                            </li> -->
                                         </ul>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-2 col-md-6 col-sm-6 col-12">
-                            <div class="rn-footer-widget">
-                                <h4 class="title">智能检索</h4>
-                                <div class="inner">
-                                    <ul class="footer-link link-hover">
-                                        <li>
-                                            <a href="https://github.com/PaddlePaddle/PaddleNLP" target="_blank">实现参考</a>
-                                        </li>
-                                    </ul>
                                 </div>
                             </div>
                         </div>
@@ -84,6 +72,19 @@
                                                 target="_blank">实现参考</a>
                                         </li>
 
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-6 col-sm-6 col-12">
+                            <div class="rn-footer-widget">
+                                <h4 class="title">智能文本纠错</h4>
+                                <div class="inner">
+                                    <ul class="footer-link link-hover">
+                                        <li>
+                                            <a href="https://huggingface.co/shibing624/macbert4csc-base-chinese"
+                                                target="_blank">实现参考</a>
+                                        </li>
                                     </ul>
                                 </div>
                             </div>

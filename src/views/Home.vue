@@ -110,21 +110,21 @@ export default {
     return {
       demoPages: [
         {
-          url: '/segmentation',
+          url: '/home',
           image: require('@/assets/images/home/medicalseg.png'),
           imageLight: require('@/assets/images/home/medicalseg.png'),
           title: '医学分割',
           badge: '',
         },
         {
-          url: '/history/',
+          url: '/home',
           image: require('@/assets/images/home/projmanage.png'),
           imageLight: require('@/assets/images/home/projmanage.png'),
           title: '就诊管理',
           badge: '',
         },
         {
-          url: '/shareedit',
+          url: '/home',
           image: require('@/assets/images/home/editshare.png'),
           imageLight: require('@/assets/images/demo/business-consulting-2-light.png'),
           title: '协同编辑',

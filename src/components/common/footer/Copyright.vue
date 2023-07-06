@@ -7,13 +7,13 @@
                     <div class="copyright-left">
                         <ul class="ft-menu link-hover">
                             <li>
-                                <router-link to="#">Privacy Policy</router-link>
+                                <router-link to="#">医学分割</router-link>
                             </li>
                             <li>
-                                <router-link to="#">Terms And Condition</router-link>
+                                <router-link to="#">就诊管理</router-link>
                             </li>
                             <li>
-                                <router-link to="/contact">Contact Us</router-link>
+                                <router-link to="#">协同编辑</router-link>
                             </li>
                         </ul>
                     </div>
@@ -30,7 +30,7 @@
 </template>
 
 <script>
-    export default {
-        name: 'Copyright'
-    }
+export default {
+    name: 'Copyright'
+}
 </script>

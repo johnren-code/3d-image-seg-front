@@ -84,7 +84,9 @@ export default {
 .el-button--text {
     /* position: relative;
     left: 20px; */
-    background-color: #202123;
+    background-color: #202123 !important;
     border: solid;
+    width: 150px;
+    height: 43px;
 }
 </style>
