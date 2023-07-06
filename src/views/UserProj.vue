@@ -206,6 +206,7 @@ export default {
             this.$message.error(res.data.message)
           } else {
             this.$message.success('删除成功')
+
             location.reload()
           }
         }).catch(error => {

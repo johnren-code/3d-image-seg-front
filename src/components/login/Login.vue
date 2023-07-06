@@ -105,7 +105,6 @@
                 placeholder="User Name"
                 required
                 v-model="registerData.username"
-                @blur="checkExist"
             />
           </div>
           邮箱
@@ -227,22 +226,6 @@ export default {
       this.$modal.hide('login-modal');
       // document.body.style.position='static';
     },
-    checkExist() {
-      if (this.registerData.username !== '') {
-        var that = this
-        this.$axios.get(this.$global.apiUrl + 'isExist', {
-          params: {
-            name: that.registerData.username
-          }
-        }).then(res => {
-          if (res.data === true)
-            that.$message.error('用户名已存在，换一个吧');
-        }).catch(function (error) {
-          // console.log(error);
-          that.$message.error('网络错误，稍后再试');
-        });
-      }
-    },
     //登录
     doLogin() {
       if (this.loginData.email === '' && this.loginData.username === '') {
@@ -264,6 +247,7 @@ export default {
               this.hide()
               this.$ls.set('userInfo', res.data.result)
               eventBus.$emit('userLogin', true)
+              location.reload();
             }
           }).catch(error=>{
             this.fullscreenLoading=false
@@ -283,6 +267,7 @@ export default {
               console.log(res.data.result)
               this.$ls.set('userInfo', res.data.result)
               eventBus.$emit('userLogin', true)
+              location.reload();
             }
           }).catch(error => {
             this.fullscreenLoading = false

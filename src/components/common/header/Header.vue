@@ -207,6 +207,7 @@ export default {
           this.$message.error(res.data.message)
         }else {
           this.$message.success('登出成功')
+          location.reload();
         }
       }).catch(error=>{
         this.$message.error('登出错误，请稍后再试')

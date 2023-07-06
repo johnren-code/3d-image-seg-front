@@ -91,9 +91,9 @@
                         </div>
                         <div class="col-lg-4 col-md-6 col-sm-6 col-12">
                             <div class="rn-footer-widget">
-                                <h4 class="title">技术改变世界……</h4>
+                                <h4 class="title">技术改变世界</h4>
                                 <div class="inner">
-                                    <h6 class="subtitle">Talk is cheap，show me the code.</h6>
+                                    <h6 class="subtitle">使用AI为医学诊断加速</h6>
                                     <div class="footer-link link-hover">
                                         <a href="http://www.cnsoftbei.com/" target="_blank"
                                             style="margin-right: 15px;font-size:medium;">
