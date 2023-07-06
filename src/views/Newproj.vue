@@ -20,7 +20,7 @@
                 style="width: 100%;"></el-date-picker>
             </div>
           </el-descriptions-item>
-          <el-descriptions-item label="身高（cm）">
+          <el-descriptions-item label="身高（m）">
             <el-input v-model="form.height"></el-input>
           </el-descriptions-item>
           <el-descriptions-item label="体重（kg）">
