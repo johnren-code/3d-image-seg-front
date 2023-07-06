@@ -82,23 +82,12 @@ export default {
         region: '',
         type: ''
       },
-      tableData: [{id: 1, image: 'image', desc_: '没事装的', date: '123'}],
+      tableData: [],
       fileList: [],
       dialogFormVisible: false,
       dialogVisible: false,
       disabled: false,
-      form: {
-        name: '小明',
-        description: '病人体态臃肿',
-        birthday: '2000-07-09',
-        height: "1.75",
-        weight: "75",
-        age: "23",
-        location: '河南郑州',
-        phone: '14543567658',
-        bloodType: 'A型',
-        patientId: ''
-      },
+      form: {},
       formLabelWidth: '120px',
       contentStyle: {
         'width': '300px',
