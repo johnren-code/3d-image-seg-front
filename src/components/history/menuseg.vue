@@ -85,7 +85,7 @@ export default {
   /* position: relative;
   left: 20px; */
   background-color: #202123 !important;
-  border: solid;
+  border: none;
   width: 150px;
   height: 43px;
 }

@@ -85,6 +85,6 @@ export default {
     /* position: relative;
     left: 20px; */
     background-color: #202123;
-    border: solid;
+    border: none;
 }
 </style>
