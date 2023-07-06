@@ -824,12 +824,12 @@ export default {
         },
       ],
       editList: [
-        {
-          title: '删除标签',
-          iconfont: 'el-icon-delete',
-          status: '',
-          value: 'delete',
-        },
+        // {
+        //   title: '删除标签',
+        //   iconfont: 'el-icon-delete',
+        //   status: '',
+        //   value: 'delete',
+        // },
         {
           title: '保存标签',
           iconfont: 'el-icon-download',
@@ -1093,10 +1093,10 @@ export default {
       axios.post('/api/segLesion', {
         historyid: this.historyId
       }).then(res => {
+        loading.close()
         if (res.data.code === 400) {
           this.$message.error(res.data.message)
         } else {
-          loading.close()
           console.log('病灶分割的结果')
           console.log(res.data)
           this.currentLesionImageUrl = res.data.result.LesionFileUrl;
@@ -1229,11 +1229,11 @@ export default {
         axios.post('/api/measurement', {
           historyid: this.historyId
         }).then(res => {
+          loading.close();
           console.log(res.data)
           if (res.data.code === 400) {
             this.$message.error(res.data.message)
           } else {
-            loading.close();
             this.organMeasurementVisible = true
             this.organDataList = []
             const organData = res.data.result
@@ -1430,8 +1430,8 @@ export default {
           modelname: this.modelValue,
           historyid: this.historyId
         }).then(response => {
+          loading.close();
           if (response.data.code === 200) {
-            loading.close();
             console.log(response)
             this.currentRawImageUrl = response.data.result.OriginFileUrl
             this.currentSegImageUrl = response.data.result.PredictFileUrl

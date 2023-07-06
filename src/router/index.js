@@ -53,7 +53,7 @@ const routes = [
         name: 'ShareEdit',
         component: ShareEdit,
         meta: {
-            title: '协同编辑测试',
+            title: '协同编辑',
         },
         children: [{
             path: ':id(\\d+)',
@@ -74,7 +74,7 @@ const routes = [
             path: ':id(\\d+)',
             component: Segmentation,
             meta: {
-                title: '病人分割案例',
+                title: '病人3D影像分割',
             }
         }]
     },
@@ -83,7 +83,7 @@ const routes = [
         name: 'PersonalPage',
         component: PersonalPage,
         meta: {
-            title: '个人界面测试',
+            title: '个人界面',
         },
     },
     {
@@ -91,7 +91,7 @@ const routes = [
         name: 'Patient',
         component: Patient,
         meta: {
-            title: '病人界面',
+            title: '我的病例',
         },
     },
     {
@@ -99,7 +99,7 @@ const routes = [
         name: 'Error',
         component: ErrorPage,
         meta: {
-            title: '404 || Doob Business and Consulting Bootstrap5 Template',
+            title: '404',
         },
     },
     {
@@ -114,7 +114,7 @@ const routes = [
             path: ':id(\\d+)',
             component: UserProj,
             meta: {
-                title: '用户项目',
+                title: '病人项目',
             }
         }, {
             path: '/',
@@ -124,7 +124,10 @@ const routes = [
             }
         }, {
             path: 'new',
-            component: Newproj
+            component: Newproj,
+            meta: {
+                title: '创建新项目',
+            }
         }]
     },
 ]

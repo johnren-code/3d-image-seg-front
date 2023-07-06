@@ -108,7 +108,7 @@
                                         </a>
                                         <a href="https://github.com/PaddlePaddle/PaddleNLP" target="_blank"
                                             style="margin-right: 15px;font-size:medium;">
-                                            Paddlenlp
+                                            PaddleNLP
                                         </a>
                                     </div>
                                 </div>
