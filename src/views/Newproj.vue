@@ -1,60 +1,81 @@
 <template>
   <div>
-    <div class="col-lg-12">
-      <SectionTitle text-align="center" title="新建项目" description="" data-aos="fade-up" />
-      <div class="peopleDes">
-        <el-descriptions direction="vertical" :column="3" border>
-          <el-descriptions-item label="就诊人名称" :contentStyle='contentStyle'>
-            <div class="inputDeep">
-              <el-input v-model="form.name"></el-input>
-            </div>
-          </el-descriptions-item>
-          <el-descriptions-item label="就诊人id" :contentStyle='contentStyle'>
-            <div class="inputDeep">
-              <el-input v-model="form.patientId"></el-input>
-            </div>
-          </el-descriptions-item>
-          <el-descriptions-item label="出生日期" :contentStyle='contentStyle'>
-            <div class="inputDeep">
+    <el-col :offset="9">
+      <SectionTitle title="新建项目"  />
+    </el-col>
+
+    <el-card class="new_proj">
+      <div>
+    <el-form direction="vertical" :label-position="labelPosition" label-width="80px" :model="formLabelAlign" style="color: #ffffff">
+      <el-row :gutter="24">
+      <el-col :span="8">
+      <el-form-item label="就诊人名称">
+              <el-input v-model="form.name"style="width: 70%;"></el-input>
+      </el-form-item>
+      </el-col>
+      <el-col :span="8">
+          <el-form-item label="就诊人id" >
+            <el-input v-model="form.patientId"style="width: 70%;"></el-input>
+          </el-form-item>
+      </el-col>
+      <el-col :span="8">
+          <el-form-item label="出生日期" >
               <el-date-picker type="date" placeholder="选择日期" v-model="form.birthday"
-                style="width: 100%;"></el-date-picker>
-            </div>
-          </el-descriptions-item>
-          <el-descriptions-item label="身高（m）">
-            <el-input v-model="form.height"></el-input>
-          </el-descriptions-item>
-          <el-descriptions-item label="体重（kg）">
-            <el-input v-model="form.weight"></el-input>
-          </el-descriptions-item>
-          <el-descriptions-item label="年龄">
-            <el-input v-model="form.age"></el-input>
-          </el-descriptions-item>
-          <el-descriptions-item label="籍贯">
-            <el-input v-model="form.location"></el-input>
-          </el-descriptions-item>
-          <el-descriptions-item label="联系方式">
-            <el-input v-model="form.phone"></el-input>
-          </el-descriptions-item>
-          <el-descriptions-item label="血型">
-            <el-select v-model="form.bloodType" placeholder="请选择血型" style="{width:100%}">
+                style="width: 70%;"></el-date-picker>
+          </el-form-item>
+      </el-col>
+      <el-col :span="8">
+          <el-form-item label="身高（m）">
+            <el-input v-model="form.height"style="width: 70%;"></el-input>
+          </el-form-item>
+      </el-col>
+      <el-col :span="8">
+
+          <el-form-item label="体重（kg）">
+            <el-input v-model="form.weight"style="width: 70%;"></el-input>
+          </el-form-item>
+      </el-col>
+      <el-col :span="8">
+          <el-form-item label="年龄">
+            <el-input v-model="form.age"style="width: 70%;"></el-input>
+          </el-form-item>
+      </el-col>
+      <el-col :span="8">
+          <el-form-item label="籍贯">
+            <el-input v-model="form.location"style="width: 70%;"></el-input>
+          </el-form-item>
+      </el-col>
+      <el-col :span="8">
+          <el-form-item label="联系方式">
+            <el-input v-model="form.phone"style="width: 70%;"></el-input>
+          </el-form-item>
+      </el-col>
+      <el-col :span="8">
+          <el-form-item label="血型">
+            <el-select v-model="form.bloodType" placeholder="请选择血型" >
               <el-option label="A型" value="A"></el-option>
               <el-option label="B型" value="B"></el-option>
               <el-option label="AB型" value="AB"></el-option>
               <el-option label="O型" value="O"></el-option>
               <el-option label="其他" value="other"></el-option>
             </el-select>
-          </el-descriptions-item>
-          <el-descriptions-item label="就诊人描述">
+          </el-form-item>
+      </el-col>
+      <el-col :span="8">
+          <el-form-item label="就诊人描述"style="width: 70%;">
             <el-input v-model="form.description"></el-input>
-          </el-descriptions-item>
-        </el-descriptions>
+          </el-form-item>
+      </el-col>
+      </el-row>
+        </el-form>
 
-        <el-col :offset="11">
-          <el-button type="primary" @click="onSubmit">立即创建</el-button>
-          <el-button type="danger" @click="reset">重置</el-button>
-        </el-col>
-      </div>
-    </div>
+         </div>
+      <el-col :offset="9">
+        <el-button type="primary" @click="onSubmit">立即创建</el-button>
+        <el-button type="danger" @click="reset">重置</el-button>
+      </el-col>
+      <br><br>
+    </el-card>
   </div>
 </template>
 
@@ -90,9 +111,6 @@ export default {
       // dialogImageUrl: 'D:/runajianbeiA3/front/3d-image-seg-front/src/assets/images/about/about-1.png',
       dialogVisible: false,
       disabled: false,
-      contentStyle: {
-        'width': '450px'
-      }
     }
   },
   methods: {
@@ -166,92 +184,19 @@ export default {
 .projname {
   width: 400px;
 }
-
-.el-textarea__inner,
-.el-input__inner {
-  background: transparent !important;
-  /* // border-color: #242636 !important; */
-  border: 0;
+::v-deep .el-form-item__label {
+  color: whitesmoke;
 }
-
-.inputDeep>>>.el-input__inner {
-  border: 0;
+.new_proj{
   width: 100%;
-}
-
->>>.el-descriptions__body {
-  width: 100%;
-}
-
->>>.el-input__inner {
-  border: 0 !important;
-}
-
-/* .inputDeep {
-    width: 300px;
-} */
-
-.peopleDes>>>.el-table {
-  background-color: transparent;
-}
-
-/* .el-table__expanded-cell {
-    background-color: transparent;
-} */
-
-.el-descriptions {
-  background: transparent !important;
-}
-
-.fileUpload {
-  display: flex;
-}
-
-.submitButton {
-  margin-top: 50px;
-}
-
-::v-deep .el-table,
-.el-table__expanded-cell {
-  background-color: transparent !important;
-}
-
-::v-deep .el-table tr {
-  background-color: transparent !important;
-}
-
-::v-deep .el-table tbody tr:hover>td {
-  background-color: transparent !important
-}
-
-::v-deep .el-table--enable-row-transition .el-table__body td,
-.el-table .cell {
-  background-color: transparent !important;
-}
-
-// 去除row的白底
-::v-deep .el-descriptions-item__cell,
-::v-deep .el-descriptions-item__content {
-  background-color: transparent !important;
-  border: 0; //去除表格
-}
-
-::v-deep .el-descriptions__body {
-  background-color: transparent !important;
-  border: 0;
-}
-
-::v-deep .el-descriptions-item__label.is-bordered-label {
-  // color: white !important;
-  color: #868e96 !important
-}
-
-::v-deep .el-input__inner {
-  color: white !important;
-  border: none;
-}
-
-::v-deep .el-descriptions .is-bordered .el-descriptions-item__cell {
-  border: 1px solid #868e96;
+  border:1px solid  transparent;
+  border-radius: 15px;
+  padding-right: 30px;
+  /* 为其整体设置接近透明的效果*/
+  background-color: rgba(255,255,255,0.03);
+  /* 设置box-shadow使其有立体感 */
+  box-shadow: 5px 5px 0 0  rgba(0,0,0,0.2);
+  position: relative;
+  left: -15px;
 }
 </style>
