@@ -36,6 +36,11 @@
                     <i class="t-active iconfont el-icon-folder-opened" title="上传原文件"
                       style="font-size:28px;margin-top: 5px;margin-right: 10px"></i>
                   </el-upload>
+                  <!--测试上传Dicom文件-->
+<!--                  <el-upload action="/test/transform" :show-file-list="false" :on-success="handleUploadDicomSuccess">-->
+<!--                    <i class="t-active iconfont el-icon-folder-opened" title="上传Dicom文件"-->
+<!--                       style="font-size:28px;margin-top: 5px;margin-right: 10px"></i>-->
+<!--                  </el-upload>-->
 
                   <!--上传标签文件-->
                   <el-upload action="/api/uploadlabel" :show-file-list="false" :on-success="handleUploadSegSuccess"
@@ -1271,6 +1276,9 @@ export default {
       this.currentLesionRawImageUrl = ''
       nv.closeDrawing()
       nv.loadVolumes([{ url: res.result }])
+    },
+    handleUploadDicomSuccess(res,file){
+      console.log(res)
     },
     handleUploadSegSuccess(res, file) {
       console.log(res)

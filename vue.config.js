@@ -26,9 +26,17 @@ module.exports = {
                 ws: true,
             },
             '/text': {
-                target: 'http://10.134.48.17:8080',
+                target: 'http://10.134.48.12:8080',
                 pathRewrite: {
                     '^/text': ''
+                },
+                changeOrigin: true,
+                ws: true,
+            },
+            '/test': {
+                target: 'http://10.134.48.247:8080',
+                pathRewrite: {
+                    '^/test': ''
                 },
                 changeOrigin: true,
                 ws: true,

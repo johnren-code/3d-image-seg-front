@@ -470,7 +470,7 @@ export default {
   position: relative;
   top: 80px;
   max-width: 100%;
-  height: 800px;
+  height: 100%;
 }
 
 ::v-deep .w-600 {

@@ -69,7 +69,7 @@
               </Button> -->
               <Button :title="countDown>0?countDown+'s':'发送验证码'"
                       :style="{cursor:countDown>0?'not-allowed !important':'', pointerEvents:countDown>0?'none':''}"
-                      size="small" :outlined="true" @click.native="sendVerifyCode(loginData.email)"></Button>
+                      size="small" :outlined="true" @click.native="sendVerifyCodeForLogin(loginData.email)"></Button>
             </div>
           </div>
           <div style="display: flex;flex-direction: row;align-items: center;justify-content: space-between">
@@ -324,7 +324,36 @@ export default {
     switchModal() {
       this.login = !this.login
     },
-    // 发送验证码
+    sendVerifyCodeForLogin(email){
+      var that = this
+      if (email === '') {
+        this.$message.error('输入邮箱为空');
+      } else {
+        // console.log('开始发送验证码了，是否在登录',that.login)
+        axios.post('/api/sendCodeForLogin', {
+          email: email
+        }).then(res => {
+          console.log('没有跳转到error')
+          console.log(res)
+          if (res.data.code === 400) {
+            this.$message.error(res.data.message)
+          } else {
+            this.$message.success('发送成功')
+            that.countDown = 180
+            var interval = setInterval(function () {
+              that.countDown = that.countDown - 1
+              if (that.countDown === 0) {
+                clearInterval(interval)
+              }
+            }, 1000)
+          }
+        }).catch(error => {
+          console.error(error)
+          this.$message.error('发送失败，请稍后再试')
+        })
+      }
+    },
+    // 发送注册验证码
     sendVerifyCode(email) {
       var that = this
       if (email === '') {
